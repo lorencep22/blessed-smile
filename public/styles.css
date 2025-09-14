@@ -393,6 +393,7 @@ button {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 2rem;
+  place-items: center;
 }
 
 .team-card {
@@ -401,6 +402,7 @@ button {
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
+  min-width: 350px;
 }
 
 .team-card:hover {

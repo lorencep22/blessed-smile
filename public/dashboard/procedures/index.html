@@ -1,0 +1,866 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Procedures</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <style>
+        .modal-dialog.modal-dialog-centered {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Hide number input spinners for all browsers */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
+</head>
+
+<body style="height: 100%;" id="patients-page">
+
+    <div class="container mt-4">
+        <div class="row mb-2">
+            <div class="col-12 d-flex gap-2 justify-content-between align-items-center">
+                <h2 class="fw-bold text-primary">Procedures List</h2>
+                <div class="input-group" style="max-width: 400px; margin-left: auto;">
+                    <input type="text" class="form-control" id="searchPatientInput"
+                        placeholder="Search by patient name..." list="patientNamesDatalist">
+                    <button type="button" class="btn btn-primary" id="searchPatientBtn">Search</button>
+                </div>
+                <button type="button" class="btn btn-primary" id="newProcedureBtn">New Procedure</button>
+                <button type="button" class="btn btn-primary py-2 px-3" id="reloadProceduresBtn"
+                    title="Reload Procedures" style="height: 38px;">
+                    <i class="fa fa-rotate-right"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card shadow-sm">
+            <!-- <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Procedures Done to Patients</h4>
+            </div> -->
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Patient Name</th>
+                                <th>Procedure</th>
+                                <th>Amount</th>
+                                <th>Doctor</th>
+                                <th>Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="proceduresList">
+                            <!-- Procedure rows will be rendered here by JS -->
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Pagination Controls -->
+                <nav aria-label="Procedures pagination" class="mt-3">
+                    <ul class="pagination justify-content-center" id="proceduresPagination" style="gap: 8px;">
+                        <li class="page-item">
+                            <button class="page-link rounded-pill px-4" id="prevPageBtn">Prev</button>
+                        </li>
+                        <li class="page-item disabled">
+                            <span class="page-link rounded-pill bg-primary text-white px-4" id="pageInfo">Page 1</span>
+                        </li>
+                        <li class="page-item">
+                            <button class="page-link rounded-pill px-4" id="nextPageBtn">Next</button>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <!-- Add Procedure Modal -->
+    <div class="modal fade" id="addProcedureModal" tabindex="-1" aria-labelledby="addProcedureModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="min-width:900px;">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addProcedureModalLabel">Add Procedure Done to Patient</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addProcedureForm">
+                        <div style="display: flex; gap: 24px; align-items: flex-start;">
+                            <div style="flex: 1; min-width: 0;">
+                                <div class="mb-3">
+                                    <label for="patientName" class="form-label">Patient Name</label>
+                                    <input type="text" class="form-control" id="patientName" name="patientName"
+                                        required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="procedure" class="form-label">Procedure</label>
+                                    <select class="form-select" id="procedure" name="procedure" required>
+                                        <option value="">Select Procedure</option>
+                                        <optgroup label="Surgical Procedures">
+                                            <option>Frenectomy (lip or tongue tie release)</option>
+                                            <option>Biopsy of oral lesions</option>
+                                            <option>Cyst or tumor removal</option>
+                                            <option>Corrective jaw surgery (orthognathic surgery)</option>
+                                        </optgroup>
+                                        <optgroup label="Orthodontic Procedures">
+                                            <option>Braces (metal, ceramic, lingual)</option>
+                                            <option>Clear aligners (e.g., Invisalign)</option>
+                                            <option>Space maintainers (for children)</option>
+                                            <option>Retainers (post-braces)</option>
+                                            <option>Interceptive orthodontics (for early correction)</option>
+                                        </optgroup>
+                                        <optgroup label="Cosmetic Dentistry">
+                                            <option>Teeth whitening (in-office or take-home)</option>
+                                            <option>Veneers (porcelain or composite)</option>
+                                            <option>Smile makeovers</option>
+                                            <option>Gum contouring (reshaping gum line)</option>
+                                            <option>Composite bonding for aesthetic improvement</option>
+                                        </optgroup>
+                                        <optgroup label="Prosthodontics / Full Mouth Rehabilitation">
+                                            <option>Full-mouth reconstructions</option>
+                                            <option>Implant-supported dentures or bridges</option>
+                                            <option>Occlusal adjustments and bite rehabilitation</option>
+                                        </optgroup>
+                                        <optgroup label="Emergency Dental Care">
+                                            <option>Treatment for dental trauma (fractured or knocked-out teeth)
+                                            </option>
+                                            <option>Pain management (infections, abscesses)</option>
+                                            <option>Temporary restorations</option>
+                                            <option>Draining oral infections or abscesses</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="doctor" class="form-label">Doctor</label>
+                                    <input itemid="doctorList" type="text" class="form-control" id="doctor"
+                                        name="doctor" required list="doctorNamesDatalist">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="date" class="form-label">Date</label>
+                                    <input type="date" class="form-control" id="date" name="date" required max="">
+
+                                </div>
+                                <div class="mb-3">
+                                    <label for="remarks" class="form-label">Remarks</label>
+                                    <textarea class="form-control" id="remarks" name="remarks" rows="3"
+                                        required></textarea>
+                                </div>
+                            </div>
+                            <div style="flex: 1; min-width: 0;">
+                                <div class="mb-3">
+                                    <label class="form-label">Teeth Treated</label>
+                                    <div id="teethGrid"
+                                        style="background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e5e7eb;">
+                                        <div style="font-weight: 500; color: #2563eb; margin-bottom: 4px;">Permanent
+                                            Teeth</div>
+                                        <!-- Top row: 18-28 -->
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+                                            <!-- 18-11 -->
+                                            <div style="display: flex; gap: 8px;">
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>18</span><input
+                                                        type="checkbox" name="teeth[]" value="18"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>17</span><input
+                                                        type="checkbox" name="teeth[]" value="17"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>16</span><input
+                                                        type="checkbox" name="teeth[]" value="16"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>15</span><input
+                                                        type="checkbox" name="teeth[]" value="15"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>14</span><input
+                                                        type="checkbox" name="teeth[]" value="14"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>13</span><input
+                                                        type="checkbox" name="teeth[]" value="13"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>12</span><input
+                                                        type="checkbox" name="teeth[]" value="12"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>11</span><input
+                                                        type="checkbox" name="teeth[]" value="11"></label>
+                                            </div>
+                                            <!-- 21-28 -->
+                                            <div style="display: flex; gap: 8px;">
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>21</span><input
+                                                        type="checkbox" name="teeth[]" value="21"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>22</span><input
+                                                        type="checkbox" name="teeth[]" value="22"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>23</span><input
+                                                        type="checkbox" name="teeth[]" value="23"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>24</span><input
+                                                        type="checkbox" name="teeth[]" value="24"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>25</span><input
+                                                        type="checkbox" name="teeth[]" value="25"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>26</span><input
+                                                        type="checkbox" name="teeth[]" value="26"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>27</span><input
+                                                        type="checkbox" name="teeth[]" value="27"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>28</span><input
+                                                        type="checkbox" name="teeth[]" value="28"></label>
+                                            </div>
+                                        </div>
+                                        <!-- Second row: 48-41, 31-38 -->
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+                                            <!-- 48-41 -->
+                                            <div style="display: flex; gap: 8px;">
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>48</span><input
+                                                        type="checkbox" name="teeth[]" value="48"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>47</span><input
+                                                        type="checkbox" name="teeth[]" value="47"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>46</span><input
+                                                        type="checkbox" name="teeth[]" value="46"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>45</span><input
+                                                        type="checkbox" name="teeth[]" value="45"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>44</span><input
+                                                        type="checkbox" name="teeth[]" value="44"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>43</span><input
+                                                        type="checkbox" name="teeth[]" value="43"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>42</span><input
+                                                        type="checkbox" name="teeth[]" value="42"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>41</span><input
+                                                        type="checkbox" name="teeth[]" value="41"></label>
+                                            </div>
+                                            <!-- 31-38 -->
+                                            <div style="display: flex; gap: 8px;">
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>31</span><input
+                                                        type="checkbox" name="teeth[]" value="31"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>32</span><input
+                                                        type="checkbox" name="teeth[]" value="32"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>33</span><input
+                                                        type="checkbox" name="teeth[]" value="33"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>34</span><input
+                                                        type="checkbox" name="teeth[]" value="34"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>35</span><input
+                                                        type="checkbox" name="teeth[]" value="35"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>36</span><input
+                                                        type="checkbox" name="teeth[]" value="36"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>37</span><input
+                                                        type="checkbox" name="teeth[]" value="37"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>38</span><input
+                                                        type="checkbox" name="teeth[]" value="38"></label>
+                                            </div>
+                                        </div>
+                                        <!-- Primary teeth rows: 55-51, 61-65, 85-81, 71-75 -->
+                                        <div style="font-weight: 500; color: #2563eb; margin: 8px 0 4px 0;">Primary
+                                            Teeth</div>
+                                        <div style="display: flex; justify-content: space-around; margin-bottom: 2px;">
+                                            <!-- 55-51 -->
+                                            <div style="display: flex; gap: 8px;">
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>55</span><input
+                                                        type="checkbox" name="teeth[]" value="55"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>54</span><input
+                                                        type="checkbox" name="teeth[]" value="54"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>53</span><input
+                                                        type="checkbox" name="teeth[]" value="53"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>52</span><input
+                                                        type="checkbox" name="teeth[]" value="52"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>51</span><input
+                                                        type="checkbox" name="teeth[]" value="51"></label>
+                                            </div>
+                                            <!-- 61-65 -->
+                                            <div style="display: flex; gap: 8px;">
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>61</span><input
+                                                        type="checkbox" name="teeth[]" value="61"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>62</span><input
+                                                        type="checkbox" name="teeth[]" value="62"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>63</span><input
+                                                        type="checkbox" name="teeth[]" value="63"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>64</span><input
+                                                        type="checkbox" name="teeth[]" value="64"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>65</span><input
+                                                        type="checkbox" name="teeth[]" value="65"></label>
+                                            </div>
+                                        </div>
+                                        <div style="display: flex; justify-content: space-around; margin-bottom: 2px;">
+                                            <!-- 85-81 -->
+                                            <div style="display: flex; gap: 8px;">
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>85</span><input
+                                                        type="checkbox" name="teeth[]" value="85"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>84</span><input
+                                                        type="checkbox" name="teeth[]" value="84"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>83</span><input
+                                                        type="checkbox" name="teeth[]" value="83"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>82</span><input
+                                                        type="checkbox" name="teeth[]" value="82"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>81</span><input
+                                                        type="checkbox" name="teeth[]" value="81"></label>
+                                            </div>
+                                            <!-- 71-75 -->
+                                            <div style="display: flex; gap: 8px;">
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>71</span><input
+                                                        type="checkbox" name="teeth[]" value="71"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>72</span><input
+                                                        type="checkbox" name="teeth[]" value="72"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>73</span><input
+                                                        type="checkbox" name="teeth[]" value="73"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>74</span><input
+                                                        type="checkbox" name="teeth[]" value="74"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>75</span><input
+                                                        type="checkbox" name="teeth[]" value="75"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            <label for="procedureAmount">Amount</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text" id="peso-addon"><i
+                                                        class="fa fa-peso-sign"></i></span>
+                                                <input type="number" class="form-control" id="procedureAmount"
+                                                    placeholder="Enter amount" min="1" aria-describedby="peso-addon">
+                                            </div>
+                                            <label for="procedureBalance">Balance</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text" id="peso-addon"><i
+                                                        class="fa fa-peso-sign"></i></span>
+                                                <input type="number" class="form-control" id="procedureBalance"
+                                                    placeholder="Enter balance" min="0" aria-describedby="peso-addon">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 mt-3">Add Procedure</button>
+                        <button type="button" class="btn btn-secondary w-100 mt-2 d-none"
+                            id="editProcedureBtn">Edit</button>
+                        <button type="button" class="btn btn-success w-100 mt-2 d-none"
+                            id="updateProcedureBtn">Update</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/app.js" defer></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const reloadBtn = document.getElementById('reloadProceduresBtn');
+            if (reloadBtn) {
+                reloadBtn.addEventListener('click', function () {
+                    location.reload();
+                });
+            }
+        });
+    </script>
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Pagination variables
+            let proceduresData = [];
+            let currentPage = 1;
+            const pageSize = 10;
+            let totalPages = 1;
+
+            // Fetch all procedures and store in array
+            function fetchProcedures() {
+                if (window.proceduresCollection) {
+                    window.proceduresCollection.orderBy('date', 'desc').get().then(snapshot => {
+                        proceduresData = [];
+                        snapshot.forEach(doc => {
+                            const p = doc.data();
+                            proceduresData.push({ id: doc.id, ...p });
+                        });
+                        totalPages = Math.max(1, Math.ceil(proceduresData.length / pageSize));
+                        renderProceduresTable();
+                        updatePaginationControls();
+                    });
+                }
+            }
+
+            // Render current page of procedures
+            function renderProceduresTable() {
+                const proceduresList = document.getElementById('proceduresList');
+                proceduresList.innerHTML = '';
+                const startIdx = (currentPage - 1) * pageSize;
+                const endIdx = Math.min(startIdx + pageSize, proceduresData.length);
+                for (let i = startIdx; i < endIdx; i++) {
+                    const p = proceduresData[i];
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${p.patientName || ''}</td>
+                        <td>${p.procedure || ''}</td>
+                        <td>${p.amount || ''}</td>
+                        <td>${p.doctor || ''}</td>
+                        <td>${p.date || ''}</td>
+                        <td><button class="btn btn-outline-primary btn-sm view-procedure-btn" data-id="${p.id}">View</button></td>
+                    `;
+                    proceduresList.appendChild(row);
+                }
+            }
+
+            // Update pagination controls
+            function updatePaginationControls() {
+                const pageInfo = document.getElementById('pageInfo');
+                pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+                document.getElementById('prevPageBtn').disabled = currentPage === 1;
+                document.getElementById('nextPageBtn').disabled = currentPage === totalPages;
+            }
+
+            // Pagination button events
+            document.getElementById('prevPageBtn').addEventListener('click', function () {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderProceduresTable();
+                    updatePaginationControls();
+                }
+            });
+            document.getElementById('nextPageBtn').addEventListener('click', function () {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderProceduresTable();
+                    updatePaginationControls();
+                }
+            });
+
+            fetchProcedures();
+
+            // Add Procedure Modal logic
+            document.getElementById('newProcedureBtn').setAttribute('data-bs-toggle', 'modal');
+            document.getElementById('newProcedureBtn').setAttribute('data-bs-target', '#addProcedureModal');
+            const addProcedureForm = document.getElementById('addProcedureForm');
+            const addBtn = addProcedureForm.querySelector('button[type="submit"]');
+            const editBtn = document.getElementById('editProcedureBtn');
+            const updateBtn = document.getElementById('updateProcedureBtn');
+            let currentProcedureId = null;
+
+            // Helper to set all form fields disabled/enabled
+            function setFormDisabled(disabled) {
+                addProcedureForm.querySelectorAll('input, select').forEach(el => {
+                    el.disabled = disabled;
+                });
+                // Checkboxes
+                addProcedureForm.querySelectorAll('input[type="checkbox"]').forEach(el => {
+                    el.disabled = disabled;
+                });
+            }
+
+            // Helper to reset modal to add mode
+            function resetModalToAddMode() {
+                addProcedureForm.reset();
+                setFormDisabled(false);
+                addBtn.classList.remove('d-none');
+                editBtn.classList.add('d-none');
+                updateBtn.classList.add('d-none');
+                currentProcedureId = null;
+            }
+
+            // When Add Procedure modal is shown, reset to add mode
+            document.getElementById('addProcedureModal').addEventListener('show.bs.modal', function (e) {
+                if (!currentProcedureId) {
+                    resetModalToAddMode();
+                }
+            });
+
+            // View button logic
+            document.addEventListener('click', function (e) {
+                if (e.target.classList.contains('view-procedure-btn')) {
+                    const id = e.target.getAttribute('data-id');
+                    if (window.proceduresCollection && id) {
+                        window.proceduresCollection.doc(id).get().then(doc => {
+                            if (doc.exists) {
+                                const p = doc.data();
+                                // Fill form fields
+                                addProcedureForm.patientName.value = p.patientName || '';
+                                addProcedureForm.procedure.value = p.procedure || '';
+                                addProcedureForm.doctor.value = p.doctor || '';
+                                addProcedureForm.date.value = p.date || '';
+                                // Uncheck all teeth first
+                                addProcedureForm.querySelectorAll('input[name="teeth[]"]').forEach(cb => {
+                                    cb.checked = false;
+                                });
+                                if (Array.isArray(p.treatedTeeth)) {
+                                    p.treatedTeeth.forEach(val => {
+                                        const cb = addProcedureForm.querySelector('input[name="teeth[]"][value="' + val + '"]');
+                                        if (cb) cb.checked = true;
+                                    });
+                                }
+                                setFormDisabled(true);
+                                addBtn.classList.add('d-none');
+                                editBtn.classList.remove('d-none');
+                                updateBtn.classList.add('d-none');
+                                currentProcedureId = id;
+                                // Show modal
+                                const modalEl = document.getElementById('addProcedureModal');
+                                const modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                                modalInstance.show();
+                            }
+                        });
+                    }
+                }
+            });
+
+            // Edit button logic
+            editBtn.addEventListener('click', function () {
+                setFormDisabled(false);
+                addBtn.classList.add('d-none');
+                editBtn.classList.add('d-none');
+                updateBtn.classList.remove('d-none');
+            });
+
+            // Update button logic
+            updateBtn.addEventListener('click', function () {
+                if (!currentProcedureId) return;
+                if (confirm('Are you sure you want to update this procedure?')) {
+                    // Collect treated teeth
+                    const treatedTeeth = Array.from(document.querySelectorAll('input[name="teeth[]"]:checked')).map(input => input.value);
+                    // Find patientId if available (assumes datalist option value="name" data-id="id")
+                    let patientId = null;
+                    const patientNameInput = document.getElementById('patientName');
+                    const patientName = patientNameInput.value;
+                    const datalist = document.getElementById('patientNamesDatalist');
+                    if (datalist) {
+                        const option = Array.from(datalist.options).find(opt => opt.value === patientName);
+                        if (option && option.dataset.id) {
+                            patientId = option.dataset.id;
+                        }
+                    }
+                    const procedureData = {
+                        patientName: patientName,
+                        patientId: patientId,
+                        procedure: document.getElementById('procedure').value,
+                        doctor: document.getElementById('doctor').value,
+                        date: document.getElementById('date').value,
+                        remarks: document.getElementById('remarks').value.trim(),
+                        amount: document.getElementById('procedureAmount').value,
+                        balance: document.getElementById('procedureBalance').value,
+                        treatedTeeth: treatedTeeth
+                    };
+                    if (window.proceduresCollection) {
+                        window.proceduresCollection.doc(currentProcedureId).update(procedureData)
+                            .then(() => {
+                                setFormDisabled(true);
+                                addBtn.classList.add('d-none');
+                                editBtn.classList.remove('d-none');
+                                updateBtn.classList.add('d-none');
+                                alert('Procedure updated for ' + procedureData.patientName);
+                                fetchProcedures(); // Refresh table and pagination
+                                addProcedureForm.reset();
+                                currentProcedureId = null;
+                                // Close modal
+                                const modalEl = document.getElementById('addProcedureModal');
+                                const modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                                modalInstance.hide();
+                            })
+                            .catch((error) => {
+                                alert('Error updating procedure: ' + error);
+                            });
+                    }
+                }
+            });
+
+            // Add Procedure logic (unchanged)
+            if (addProcedureForm) {
+                addProcedureForm.onsubmit = function (e) {
+                    e.preventDefault();
+                    // Verify patient name
+                    const patientNameInput = document.getElementById('patientName');
+                    const patientName = patientNameInput.value.trim(); // keep original case
+                    const patientDatalist = document.getElementById('patientNamesDatalist');
+                    const patientMatches = patientDatalist ? Array.from(patientDatalist.options).filter(opt => opt.value.trim().toLowerCase() === patientName.toLowerCase()) : [];
+                    if (!patientName || patientMatches.length === 0) {
+                        alert('Please select a valid patient name from the list.');
+                        patientNameInput.focus();
+                        return;
+                    }
+                    // Verify doctor name
+                    const doctorInput = document.getElementById('doctor');
+                    const doctorName = doctorInput.value.trim(); // keep original case
+                    const doctorDatalist = document.getElementById('doctorNamesDatalist');
+                    const doctorMatches = doctorDatalist ? Array.from(doctorDatalist.options).filter(opt => opt.value.trim().toLowerCase() === doctorName.toLowerCase()) : [];
+                    if (!doctorName || doctorMatches.length === 0) {
+                        alert('Please select a valid doctor name from the list.');
+                        doctorInput.focus();
+                        return;
+                    }
+                    if (confirm('Are you sure you want to add this procedure?')) {
+                        // Collect treated teeth
+                        const treatedTeeth = Array.from(document.querySelectorAll('input[name="teeth[]"]:checked')).map(input => input.value);
+                        // Find patientId if available (assumes datalist option value="name" data-id="id")
+                        let patientId = null;
+                        const remarks = document.getElementById('remarks').value.trim();
+                        if (patientDatalist) {
+                            // Find all options that match the input value (case-insensitive, trimmed)
+                            if (patientMatches.length >= 1 && patientMatches[0].dataset.id) {
+                                patientId = patientMatches[0].dataset.id;
+                            }
+                        }
+                        const procedureData = {
+                            patientName: patientName, // original case
+                            patientId: patientId,
+                            procedure: document.getElementById('procedure').value,
+                            doctor: doctorInput.value, // original case
+                            date: document.getElementById('date').value,
+                            remarks: remarks,
+                            amount: document.getElementById('procedureAmount').value,
+                            balance: document.getElementById('procedureBalance').value,
+                            treatedTeeth: treatedTeeth
+                        };
+                        if (window.proceduresCollection) {
+                            window.proceduresCollection.add(procedureData)
+                                .then(() => {
+                                    addProcedureForm.reset();
+                                    const modalEl = document.getElementById('addProcedureModal');
+                                    const modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                                    modalInstance.hide();
+                                    modalEl.addEventListener('hidden.bs.modal', function handler() {
+                                        alert('Procedure added for ' + procedureData.patientName);
+                                        fetchProcedures(); // Refresh table and pagination
+                                        modalEl.removeEventListener('hidden.bs.modal', handler);
+                                    });
+                                })
+                                .catch((error) => {
+                                    alert('Error adding procedure: ' + error);
+                                });
+                        }
+                    }
+                };
+            }
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // ...existing code...
+
+            // Pagination variables
+            let proceduresData = [];
+            let currentPage = 1;
+            const pageSize = 10;
+            let totalPages = 1;
+
+
+
+            // Redone search logic: use patient name input to get patientId from datalist, then filter procedures by patientId
+            document.getElementById('searchPatientBtn').addEventListener('click', function () {
+                const searchInput = document.getElementById('searchPatientInput').value.trim();
+                const datalist = document.getElementById('patientNamesDatalist');
+                const proceduresList = document.getElementById('proceduresList');
+                proceduresList.innerHTML = '';
+                if (!searchInput) {
+                    alert('Please enter or select a patient name.');
+                    document.getElementById('searchPatientInput').focus();
+                    return;
+                }
+                // Get patient doc id from datalist (exact match)
+                const match = datalist ? Array.from(datalist.options).find(opt => opt.value === searchInput) : null;
+                const patientId = match ? match.dataset.id : null;
+                if (!patientId) {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `<td colspan="5" class="text-center text-danger">No procedure found for <strong>${searchInput}</strong> (patient not found)</td>`;
+                    proceduresList.appendChild(row);
+                    document.getElementById('pageInfo').textContent = 'Results: 0';
+                    document.getElementById('prevPageBtn').disabled = true;
+                    document.getElementById('nextPageBtn').disabled = true;
+                    return;
+                }
+                // Fetch procedures from Firestore using patientId
+                window.proceduresCollection.where('patientId', '==', patientId).get().then(snapshot => {
+                    const filtered = [];
+                    snapshot.forEach(doc => {
+                        const p = doc.data();
+                        filtered.push({ id: doc.id, ...p });
+                    });
+                    if (filtered.length === 0) {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `<td colspan="5" class="text-center text-danger">No procedure found for <strong>${searchInput}</strong></td>`;
+                        proceduresList.appendChild(row);
+                    } else {
+                        filtered.forEach(p => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${p.patientName || ''}</td>
+                                <td>${p.procedure || ''}</td>
+                                <td>${p.doctor || ''}</td>
+                                <td>${p.date || ''}</td>
+                                <td><button class="btn btn-outline-primary btn-sm view-procedure-btn" data-id="${p.id}">View</button></td>
+                            `;
+                            proceduresList.appendChild(row);
+                        });
+                    }
+                    // Update pagination info to show filtered count
+                    document.getElementById('pageInfo').textContent = `Results: ${filtered.length}`;
+                    document.getElementById('prevPageBtn').disabled = true;
+                    document.getElementById('nextPageBtn').disabled = true;
+                });
+            });
+
+            // Set max date for procedure date input to today
+            var dateInput = document.getElementById('date');
+            if (dateInput) {
+                var today = new Date();
+                var yyyy = today.getFullYear();
+                var mm = String(today.getMonth() + 1).padStart(2, '0');
+                var dd = String(today.getDate()).padStart(2, '0');
+                var maxDate = yyyy + '-' + mm + '-' + dd;
+                dateInput.setAttribute('max', maxDate);
+            }
+        });
+    </script>
+</body>
+
+</html>

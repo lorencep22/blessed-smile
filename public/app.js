@@ -16,6 +16,7 @@ const db = firebase.firestore();
 window.doctorsCollection = db.collection("doctors");
 window.patientDetailsCollection = db.collection("patientDetails");
 window.patientRecordsCollection = db.collection("patientRecords");
+window.proceduresCollection = db.collection("procedures");
 
 const whenSignedIn = document.getElementById("whenSignedIn");
 const whenSignedOut = document.getElementById("whenSignedOut");
@@ -29,21 +30,43 @@ const dashBtn = document.getElementById("dashboardBtn");
 const dashboardSignOut = document.getElementById("dashboard-signout");
 const provider = new firebase.auth.GoogleAuthProvider();
 
-const patientsPage = document.getElementById("patients-page");
 const patientsProfile = document.getElementById("patients-profile");
 
 //Auth State Listener
 if (signOutBtn) signOutBtn.onclick = () => auth.signOut();
+
 if (window.location.pathname === "/") {
-  if (signInBtn) signInBtn.onclick = () => auth.signInWithPopup(provider);
+  const allowedEmails = ["blessed.smile.web@gmail.com", "person2@gmail.com"]; // Add allowed emails here
+
+  //Sign In
+  if (signInBtn)
+    signInBtn.onclick = () => {
+      auth
+        .signInWithPopup(provider)
+        .then((result) => {
+          const email = result.user.email;
+          if (!allowedEmails.includes(email)) {
+            auth.signOut();
+            alert("This email is not allowed to sign in.");
+          }
+        })
+        .catch((error) => {
+          alert("Sign in failed: " + error.message);
+        });
+    };
 
   //Dashboard
   dashBtn.onclick = () => {
-    location.href = "/dashboard";
+    location.href = "/dashboard/index.html";
   };
 
   auth.onAuthStateChanged((user) => {
     if (user) {
+      if (!allowedEmails.includes(user.email)) {
+        auth.signOut();
+        alert("This email is not allowed to sign in.");
+        return;
+      }
       whenSignedIn.style.display = "none";
       whenSignedOut.style.display = "block";
       dashSection.style.display = "block";
@@ -59,7 +82,10 @@ if (window.location.pathname === "/") {
   });
 }
 //Dashboard Code
-if (window.location.pathname.endsWith("/dashboard")) {
+
+// Protect dashboard and all subpages under /dashboard/
+if (window.location.pathname.startsWith("/dashboard/")) {
+  // Sign out button logic for dashboard main page
   if (dashboardSignOut) {
     dashboardSignOut.onclick = () => {
       auth.signOut().then(() => {
@@ -67,115 +93,12 @@ if (window.location.pathname.endsWith("/dashboard")) {
       });
     };
   }
-}
-
-if (patientsPage) {
-  db.collection("patientDetails")
-    .get()
-    .then((snapshot) => {
-      const patientsList = document.getElementById("patientsList");
-      const patients = [];
-      snapshot.forEach((doc) => {
-        const patient = doc.data();
-        patient.id = doc.id;
-        patients.push(patient);
-      });
-
-      // Pagination variables
-      let currentPage = 1;
-      const pageSize = 10;
-      const totalPages = Math.ceil(patients.length / pageSize);
-
-      function renderTable(page) {
-        patientsList.innerHTML = "";
-        let html = `<table class="table table-bordered table-hover">
-              <thead>
-                <tr>
-                  <th>Full Name</th>
-                  <th>Gender</th>
-                  <th>Contact No.</th>
-                  <th>Email</th>
-                  <th>Accounts</th>
-                </tr>
-              </thead>
-              <tbody>`;
-        const start = (page - 1) * pageSize;
-        const end = Math.min(start + pageSize, patients.length);
-        for (let i = start; i < end; i++) {
-          const p = patients[i];
-          html += `<tr>
-                <td>${p.firstName} ${p.middleName} ${p.lastName}</td>
-                <td>${p.sex}</td>
-                <td>${p.contactNo}</td>
-                <td>${p.email}</td>
-                <td><a target="_blank" href="/public/dashboard/patients/profile.html?id=${p.id}">View</a></td>
-              </tr>`;
-        }
-        html += `</tbody></table>`;
-
-        // Pagination controls
-        html += `<nav><ul class="pagination">`;
-        for (let i = 1; i <= totalPages; i++) {
-          html += `<li class="page-item${
-            i === page ? " active" : ""
-          }"><a class="page-link" href="#">${i}</a></li>`;
-        }
-        html += `</ul></nav>`;
-
-        patientsList.innerHTML = html;
-
-        // Add click event for pagination
-        const pageLinks = patientsList.querySelectorAll(".page-link");
-        pageLinks.forEach((link, idx) => {
-          link.onclick = (e) => {
-            e.preventDefault();
-            renderTable(idx + 1);
-          };
-        });
-      }
-
-      renderTable(currentPage);
-    });
-}
-if (patientsProfile) {
-  const patientDetails = document.getElementById("patientDetails");
-  const urlParams = new URLSearchParams(window.location.search);
-  const patientId = urlParams.get("id");
-
-  db.collection("patientDetails")
-    .doc(patientId)
-    .get()
-    .then((doc) => {
-      if (doc.exists) {
-        const patient = doc.data();
-        patientDetails.innerHTML = `
-              <h3>${patient.firstName} ${patient.lastName}</h3>
-              <p><strong>Gender:</strong> ${patient.sex}</p>
-              <p><strong>Contact No.:</strong> ${patient.contactNo}</p>
-              <p><strong>Email:</strong> ${patient.email}</p>
-              <p><strong>Address:</strong> ${patient.address}</p>
-              <p><strong>Birthday:</strong> ${patient.birthday}</p>
-              <p><strong>Occupation:</strong> ${patient.occupation}</p>
-            `;
-      } else {
-        patientDetails.innerHTML = "<p>Patient not found.</p>";
-      }
-    })
-    .catch((error) => {
-      console.error("Error fetching patient details:", error);
-      patientDetails.innerHTML = "<p>Error fetching patient details.</p>";
-    });
-}
-
-function addPatient(patient) {
-  db.collection("patientDetails")
-    .add(patient)
-    .then((docRef) => {
-      alert("Patient added with ID: " + docRef.id);
-    })
-    .catch((error) => {
-      alert("Error adding patient: " + error);
-    });
+  // Auth check for all dashboard pages
+  auth.onAuthStateChanged(function (user) {
+    if (!user) {
+      window.location.href = "/";
+    }
+  });
 }
 
 // // Example usage:
@@ -196,3 +119,75 @@ function addPatient(patient) {
 // ];
 
 // newPatient.forEach((patient) => addPatient(patient));
+
+// Generate patient names datalist for use in forms
+// Generate doctor names datalist for use in forms
+
+function generateDoctorNamesDatalist() {
+  db.collection("doctors")
+    .get()
+    .then((snapshot) => {
+      let datalist = document.getElementById("doctorNamesDatalist");
+      if (!datalist) {
+        datalist = document.createElement("datalist");
+        datalist.id = "doctorNamesDatalist";
+        document.body.appendChild(datalist);
+      }
+      datalist.innerHTML = "";
+      snapshot.forEach((doc) => {
+        const d = doc.data();
+        const name = d.name || "";
+        const status = d.status || "Active";
+        if (name && status === "Active") {
+          const option = document.createElement("option");
+          option.value = name;
+          datalist.appendChild(option);
+        }
+      });
+    });
+}
+
+function generatePatientNamesDatalist() {
+  db.collection("patientDetails")
+    .get()
+    .then((snapshot) => {
+      let datalist = document.getElementById("patientNamesDatalist");
+      if (!datalist) {
+        datalist = document.createElement("datalist");
+        datalist.id = "patientNamesDatalist";
+        document.body.appendChild(datalist);
+      }
+      datalist.innerHTML = "";
+      snapshot.forEach((doc) => {
+        const p = doc.data();
+        const fullName = `${p.firstName || ""} ${p.middleName || ""} ${
+          p.lastName || ""
+        }`.trim();
+        if (fullName) {
+          const option = document.createElement("option");
+          option.value = fullName;
+          option.dataset.id = doc.id; // Add patient id as data-id attribute
+          datalist.appendChild(option);
+        }
+      });
+    });
+}
+// Call this on page load if you need the datalist
+if (
+  document.getElementById("patientName") ||
+  document.getElementById("searchPatientInput")
+) {
+  generatePatientNamesDatalist();
+  const patientNameInput = document.getElementById("patientName");
+  const searchPatientInput = document.getElementById("searchPatientInput");
+  if (patientNameInput) {
+    patientNameInput.setAttribute("list", "patientNamesDatalist");
+  }
+  if (searchPatientInput) {
+    searchPatientInput.setAttribute("list", "patientNamesDatalist");
+  }
+}
+if (document.getElementById("doctor")) {
+  generateDoctorNamesDatalist();
+  document.getElementById("doctor").setAttribute("list", "doctorNamesDatalist");
+}

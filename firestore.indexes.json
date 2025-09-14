@@ -1,4 +1,22 @@
 {
-  "indexes": [],
+  "indexes": [
+    {
+      "collectionGroup": "procedures",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "patientId", "order": "ASCENDING" },
+        { "fieldPath": "date", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "procedures",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "patientName", "order": "ASCENDING" },
+        { "fieldPath": "date", "order": "DESCENDING" }
+      ],
+      "indexConfig": { "density": "SPARSE_ALL" }
+    }
+  ],
   "fieldOverrides": []
 }

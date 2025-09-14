@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -6,17 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/styles.css">
     <!-- Firebase SDKs -->
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <style>
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 600;
+            color: white;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo img {
+            height: 48px;
+            width: 48px;
+            border-radius: 50%;
+            box-shadow: 0 4px 16px rgba(13, 138, 188, 0.15);
+            object-fit: cover;
+            border: 2px solid #0D8ABC;
+            background: #fff;
+            transition: box-shadow 0.3s;
+        }
+
+        .logo img:hover {
+            box-shadow: 0 8px 32px rgba(13, 138, 188, 0.25);
+        }
+    </style>
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Blessed Smile Dashboard</a>
+            <div class="logo"><img src="/site-logo.png" alt="Blessed Smile Logo">Blessed Smile</div>
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -24,7 +51,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/public/index.html">Home</a>
+                        <a class="nav-link active" aria-current="page" href="/">Home</a>
                     </li>
                     <li class="nav-item">
                         <button class="nav-link" href="#" id="dashboard-signout">Sign Out</button>
@@ -60,6 +87,12 @@
                                 Doctors 🩺
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#">
+                                <span data-feather="home"></span>
+                                Transactions 💰
+                            </a>
+                        </li>
 
                         <!-- <li class="nav-item">
                             <a class="nav-link" href="#">
@@ -71,13 +104,66 @@
                 </div>
             </nav>
             <main id="dashboard-content" class="col-md-9 ms-sm-auto col-lg-10 px-md-4" style="height: 100% !important;">
-                <iframe src="/public/dashboard/patients/index.html"
+                <iframe id="patients-iframe" src="/dashboard/patients/index.html"
                     style="width:100%;height:90dvh;border:none;"></iframe>
+                <iframe id="procedures-iframe" src="/dashboard/procedures/index.html"
+                    style="width:100%;height:90dvh;border:none; display: none;"></iframe>
+                <iframe id="doctors-iframe" src="/dashboard/doctors/index.html"
+                    style="width:100%;height:90dvh;border:none; display: none;"></iframe>
+                <iframe id="transactions-iframe" src="/dashboard/transactions/index.html"
+                    style="width:100%;height:90dvh;border:none; display: none;"></iframe>
             </main>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/public/app.js"></script>
+    <script src="/app.js" defer></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const patientsIframe = document.getElementById('patients-iframe');
+            const proceduresIframe = document.getElementById('procedures-iframe');
+            const doctorsIframe = document.getElementById('doctors-iframe');
+            const transactionsIframe = document.getElementById('transactions-iframe');
+            // Sidebar links
+            const sidebarLinks = document.querySelectorAll('.sidebar .nav-link');
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    // If already active, do nothing
+                    // if (this.classList.contains('active')) return;
+                    sidebarLinks.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    // Hide all iframes
+                    patientsIframe.style.display = 'none';
+                    proceduresIframe.style.display = 'none';
+                    doctorsIframe.style.display = 'none';
+                    transactionsIframe.style.display = 'none';
+                    // Reload and show corresponding iframe
+                    if (this.textContent.includes('Patients')) {
+                        patientsIframe.contentWindow.location.reload();
+                        setTimeout(() => {
+                            patientsIframe.style.display = 'block';
+                        }, 200);
+                    } else if (this.textContent.includes('Procedures')) {
+                        proceduresIframe.contentWindow.location.reload();
+                        setTimeout(() => {
+                            proceduresIframe.style.display = 'block';
+                        }, 200);
+                    } else if (this.textContent.includes('Doctors')) {
+                        doctorsIframe.contentWindow.location.reload();
+                        setTimeout(() => {
+                            doctorsIframe.style.display = 'block';
+                        }, 200);
+                    }
+                    else if (this.textContent.includes('Transactions')) {
+                        transactionsIframe.contentWindow.location.reload();
+                        setTimeout(() => {
+                            transactionsIframe.style.display = 'block';
+                        }, 200);
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>

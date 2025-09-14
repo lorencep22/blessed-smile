@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -7,24 +6,51 @@
     <title>Bright Smile Dental Clinic - Modern Dental Care</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/styles.css">
 
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
+    <style>
+        .logo a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 600;
+            color: #2563eb;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo img {
+            height: 48px;
+            width: 48px;
+            border-radius: 50%;
+            box-shadow: 0 4px 16px rgba(13, 138, 188, 0.15);
+            object-fit: cover;
+            border: 2px solid #0D8ABC;
+            background: #fff;
+            transition: box-shadow 0.3s;
+        }
+
+        .logo img:hover {
+            box-shadow: 0 8px 32px rgba(13, 138, 188, 0.25);
+        }
+    </style>
 </head>
 
 <body>
     <!-- Navigation -->
     <nav class="navbar" id="navbar">
         <div class="nav-container">
-            <div class="logo">Blessed Smile</div>
+            <div class="logo"><a href="/"><img src="/site-logo.png" alt="Blessed Smile Logo">Blessed Smile</a></div>
             <ul class="nav-links">
-                <li><a href="/public/index.html/#home">Home</a></li>
-                <li><a href="/public/index.html/#services">Services</a></li>
-                <li><a href="/public/index.html/#about">About</a></li>
-                <li><a href="/public/index.html/#team">Team</a></li>
+                <li><a href="/#home">Home</a></li>
+                <li><a href="/#services">Services</a></li>
+                <li><a href="/#about">About</a></li>
+                <li><a href="/#team">Team</a></li>
                 <!-- <li><a href="#contact">Contact</a></li> -->
                 <li class="dropdown desktop-only">
                     <a href="#" class="dropdown-toggle">Forms <i class="fas fa-chevron-down"></i></a>
@@ -37,10 +63,9 @@
                                 style="border: none; background:none; color: #333;">Sign out</button></li>
 
                 </li>
-                <li><button style="border: none; background:none; color: #333;">Patient Form</button></li>
+                <!-- <li><button style="border: none; background:none; color: #333;">Patient Form</button></li> -->
             </ul>
-            </li>
-            <li class="mobile-only"><button href="">Login</button></li>
+            <!-- <li class="mobile-only"><button href="">Login</button></li> -->
             <!-- <li class="mobile-only"><a href="patient-form.html">Patient Form</a></li>
                 <li class="mobile-only"><a href="existing-patient.html">Existing Patient</a></li> -->
             </ul>
@@ -59,7 +84,7 @@
                 <h1>Your Smile, Our Priority</h1>
                 <p>Experience modern dental care in a comfortable, welcoming environment. Our team of experts is
                     dedicated to giving you the brightest, healthiest smile possible.</p>
-                <a href="/patient-form.html" class="cta-button">Patient Form</a>
+                <!-- <a href="/patient-form.html" class="cta-button">Sign In</a> -->
             </div>
             <div class="hero-image">
 
@@ -174,8 +199,8 @@
                         <i class="fas fa-user-md"></i>
                     </div>
                     <div class="team-info">
-                        <h3>Dr. Sarah Johnson</h3>
-                        <p>Lead Dentist</p>
+                        <h3>Dr. Ronnie Felipe</h3>
+                        <p>Dentist</p>
                     </div>
                 </div>
                 <div class="team-card fade-in">
@@ -183,26 +208,8 @@
                         <i class="fas fa-user-md"></i>
                     </div>
                     <div class="team-info">
-                        <h3>Dr. Michael Chen</h3>
-                        <p>Orthodontist</p>
-                    </div>
-                </div>
-                <div class="team-card fade-in">
-                    <div class="team-avatar">
-                        <i class="fas fa-user-nurse"></i>
-                    </div>
-                    <div class="team-info">
-                        <h3>Emily Rodriguez</h3>
-                        <p>Dental Hygienist</p>
-                    </div>
-                </div>
-                <div class="team-card fade-in">
-                    <div class="team-avatar">
-                        <i class="fas fa-user-nurse"></i>
-                    </div>
-                    <div class="team-info">
-                        <h3>Lisa Thompson</h3>
-                        <p>Dental Assistant</p>
+                        <h3>Dr. Tin Felipe</h3>
+                        <p>Dentist</p>
                     </div>
                 </div>
             </div>
@@ -291,7 +298,9 @@
                 <!-- <a href="#contact">Contact</a> -->
             </div>
             <div class="social-links">
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a target="_blank"
+                    href="https://www.facebook.com/blessedsmiledentalclinicfairview?rdid=u7JmT3ez8FGCWOce&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F17Hp7ViPp6%2F#"><i
+                        class="fab fa-facebook-f"></i></a>
                 <a href="#"><i class="fab fa-twitter"></i></a>
                 <a href="#"><i class="fab fa-instagram"></i></a>
                 <a href="#"><i class="fab fa-linkedin-in"></i></a>
@@ -301,27 +310,6 @@
             </div>
         </div>
     </footer>
-
-    <!-- Login Modal Popup -->
-    <div id="loginModal" class="modal-overlay" style="display:none;">
-        <div class="modal-content">
-            <span class="close-modal" id="closeLoginModal">&times;</span>
-            <h2 class="modal-title">Login</h2>
-            <form id="loginFormPopup" autocomplete="off">
-                <div class="modal-group">
-                    <label for="loginEmail">Email</label>
-                    <input type="email" id="loginEmail" name="loginEmail" required placeholder="Enter your email">
-                </div>
-                <div class="modal-group">
-                    <label for="loginPassword">Password</label>
-                    <input type="password" id="loginPassword" name="loginPassword" required
-                        placeholder="Enter your password">
-                </div>
-                <button type="submit" class="modal-btn">Login</button>
-            </form>
-        </div>
-    </div>
-
 
 
     <script src="script.js"></script>

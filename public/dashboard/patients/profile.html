@@ -4,34 +4,1007 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Patients List</title>
+    <title>Patient Profile</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        @media (min-width: 1400px) {
+
+            .container,
+            .container-lg,
+            .container-md,
+            .container-sm,
+            .container-xl,
+            .container-xxl {
+                max-width: 1420px;
+            }
+        }
+
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+            min-height: 100vh;
+        }
+
+        .profile-card {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+            background: #fff;
+        }
+
+        .profile-header {
+            background: linear-gradient(90deg, #0D8ABC 0%, #4F8CFF 100%);
+            color: #fff;
+            padding: 2rem 1.5rem 1.5rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 4px solid #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .profile-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0;
+        }
+
+        .profile-body {
+            padding: 2rem 2.5rem;
+        }
+
+        .profile-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem 2rem;
+        }
+
+        .profile-info-item {
+            background: #f7faff;
+            border-radius: 10px;
+            padding: 1.2rem 1.5rem;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+            width: 100%;
+            min-width: 220px;
+            max-width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .profile-info-item h5 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-info-item p {
+            font-size: 1rem;
+            margin-bottom: 0;
+        }
+
+        .modal-content {
+            font-size: 1.15rem;
+        }
+
+        .modal-body label.form-label {
+            font-size: 1.18rem;
+        }
+
+        @media (max-width: 992px) {
+            .profile-info {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .profile-body {
+                padding: 1rem;
+            }
+
+            .profile-info {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 </head>
 
-<body style="height: 100%;" id="patients-profile">
-
-
-    <div class="container mt-5">
+<body id="patients-profile">
+    <div class="container py-3">
         <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card shadow">
-                    <div class="card-header bg-primary text-white d-flex align-items-center">
-                        <img src="https://ui-avatars.com/api/?name=Patient&background=0D8ABC&color=fff&size=48"
-                            class="rounded-circle me-3" alt="Avatar">
-                        <h3 class="mb-0">Patient Profile</h3>
+            <div class="col-lg-12">
+                <div class="row g-4">
+                    <div class="col-lg-5">
+                        <div class="profile-card h-100">
+                            <div class="profile-header d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <img src="https://ui-avatars.com/api/?name=Patient&background=0D8ABC&color=fff&size=80"
+                                        class="profile-avatar" alt="Avatar">
+                                    <div>
+                                        <h1 class="profile-title mb-0">Patient Profile</h1>
+                                    </div>
+                                </div>
+                                <button class="btn btn-light text-primary fw-bold" id="viewMedicalRecordBtn"
+                                    data-bs-toggle="modal" data-bs-target="#medicalRecordModal">View Medical
+                                    Record</button>
+                                <!-- Medical Record Modal -->
+                                <div class="modal fade" id="medicalRecordModal" tabindex="-1"
+                                    aria-labelledby="medicalRecordModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" style="max-width:80vw;">
+                                        <div class="modal-content"
+                                            style="height:80vh; border-radius: 20px; box-shadow: 0 8px 32px rgba(31,38,135,0.18);">
+                                            <div class="modal-header" style="border-bottom: 2px solid #0D8ABC;">
+                                                <h4 class="modal-title fw-bold text-primary"
+                                                    id="medicalRecordModalLabel" style="letter-spacing:1px;">
+                                                    MEDICAL-DENTAL HISTORY</h4>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body overflow-auto px-4 py-3">
+                                                <form id="medicalRecordForm">
+                                                    <div class="row g-4">
+                                                        <div class="col-md-6">
+                                                            <label class="form-label fw-bold">1. Are you presently under
+                                                                physician's care?</label>
+                                                            <div class="d-flex gap-3 mb-3">
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="radio"
+                                                                        name="physicianCare" id="physicianYes"
+                                                                        value="Yes">
+                                                                    <label class="form-check-label"
+                                                                        for="physicianYes">YES</label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="radio"
+                                                                        name="physicianCare" id="physicianNo"
+                                                                        value="No">
+                                                                    <label class="form-check-label"
+                                                                        for="physicianNo">NO</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label class="form-label fw-bold">2. Are you
+                                                                pregnant?</label>
+                                                            <div class="d-flex gap-3 mb-3">
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="radio"
+                                                                        name="pregnant" id="pregnantYes" value="Yes">
+                                                                    <label class="form-check-label"
+                                                                        for="pregnantYes">YES</label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="radio"
+                                                                        name="pregnant" id="pregnantNo" value="No">
+                                                                    <label class="form-check-label"
+                                                                        for="pregnantNo">NO</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label class="form-label fw-bold">3. Are you taking any
+                                                                medicine at present?</label>
+                                                            <div class="d-flex gap-3 mb-3">
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="radio"
+                                                                        name="medicine" id="medicineYes" value="Yes">
+                                                                    <label class="form-check-label"
+                                                                        for="medicineYes">YES</label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="radio"
+                                                                        name="medicine" id="medicineNo" value="No">
+                                                                    <label class="form-check-label"
+                                                                        for="medicineNo">NO</label>
+                                                                </div>
+                                                            </div>
+                                                            <div id="medicineDetailsField" class="mb-3"
+                                                                style="display:none;">
+                                                                <label for="medicineDetails" class="form-label">Please
+                                                                    specify the medicine:</label>
+                                                                <input type="text" class="form-control"
+                                                                    id="medicineDetails" name="medicineDetails"
+                                                                    placeholder="Enter medicine name(s)">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-12">
+                                                            <label class="form-label fw-bold">4. Have you ever
+                                                                had?</label>
+                                                            <div class="row g-2 mb-3">
+                                                                <div class="col-md-4">
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="checkbox"
+                                                                            name="history[]" id="highBP"
+                                                                            value="High Blood Pressure">
+                                                                        <label class="form-check-label"
+                                                                            for="highBP">High Blood Pressure</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="checkbox"
+                                                                            name="history[]" id="lowBP"
+                                                                            value="Low Blood Pressure">
+                                                                        <label class="form-check-label" for="lowBP">Low
+                                                                            Blood Pressure</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="checkbox"
+                                                                            name="history[]" id="asthma" value="Asthma">
+                                                                        <label class="form-check-label"
+                                                                            for="asthma">Asthma</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="checkbox"
+                                                                            name="history[]" id="lungDisease"
+                                                                            value="Lung Disease">
+                                                                        <label class="form-check-label"
+                                                                            for="lungDisease">Lung Disease</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="checkbox"
+                                                                            name="history[]" id="tuberculosis"
+                                                                            value="Tuberculosis">
+                                                                        <label class="form-check-label"
+                                                                            for="tuberculosis">Tuberculosis</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="checkbox"
+                                                                            name="history[]" id="thyroid"
+                                                                            value="Thyroid Problem">
+                                                                        <label class="form-check-label"
+                                                                            for="thyroid">Thyroid Problem</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="checkbox"
+                                                                            name="history[]" id="heartDisease"
+                                                                            value="Heart Disease">
+                                                                        <label class="form-check-label"
+                                                                            for="heartDisease">Heart Disease</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="checkbox"
+                                                                            name="history[]" id="diabetes"
+                                                                            value="Diabetes">
+                                                                        <label class="form-check-label"
+                                                                            for="diabetes">Diabetes</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="checkbox"
+                                                                            name="history[]" id="bleeding"
+                                                                            value="Bleeding Problems">
+                                                                        <label class="form-check-label"
+                                                                            for="bleeding">Bleeding Problems</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="checkbox"
+                                                                            name="history[]" id="aids"
+                                                                            value="AIDS or HIV Infection">
+                                                                        <label class="form-check-label" for="aids">AIDS
+                                                                            or HIV Infection</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="checkbox"
+                                                                            name="history[]" id="hepatitis"
+                                                                            value="Hepatitis">
+                                                                        <label class="form-check-label"
+                                                                            for="hepatitis">Hepatitis</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-check d-flex align-items-center">
+                                                                        <input class="form-check-input me-2"
+                                                                            type="checkbox" name="history[]" id="others"
+                                                                            value="Others">
+                                                                        <label class="form-check-label me-2"
+                                                                            for="others">Others:</label>
+                                                                        <input type="text"
+                                                                            class="form-control form-control-sm"
+                                                                            name="otherHistory" placeholder="Specify">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-12">
+                                                            <label class="form-label fw-bold">5. Have you ever had
+                                                                allergic reaction to?</label>
+                                                            <div class="row g-2 mb-3">
+                                                                <div class="col-md-6">
+                                                                    <label>a. Local Anesthesia</label>
+                                                                    <div class="d-flex gap-3">
+                                                                        <div class="form-check">
+                                                                            <input class="form-check-input" type="radio"
+                                                                                name="allergyAnesthesia"
+                                                                                id="anesthesiaYes" value="Yes">
+                                                                            <label class="form-check-label"
+                                                                                for="anesthesiaYes">YES</label>
+                                                                        </div>
+                                                                        <div class="form-check">
+                                                                            <input class="form-check-input" type="radio"
+                                                                                name="allergyAnesthesia"
+                                                                                id="anesthesiaNo" value="No">
+                                                                            <label class="form-check-label"
+                                                                                for="anesthesiaNo">NO</label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <label>b. Antibiotics</label>
+                                                                    <div class="d-flex gap-3">
+                                                                        <div class="form-check">
+                                                                            <input class="form-check-input" type="radio"
+                                                                                name="allergyAntibiotics"
+                                                                                id="antibioticsYes" value="Yes">
+                                                                            <label class="form-check-label"
+                                                                                for="antibioticsYes">YES</label>
+                                                                        </div>
+                                                                        <div class="form-check">
+                                                                            <input class="form-check-input" type="radio"
+                                                                                name="allergyAntibiotics"
+                                                                                id="antibioticsNo" value="No">
+                                                                            <label class="form-check-label"
+                                                                                for="antibioticsNo">NO</label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <label>c. Pain Killer</label>
+                                                                    <div class="d-flex gap-3">
+                                                                        <div class="form-check">
+                                                                            <input class="form-check-input" type="radio"
+                                                                                name="allergyPainKiller"
+                                                                                id="painKillerYes" value="Yes">
+                                                                            <label class="form-check-label"
+                                                                                for="painKillerYes">YES</label>
+                                                                        </div>
+                                                                        <div class="form-check">
+                                                                            <input class="form-check-input" type="radio"
+                                                                                name="allergyPainKiller"
+                                                                                id="painKillerNo" value="No">
+                                                                            <label class="form-check-label"
+                                                                                for="painKillerNo">NO</label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <label>d. Others</label>
+                                                                    <div class="d-flex gap-3">
+                                                                        <div class="form-check">
+                                                                            <input class="form-check-input" type="radio"
+                                                                                name="allergyOthers"
+                                                                                id="allergyOthersYes" value="Yes">
+                                                                            <label class="form-check-label"
+                                                                                for="allergyOthersYes">YES</label>
+                                                                        </div>
+                                                                        <div class="form-check">
+                                                                            <input class="form-check-input" type="radio"
+                                                                                name="allergyOthers"
+                                                                                id="allergyOthersNo" value="No">
+                                                                            <label class="form-check-label"
+                                                                                for="allergyOthersNo">NO</label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label class="form-label fw-bold">6. Have you been
+                                                                hospitalized?</label>
+                                                            <div class="d-flex gap-3 mb-3">
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="radio"
+                                                                        name="hospitalized" id="hospitalizedYes"
+                                                                        value="Yes">
+                                                                    <label class="form-check-label"
+                                                                        for="hospitalizedYes">YES</label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="radio"
+                                                                        name="hospitalized" id="hospitalizedNo"
+                                                                        value="No">
+                                                                    <label class="form-check-label"
+                                                                        for="hospitalizedNo">NO</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label class="form-label fw-bold">7. Have you worn any type
+                                                                of denture?</label>
+                                                            <div class="d-flex gap-3 mb-3">
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="radio"
+                                                                        name="denture" id="dentureYes" value="Yes">
+                                                                    <label class="form-check-label"
+                                                                        for="dentureYes">YES</label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="radio"
+                                                                        name="denture" id="dentureNo" value="No">
+                                                                    <label class="form-check-label"
+                                                                        for="dentureNo">NO</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="text-end mt-4">
+                                                        <button type="submit"
+                                                            class="btn btn-primary px-4 py-2">Save</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="profile-body" id="patientDetails">
+                                <!-- Patient details will be rendered here by JS -->
+                            </div>
+
+                        </div>
                     </div>
-                    <div class="card-body" id="patientDetails">
-                        <!-- Patient details will be rendered here by JS -->
+                    <div class="col-lg-7 ">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header bg-primary text-white">
+                                <h4 class="mb-0">Procedures / History</h4>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-striped mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Procedure Name</th>
+                                                <th>Doctor Name</th>
+                                                <th>Date</th>
+                                                <th>View</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="procedureHistory">
+                                            <!-- Procedure rows will be rendered here by JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div id="procedurePagination" class="mt-3">
+                                    <!-- Pagination controls will be rendered here by JS -->
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Procedures Modal -->
+                        <div class="modal fade" id="viewProcedureModal" tabindex="-1"
+                            aria-labelledby="viewProcedureModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content" style="min-width:900px;">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="viewProcedureModalLabel">Procedure Details</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form id="viewProcedureForm">
+                                            <div style="display: flex; gap: 24px; align-items: flex-start;">
+                                                <div style="flex: 1; min-width: 0;">
+                                                    <div class="mb-3">
+                                                        <label for="vp_patientName" class="form-label">Patient
+                                                            Name</label>
+                                                        <input type="text" class="form-control" id="vp_patientName"
+                                                            name="patientName" disabled>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="vp_procedure" class="form-label">Procedure</label>
+                                                        <input type="text" class="form-control" id="vp_procedure"
+                                                            name="procedure" disabled>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="vp_doctor" class="form-label">Doctor</label>
+                                                        <input type="text" class="form-control" id="vp_doctor"
+                                                            name="doctor" disabled>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="vp_date" class="form-label">Date</label>
+                                                        <input type="date" class="form-control" id="vp_date" name="date"
+                                                            disabled>
+                                                    </div>
+                                                </div>
+                                                <div style="flex: 1; min-width: 0;">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Teeth Treated</label>
+                                                        <div id="vp_teethGrid"
+                                                            style="background: white; padding: 12px; border-radius: 8px; border: 2px solid #0D8ABC; box-shadow: 0 2px 8px rgba(13,138,188,0.12);">
+                                                            <!-- Teeth checkboxes will be rendered here by JS -->
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <script src="/app.js" defer></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const patientDetails = document.getElementById("patientDetails");
+            const viewMedicalRecordBtn = document.getElementById("viewMedicalRecordBtn");
+            const urlParams = new URLSearchParams(window.location.search);
+            const patientId = urlParams.get("id");
+            let currentRecordDocId = null;
+            let isEditMode = false;
+            function setFormDisabled(disabled) {
+                const medicalRecordForm = document.getElementById("medicalRecordForm");
+                if (!medicalRecordForm) return;
+                Array.from(medicalRecordForm.elements).forEach(el => {
+                    if (el.tagName !== "BUTTON") el.disabled = disabled;
+                });
+                // Hide Save button if medical record exists
+                const saveBtn = medicalRecordForm.querySelector('button[type="submit"]');
+                if (saveBtn) {
+                    saveBtn.style.display = currentRecordDocId ? "none" : "inline-block";
+                    saveBtn.disabled = isEditMode;
+                }
+            }
+            function populateMedicalRecordForm(data) {
+                const form = document.getElementById("medicalRecordForm");
+                if (!form) return;
+                form.physicianCare && (form.physicianCare.value = data.physicianCare || "");
+                form.pregnant && (form.pregnant.value = data.pregnant || "");
+                form.medicine && (form.medicine.value = data.medicine || "");
+                // Show/hide and populate medicineDetails field
+                const medicineDetailsField = document.getElementById('medicineDetailsField');
+                const medicineDetailsInput = document.getElementById('medicineDetails');
+                if (data.medicine === 'Yes') {
+                    if (medicineDetailsField) medicineDetailsField.style.display = '';
+                    if (medicineDetailsInput) medicineDetailsInput.value = data.medicineDetails || '';
+                } else {
+                    if (medicineDetailsField) medicineDetailsField.style.display = 'none';
+                    if (medicineDetailsInput) medicineDetailsInput.value = '';
+                }
+                if (Array.isArray(data.history)) {
+                    Array.from(form.querySelectorAll('input[name="history[]"]')).forEach(cb => {
+                        cb.checked = data.history.includes(cb.value);
+                    });
+                }
+                form.otherHistory && (form.otherHistory.value = data.otherHistory || "");
+                form.allergyAnesthesia && (form.allergyAnesthesia.value = data.allergyAnesthesia || "");
+                form.allergyAntibiotics && (form.allergyAntibiotics.value = data.allergyAntibiotics || "");
+                form.allergyPainKiller && (form.allergyPainKiller.value = data.allergyPainKiller || "");
+                form.allergyOthers && (form.allergyOthers.value = data.allergyOthers || "");
+                form.hospitalized && (form.hospitalized.value = data.hospitalized || "");
+                form.denture && (form.denture.value = data.denture || "");
+            }
+            function showEditButton(show) {
+                let editBtn = document.getElementById("editMedicalRecordBtn");
+                if (!editBtn && show) {
+                    editBtn = document.createElement("button");
+                    editBtn.id = "editMedicalRecordBtn";
+                    editBtn.className = "btn btn-warning me-2";
+                    editBtn.textContent = "Edit";
+                    editBtn.type = "button";
+                    editBtn.onclick = function () {
+                        isEditMode = true;
+                        setFormDisabled(false);
+                        showUpdateButton(true);
+                        editBtn.style.display = "none";
+                    };
+                    document.querySelector("#medicalRecordForm .text-end").prepend(editBtn);
+                } else if (editBtn) {
+                    editBtn.style.display = show ? "inline-block" : "none";
+                }
+            }
+            function showUpdateButton(show) {
+                let updateBtn = document.getElementById("updateMedicalRecordBtn");
+                if (!updateBtn && show) {
+                    updateBtn = document.createElement("button");
+                    updateBtn.id = "updateMedicalRecordBtn";
+                    updateBtn.className = "btn btn-success me-2";
+                    updateBtn.textContent = "Update";
+                    updateBtn.type = "button";
+                    updateBtn.onclick = function () {
+                        const form = document.getElementById("medicalRecordForm");
+                        const formData = new FormData(form);
+                        const data = {
+                            patientId: patientId || null,
+                            physicianCare: formData.get("physicianCare"),
+                            pregnant: formData.get("pregnant"),
+                            medicine: formData.get("medicine"),
+                            history: formData.getAll("history[]"),
+                            otherHistory: formData.get("otherHistory"),
+                            allergyAnesthesia: formData.get("allergyAnesthesia"),
+                            allergyAntibiotics: formData.get("allergyAntibiotics"),
+                            allergyPainKiller: formData.get("allergyPainKiller"),
+                            allergyOthers: formData.get("allergyOthers"),
+                            hospitalized: formData.get("hospitalized"),
+                            denture: formData.get("denture")
+                        };
+                        if (window.patientRecordsCollection && currentRecordDocId) {
+                            window.patientRecordsCollection.doc(currentRecordDocId).update(data)
+                                .then(() => {
+                                    alert("Medical record updated successfully!");
+                                    isEditMode = false;
+                                    setFormDisabled(true);
+                                    showEditButton(true);
+                                    showUpdateButton(false);
+                                })
+                                .catch((error) => {
+                                    alert("Error updating medical record: " + error.message);
+                                });
+                        }
+                    };
+                    document.querySelector("#medicalRecordForm .text-end").prepend(updateBtn);
+                } else if (updateBtn) {
+                    updateBtn.style.display = show ? "inline-block" : "none";
+                }
+            }
+            if (document.getElementById("patientIdBadge")) {
+                document.getElementById("patientIdBadge").textContent = patientId || "N/A";
+            }
+            if (window.patientDetailsCollection) {
+                window.patientDetailsCollection
+                    .doc(patientId)
+                    .get()
+                    .then((doc) => {
+                        if (doc.exists) {
+                            const patient = doc.data();
+                            patientDetails.innerHTML = `
+                                <div class="profile-info">
+                                    <div class="profile-info-item">
+                                        <h5>First Name</h5>
+                                        <p>${patient.firstName || ''}</p>
+                                    </div>
+                                    <div class="profile-info-item">
+                                        <h5>Middle Name</h5>
+                                        <p>${patient.middleName || ''}</p>
+                                    </div>
+                                    <div class="profile-info-item">
+                                        <h5>Last Name</h5>
+                                        <p>${patient.lastName || ''}</p>
+                                    </div>
+                                    <div class="profile-info-item">
+                                        <h5>Gender</h5>
+                                        <p>${patient.sex || ''}</p>
+                                    </div>
+                                    <div class="profile-info-item">
+                                        <h5>Contact No.</h5>
+                                        <p>${patient.contactNo || ''}</p>
+                                    </div>
+                                    <div class="profile-info-item">
+                                        <h5>Email</h5>
+                                        <p>${patient.email || ''}</p>
+                                    </div>
+                                    <div class="profile-info-item">
+                                        <h5>Address</h5>
+                                        <p>${patient.address || ''}</p>
+                                    </div>
+                                    <div class="profile-info-item">
+                                        <h5>Birthday</h5>
+                                        <p>${patient.birthday || ''}</p>
+                                    </div>
+                                    <div class="profile-info-item">
+                                        <h5>Occupation</h5>
+                                        <p>${patient.occupation || ''}</p>
+                                    </div>
+                                    <div class="profile-info-item">
+                                        <h5>Civil Status</h5>
+                                        <p>${patient.civilStatus || ''}</p>
+                                    </div>
+                                </div>
+                            `;
+                        } else {
+                            patientDetails.innerHTML = "<div class='alert alert-warning'>Patient not found.</div>";
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error fetching patient details:", error);
+                        patientDetails.innerHTML = "<div class='alert alert-danger'>Error fetching patient details.</div>";
+                    });
+            } else {
+                patientDetails.innerHTML = "<div class='alert alert-danger'>Firestore not initialized.</div>";
+            }
 
-    <script src="/public/app.js" defer></script>
+            // Render procedure history for this patient
+            function renderProcedureHistory(pageSize = 15, startAfterDoc = null) {
+                const procedureHistory = document.getElementById("procedureHistory");
+                if (!procedureHistory) return;
+                procedureHistory.innerHTML = '<tr><td colspan="5">Loading...</td></tr>';
+                let query = window.proceduresCollection
+                    .where("patientId", "==", patientId)
+                    .orderBy("date", "desc")
+                    .limit(pageSize + 1); // Fetch one extra to check if next page exists
+                if (startAfterDoc) {
+                    query = query.startAfter(startAfterDoc);
+                }
+                query.get()
+                    .then(snapshot => {
+                        if (snapshot.empty) {
+                            procedureHistory.innerHTML = '<tr><td colspan="5">No procedures found.</td></tr>';
+                            document.getElementById('procedurePagination').innerHTML = '';
+                            return;
+                        }
+                        // Collect docs and sort by date descending (in case Firestore string dates)
+                        let docs = [];
+                        snapshot.forEach(doc => {
+                            docs.push({ id: doc.id, ...doc.data() });
+                        });
+                        docs.sort((a, b) => {
+                            if (a.date && b.date) {
+                                let da = new Date(a.date);
+                                let db = new Date(b.date);
+                                if (!isNaN(da) && !isNaN(db)) {
+                                    return db - da;
+                                }
+                                return b.date.localeCompare(a.date);
+                            }
+                            return 0;
+                        });
+                        let rows = '';
+                        let lastVisible = null;
+                        let count = 0;
+                        let hasNextPage = docs.length > pageSize;
+                        // Only display up to pageSize
+                        docs.slice(0, pageSize).forEach((p, idx) => {
+                            rows += `<tr>
+                                <td>${p.date || ''}</td>
+                                <td>${p.procedure || ''}</td>
+                                <td>${p.doctor || ''}</td>
+                                <td>${p.date || ''}</td>
+                                <td><button class="btn btn-outline-primary btn-sm view-procedure-btn" data-id="${p.id}">View</button></td>
+                            </tr>`;
+                            if (idx === pageSize - 1) lastVisible = snapshot.docs[idx];
+                            count++;
+                        });
+                        procedureHistory.innerHTML = rows;
+                        // Pagination controls (pill-style, with page info)
+                        let paginationHtml = '';
+                        // Calculate current page and total pages
+                        let currentPage = 1;
+                        let totalPages = 1;
+                        if (window._procedurePagination) {
+                            currentPage = window._procedurePagination.currentPage;
+                            totalPages = window._procedurePagination.totalPages;
+                        } else {
+                            // Estimate page from startAfterDoc and docs
+                            currentPage = startAfterDoc ? (window._procedurePagination ? window._procedurePagination.currentPage : 2) : 1;
+                            totalPages = Math.ceil((window._procedurePagination ? window._procedurePagination.totalDocs : (count + (hasNextPage ? 1 : 0))) / pageSize);
+                        }
+                        // Store pagination state globally for prev/next
+                        window._procedurePagination = window._procedurePagination || {};
+                        window._procedurePagination.currentPage = currentPage;
+                        window._procedurePagination.totalPages = totalPages;
+                        window._procedurePagination.lastVisible = lastVisible;
+                        window._procedurePagination.startAfterDoc = startAfterDoc;
+                        window._procedurePagination.pageSize = pageSize;
+                        window._procedurePagination.totalDocs = window._procedurePagination.totalDocs || (count + (hasNextPage ? 1 : 0));
+                        paginationHtml += `<nav aria-label="Procedure History pagination" class="mt-3">
+                                                    <ul class="pagination justify-content-center" style="gap: 8px;">`;
+                        paginationHtml += `<li class="page-item">
+                                                    <button class="page-link rounded-pill px-4" id="prevPageBtn">Prev</button>
+                                                </li>`;
+                        paginationHtml += `<li class="page-item disabled">
+                                                    <span class="page-link rounded-pill bg-primary text-white px-4" id="pageInfo">Page ${currentPage} of ${totalPages}</span>
+                                                </li>`;
+                        paginationHtml += `<li class="page-item">
+                                                    <button class="page-link rounded-pill px-4" id="nextPageBtn">Next</button>
+                                                </li>`;
+                        paginationHtml += `</ul></nav>`;
+                        document.getElementById('procedurePagination').innerHTML = paginationHtml;
+                        // Enable/disable buttons
+                        const prevBtn = document.getElementById('prevPageBtn');
+                        const nextBtn = document.getElementById('nextPageBtn');
+                        prevBtn.disabled = currentPage === 1;
+                        nextBtn.disabled = currentPage === totalPages;
+                        if (hasNextPage && nextBtn) {
+                            nextBtn.onclick = function () {
+                                window._procedurePagination.currentPage = currentPage + 1;
+                                renderProcedureHistory(pageSize, lastVisible);
+                            };
+                        }
+                        if (startAfterDoc && prevBtn) {
+                            prevBtn.onclick = function () {
+                                window._procedurePagination.currentPage = currentPage - 1;
+                                window.location.reload(); // Or implement a stack to track previous pages
+                            };
+                        }
+                    })
+                    .catch(error => {
+                        procedureHistory.innerHTML = `<tr><td colspan='5'>Error loading procedures: ${error.message}</td></tr>`;
+                        document.getElementById('procedurePagination').innerHTML = '';
+                    });
+            }
+            // Teeth grid rendering for modal
+            function renderTeethGrid(treatedTeeth = []) {
+                const teethNumbers = [
+                    "18", "17", "16", "15", "14", "13", "12", "11",
+                    "21", "22", "23", "24", "25", "26", "27", "28",
+                    "48", "47", "46", "45", "44", "43", "42", "41",
+                    "31", "32", "33", "34", "35", "36", "37", "38",
+                    "55", "54", "53", "52", "51",
+                    "61", "62", "63", "64", "65",
+                    "85", "84", "83", "82", "81",
+                    "71", "72", "73", "74", "75"
+                ];
+                let html = '<div style="display:flex; flex-wrap:wrap; gap:8px;">';
+                teethNumbers.forEach(num => {
+                    // Assign a color based on the tooth number for variety
+                    const colors = ["#0D8ABC", "#4F8CFF", "#F7B801", "#F25F5C", "#247BA0", "#70C1B3", "#B2DBBF", "#FF1654", "#43AA8B", "#9D4EDD"];
+                    const color = colors[parseInt(num, 10) % colors.length];
+                    html += `<label style="display:flex; flex-direction:column; align-items:center;">
+                        <i class="fa fa-tooth" style="color:${color}; font-size:20px;"></i>
+                        <span>${num}</span>
+                        <input type="checkbox" value="${num}" disabled ${treatedTeeth.includes(num) ? 'checked' : ''}
+                            style="accent-color:${color}; width:20px; height:20px; border-radius:6px;">
+                    </label>`;
+                });
+                html += '</div>';
+
+                html += '<div class="mb-3">';
+                html += '<label for="remarks" class="form-label">Remarks</label>';
+                html += `<textarea disabled class="form-control" id="remarks" name="remarks" rows="3"
+                    required></textarea>`;
+                html += '</div>';
+
+                return html;
+            }
+
+            // View procedure button logic
+            document.addEventListener('click', function (e) {
+                if (e.target.classList.contains('view-procedure-btn')) {
+                    const id = e.target.getAttribute('data-id');
+                    if (window.proceduresCollection && id) {
+                        window.proceduresCollection.doc(id).get().then(doc => {
+                            if (doc.exists) {
+                                const p = doc.data();
+                                document.getElementById('vp_patientName').value = p.patientName || '';
+                                document.getElementById('vp_procedure').value = p.procedure || '';
+                                document.getElementById('vp_doctor').value = p.doctor || '';
+                                document.getElementById('vp_date').value = p.date || '';
+                                document.getElementById('vp_teethGrid').innerHTML = renderTeethGrid(Array.isArray(p.treatedTeeth) ? p.treatedTeeth : []);
+                                document.getElementById('remarks').value = p.remarks || '';
+                                const modalEl = document.getElementById('viewProcedureModal');
+                                const modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                                modalInstance.show();
+                            }
+                        });
+                    }
+                }
+            });
+            // Add pagination container below the table
+            const table = document.querySelector('table.table-striped');
+            if (table && !document.getElementById('procedurePagination')) {
+                const paginationDiv = document.createElement('div');
+                paginationDiv.id = 'procedurePagination';
+                paginationDiv.className = 'mt-3';
+                table.parentNode.appendChild(paginationDiv);
+            }
+            renderProcedureHistory();
+
+            // ...existing code for medical record logic...
+            // Check if patient has a record in patientRecordsCollection
+            if (viewMedicalRecordBtn && window.patientRecordsCollection && patientId) {
+                window.patientRecordsCollection
+                    .where("patientId", "==", patientId)
+                    .limit(1)
+                    .get()
+                    .then((querySnapshot) => {
+                        if (querySnapshot.empty) {
+                            viewMedicalRecordBtn.textContent = "Add Medical Record";
+                            currentRecordDocId = null;
+                            isEditMode = false;
+                            setFormDisabled(false);
+                            showEditButton(false);
+                            showUpdateButton(false);
+                        } else {
+                            viewMedicalRecordBtn.textContent = "View Medical Record";
+                            const doc = querySnapshot.docs[0];
+                            currentRecordDocId = doc.id;
+                            populateMedicalRecordForm(doc.data());
+                            isEditMode = false;
+                            setFormDisabled(true);
+                            showEditButton(true);
+                            showUpdateButton(false);
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error checking patient record:", error);
+                    });
+            }
+            // Modal form submission
+            const medicalRecordForm = document.getElementById("medicalRecordForm");
+            if (medicalRecordForm && window.patientRecordsCollection) {
+                medicalRecordForm.addEventListener("submit", function (e) {
+                    e.preventDefault();
+                    // Gather form data
+                    const formData = new FormData(medicalRecordForm);
+                    const data = {
+                        patientId: patientId || null,
+                        physicianCare: formData.get("physicianCare"),
+                        pregnant: formData.get("pregnant"),
+                        medicine: formData.get("medicine"),
+                        medicineDetails: formData.get("medicineDetails"),
+                        history: formData.getAll("history[]"),
+                        otherHistory: formData.get("otherHistory"),
+                        allergyAnesthesia: formData.get("allergyAnesthesia"),
+                        allergyAntibiotics: formData.get("allergyAntibiotics"),
+                        allergyPainKiller: formData.get("allergyPainKiller"),
+                        allergyOthers: formData.get("allergyOthers"),
+                        hospitalized: formData.get("hospitalized"),
+                        denture: formData.get("denture")
+                    };
+                    if (currentRecordDocId && !isEditMode) {
+                        // Prevent submit if not in edit mode
+                        return;
+                    }
+                    window.patientRecordsCollection.add(data)
+                        .then(() => {
+                            alert("Medical record submitted successfully!");
+                            var modal = bootstrap.Modal.getInstance(document.getElementById('medicalRecordModal'));
+                            if (modal) modal.hide();
+                            medicalRecordForm.reset();
+                            viewMedicalRecordBtn.textContent = "View Medical Record";
+                            isEditMode = false;
+                            setFormDisabled(true);
+                            showEditButton(true);
+                            showUpdateButton(false);
+                            location.reload();
+                        })
+                        .catch((error) => {
+                            alert("Error submitting medical record: " + error.message);
+                        });
+                });
+            }
+            // Show/hide medicine details field based on selection
+            const medicineYes = document.getElementById('medicineYes');
+            const medicineNo = document.getElementById('medicineNo');
+            const medicineDetailsField = document.getElementById('medicineDetailsField');
+            function toggleMedicineDetails() {
+                if (medicineYes.checked) {
+                    medicineDetailsField.style.display = '';
+                } else {
+                    medicineDetailsField.style.display = 'none';
+                    document.getElementById('medicineDetails').value = '';
+                }
+            }
+            if (medicineYes && medicineNo && medicineDetailsField) {
+                medicineYes.addEventListener('change', toggleMedicineDetails);
+                medicineNo.addEventListener('change', toggleMedicineDetails);
+                // On page load, check initial state
+                toggleMedicineDetails();
+            }
+        });
+    </script>
 </body>
 
 </html>
