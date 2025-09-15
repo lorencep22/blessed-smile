@@ -1,0 +1,325 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prescription List</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        #prescriptionModal .modal-body .mb-2 div[style*='font-size:14px;'] {
+            line-height: 1.2;
+        }
+    </style>
+</head>
+
+<body style="height: 100%;" id="patients-page">
+
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Prescriptions </h2>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#prescriptionModal">
+                Add Prescription
+            </button>
+        </div>
+
+    </div>
+    <!-- Prescription Modal -->
+    <div class="modal fade" id="prescriptionModal" tabindex="-1" aria-labelledby="prescriptionModalLabel"
+        aria-hidden="true">
+        <!-- Close button fixed at top right of viewport -->
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+            style="position:fixed; top:32px; padding: 5px 10px 15px 10px; right:48px; z-index:1056; background:white; box-shadow:0 2px 8px rgba(0,0,0,0.08);">X</button>
+        <div class="modal-dialog modal-dialog-centered" style="max-width:700px;">
+            <div class="modal-content position-relative" style="padding:32px 24px; border-radius:20px;">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="mb-2">
+                                <div id="doctorContainer">
+                                    <div id="doctorRow" style="display: flex;"><input type="text" id="doctor"
+                                            class="form-control" placeholder="Doctor's Name"> <i class="fa fa-plus"
+                                            style="align-self: center; font-size: 1.3em; margin-left: 8px;"></i>
+                                    </div>
+                                </div>
+                                <span class="fw-bold">DENTISTRY</span>
+                                <div style="font-size:14px;">
+                                    General Dentistry, Prosthodontics, Endodontics, Surgery, Orthodontics<br>
+                                    Member, Philippine Dental Association<br>
+                                    Member, Quezon City Dental Chapter, Inc<br>
+                                    Member, Philippine Prosthodontic Society<br>
+                                    Member, Philippine Endodontic Society
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-4 text-end">
+                            <img src="/site-logo.png" alt="Blessed Smile Logo" style="width:120px; margin-bottom:4px;">
+                            <div class="fw-bold" style="margin-bottom:2px;">Blessed Smile<br><span
+                                    style="font-size:16px;">Dental Clinic</span></div>
+                            <div style="font-size:12px; margin-bottom:0;">EST. 2005</div>
+                        </div>
+                    </div>
+                    <div class="row mt-3 mb-2">
+                        <div class="col-8">
+                            <div class="mb-2" style="display: flex; gap: 5px;">
+                                <label for="patientName" class="form-label mb-1" style="font-weight: 500;">Patient's
+                                    Name: </label>
+                                <input class="form-control" type="text" name="" id="patientName" list="patientNames"
+                                    style="max-width: 220px; height: 28px; font-size: 0.95rem;">
+                            </div>
+                            <div class="mb-2" style="display: flex; gap: 5px;">
+                                <label for="patientAddress" class="form-label mb-1 " style="font-weight: 500;">Address:
+                                </label>
+                                <input class="form-control" type="text" name="" id="patientAddress"
+                                    style="max-width: 220px; height: 28px; font-size: 0.95rem;">
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="mb-2" style="display: flex; gap: 5px;">
+                                <label for="date" class="form-label mb-1" style="font-weight: 500;">Date:</label>
+                                <input class="form-control" type="date" name="" id="date"
+                                    style="height: 28px; font-size: 0.95rem;">
+                            </div>
+                            <div class="mb-2" style="display: flex; gap: 5px;">
+                                <label for="age" class="form-label mb-1" style="font-weight: 500;">Age:</label>
+                                <input class="form-control" type="text" name="" id="age"
+                                    style="max-width: 40px; text-align: center; height: 28px; font-size: 0.95rem;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="fs-1 fw-bold" style="font-family:serif;">Rx</div>
+                            <div style="display: flex; align-items: center; gap: 5px; padding: 0 50px;"
+                                id="rxContainer">
+                                <img src="/sig.png" alt="" style="width: 80px;">
+                                <textarea class="form-control mt-2" rows="2"
+                                    placeholder="Prescription details..."></textarea>
+                            </div>
+                            <div style="display: flex; justify-content: center; margin-top: 12px;"
+                                id="addPrescriptionContainer">
+                                <button class="btn btn-dark btn-sm px-3 py-1" style="font-size: 0.95rem;">Add
+                                    Prescription</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-5">
+                        <div id="doctorSignatureRow" class="row"></div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-12 text-center" style="font-size:15px;">
+                            <span class="fw-bold">Contact #:</span> 09209548773 / 09298031380<br>
+                            <span class="fw-bold">Email:</span> blessedsmiledentalclinic@gmail.com
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="  /app.js" defer></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Doctor row add/remove logic
+            function addDoctorRow() {
+                const container = document.getElementById('doctorContainer');
+                // Disable previous input and change icon to minus
+                const prevRows = container.querySelectorAll('.doctor-row');
+                if (prevRows.length > 0) {
+                    const lastRow = prevRows[prevRows.length - 1];
+                    const input = lastRow.querySelector('input');
+                    input.disabled = true;
+                    const icon = lastRow.querySelector('i');
+                    icon.classList.remove('fa-plus');
+                    icon.classList.add('fa-minus');
+                    icon.style.color = '#dc3545';
+                    icon.style.cursor = 'pointer';
+                    icon.onclick = function () {
+                        lastRow.remove();
+                    };
+                }
+                // Create new row
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'doctor-row';
+                rowDiv.style.display = 'flex';
+                // Input
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'form-control';
+                input.placeholder = "Doctor's Name";
+                input.id = '';
+                input.setAttribute('list', 'doctorNamesDatalist');
+                // Plus icon
+                const icon = document.createElement('i');
+                icon.className = 'fa fa-plus';
+                icon.style.alignSelf = 'center';
+                icon.style.fontSize = '1.3em';
+                icon.style.marginLeft = '8px';
+                icon.style.cursor = 'pointer';
+                icon.onclick = addDoctorRow;
+                rowDiv.appendChild(input);
+                rowDiv.appendChild(icon);
+                container.appendChild(rowDiv);
+            }
+            // Initial setup: replace static row with dynamic
+            const staticRow = document.getElementById('doctorRow');
+            if (staticRow) {
+                staticRow.parentNode.removeChild(staticRow);
+                addDoctorRow();
+            }
+            // Set date input to today when modal opens
+            const prescriptionModal = document.getElementById('prescriptionModal');
+            const dateInput = document.getElementById('date');
+            if (dateInput) {
+                prescriptionModal.addEventListener('shown.bs.modal', function () {
+                    const today = new Date();
+                    const yyyy = today.getFullYear();
+                    const mm = String(today.getMonth() + 1).padStart(2, '0');
+                    const dd = String(today.getDate()).padStart(2, '0');
+                    dateInput.value = `${yyyy}-${mm}-${dd}`;
+                });
+            }
+            const addBtn = document.querySelector('#addPrescriptionContainer .btn-dark.btn-sm');
+            const rxInputContainer = document.getElementById('rxContainer');
+            const rxColContainer = addBtn.closest('.col-12');
+            addBtn.addEventListener('click', function () {
+                // Find all prescription blocks
+                let prescBlocks = rxColContainer.querySelectorAll('.prescription-block');
+                // If none, wrap the first textarea
+                if (prescBlocks.length === 0) {
+                    const origBlock = document.createElement('div');
+                    origBlock.className = 'prescription-block';
+                    rxInputContainer.parentNode.insertBefore(origBlock, rxInputContainer);
+                    origBlock.appendChild(rxInputContainer);
+                    prescBlocks = rxColContainer.querySelectorAll('.prescription-block');
+                }
+                // Find last textarea in last block
+                const lastBlock = prescBlocks[prescBlocks.length - 1];
+                const textarea = lastBlock.querySelector('textarea');
+                if (textarea) {
+                    // Convert textarea to plain text, keep sig.png
+                    const value = textarea.value.trim();
+                    const blockDiv = document.createElement('div');
+                    blockDiv.style.display = 'flex';
+                    blockDiv.style.alignItems = 'center';
+                    blockDiv.style.gap = '5px';
+                    blockDiv.style.padding = '0 50px';
+                    // Signature image
+                    const sigImg = document.createElement('img');
+                    sigImg.src = '/sig.png';
+                    sigImg.alt = '';
+                    sigImg.style.width = '80px';
+                    blockDiv.appendChild(sigImg);
+                    // Plain text prescription
+                    const textDiv = document.createElement('div');
+                    textDiv.textContent = value;
+                    textDiv.className = 'form-control mb-2';
+                    textDiv.style.background = '#f8f9fa';
+                    textDiv.style.minHeight = '38px';
+                    textDiv.style.padding = '8px 12px';
+                    textDiv.style.border = '1px solid #dee2e6';
+                    textDiv.style.whiteSpace = 'pre-line';
+                    blockDiv.appendChild(textDiv);
+                    // Add X icon for removal
+                    const removeBtn = document.createElement('button');
+                    removeBtn.type = 'button';
+                    removeBtn.className = 'btn btn-link p-0 ms-2';
+                    removeBtn.innerHTML = '<i class="fa fa-times text-danger" style="font-size:1.2rem;"></i>';
+                    removeBtn.title = 'Remove prescription';
+                    removeBtn.onclick = function () {
+                        blockDiv.parentNode.remove();
+                    };
+                    blockDiv.appendChild(removeBtn);
+                    // Replace textarea's parent with blockDiv
+                    textarea.parentNode.replaceWith(blockDiv);
+                }
+                // Add new prescription block below
+                const newBlock = document.createElement('div');
+                newBlock.className = 'prescription-block';
+                // Create row with sig.png and textarea only
+                const rowDiv = document.createElement('div');
+                rowDiv.style.display = 'flex';
+                rowDiv.style.alignItems = 'center';
+                rowDiv.style.gap = '5px';
+                rowDiv.style.padding = '0 50px';
+                // Signature image
+                const sigImgNew = document.createElement('img');
+                sigImgNew.src = '/sig.png';
+                sigImgNew.alt = '';
+                sigImgNew.style.width = '80px';
+                rowDiv.appendChild(sigImgNew);
+                // Textarea
+                const newTextarea = document.createElement('textarea');
+                newTextarea.className = 'form-control mt-2';
+                newTextarea.rows = 2;
+                newTextarea.placeholder = 'Prescription details...';
+                rowDiv.appendChild(newTextarea);
+                newBlock.appendChild(rowDiv);
+                rxColContainer.insertBefore(newBlock, addBtn.parentNode);
+            });
+        });
+        // Helper to get license number from Firestore for a doctor name
+        async function getLicenseNoByName(name) {
+            // Normalize input for matching
+            const normalizedInput = name.trim().toLowerCase();
+            const snapshot = await window.doctorsCollection.get();
+            for (const doc of snapshot.docs) {
+                const data = doc.data();
+                // Remove Dr./Dra. and extra spaces from Firestore name
+                let firestoreName = (data.name || '').replace(/^(dr\.?|dra\.?|dr|dra|a\.)\s*/i, '').trim().toLowerCase();
+                if (firestoreName.includes(normalizedInput)) {
+                    return data.licenseNo || '';
+                }
+            }
+            return '';
+        }
+        // Render doctor signature row
+        function renderDoctorSignatureRow() {
+            const container = document.getElementById('doctorSignatureRow');
+            container.innerHTML = '';
+            const doctorRows = document.querySelectorAll('#doctorContainer .doctor-row input');
+            let count = 0;
+            for (const input of doctorRows) {
+                const name = input.value.trim();
+                if (!name) continue;
+                const colDiv = document.createElement('div');
+                colDiv.className = 'col-6 text-center';
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'fw-bold';
+                nameDiv.textContent = name;
+                const licDiv = document.createElement('div');
+                licDiv.style.fontSize = '13px';
+                licDiv.innerHTML = 'LICENSE NO.: <span class="doctor-license-loading">Loading...</span><br>PTR NO.';
+                colDiv.appendChild(nameDiv);
+                colDiv.appendChild(licDiv);
+                container.appendChild(colDiv);
+                count++;
+                // Fetch license asynchronously and update
+                getLicenseNoByName(name).then(licenseNo => {
+                    console.log('Fetched license for', name, ':', licenseNo);
+                    licDiv.innerHTML = licenseNo ? `LICENSE NO.: ${licenseNo}<br>PTR NO.` : 'PTR NO.';
+                });
+            }
+            // If no doctors, show nothing
+            if (count === 0) container.innerHTML = '';
+        }
+        // Listen for changes in doctor rows
+        const observer = new MutationObserver(() => {
+            renderDoctorSignatureRow();
+        });
+        observer.observe(document.getElementById('doctorContainer'), { childList: true, subtree: true });
+        document.getElementById('doctorContainer').addEventListener('input', function (e) {
+            if (e.target && e.target.tagName === 'INPUT') {
+                renderDoctorSignatureRow();
+            }
+        });
+    </script>
+
+</body>
+
+</html>

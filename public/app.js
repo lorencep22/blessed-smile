@@ -17,6 +17,7 @@ window.doctorsCollection = db.collection("doctors");
 window.patientDetailsCollection = db.collection("patientDetails");
 window.patientRecordsCollection = db.collection("patientRecords");
 window.proceduresCollection = db.collection("procedures");
+window.prescriptionsCollection = db.collection("prescriptions");
 
 const whenSignedIn = document.getElementById("whenSignedIn");
 const whenSignedOut = document.getElementById("whenSignedOut");
@@ -134,11 +135,19 @@ function generateDoctorNamesDatalist() {
         document.body.appendChild(datalist);
       }
       datalist.innerHTML = "";
+      // Check page title
+      const isPrescriptionList = document.title.trim() === "Prescription List";
       snapshot.forEach((doc) => {
         const d = doc.data();
-        const name = d.name || "";
+        let name = d.name || "";
         const status = d.status || "Active";
         if (name && status === "Active") {
+          if (isPrescriptionList) {
+            // Remove any prefix ending with a period and space (e.g., 'a. ', 'Dr. ', 'Dra. ')
+            name = name.replace(/^([A-Za-z]+\.)\s+/i, "");
+            // Also remove 'Dr', 'Dra' without period
+            name = name.replace(/^(Dr|Dra)\s+/i, "");
+          }
           const option = document.createElement("option");
           option.value = name;
           datalist.appendChild(option);
@@ -189,5 +198,22 @@ if (
 }
 if (document.getElementById("doctor")) {
   generateDoctorNamesDatalist();
-  document.getElementById("doctor").setAttribute("list", "doctorNamesDatalist");
+  const doctorInput = document.getElementById("doctor");
+  doctorInput.setAttribute("list", "doctorNamesDatalist");
+  // Show datalist again after comma for multiple names
+  doctorInput.addEventListener("input", function (e) {
+    const value = doctorInput.value;
+    const lastComma = value.lastIndexOf(",");
+    // If last character is comma, temporarily add a space to trigger datalist
+    if (lastComma === value.length - 1) {
+      doctorInput.value = value + " ";
+      setTimeout(() => {
+        doctorInput.value = value;
+        doctorInput.setAttribute("list", "doctorNamesDatalist");
+        doctorInput.focus();
+      }, 10);
+    } else {
+      doctorInput.setAttribute("list", "doctorNamesDatalist");
+    }
+  });
 }

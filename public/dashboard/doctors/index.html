@@ -31,28 +31,45 @@
                     </div>
                     <div class="modal-body" id="modalBody">
                         <form id="addDoctorForm">
-                            <div class="mb-3">
-                                <label for="doctorName" class="form-label">Name</label>
-                                <input type="text" class="form-control" id="doctorName" name="doctorName" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="doctorGender" class="form-label">Gender</label>
-                                <select class="form-select" id="doctorGender" name="doctorGender" required>
-                                    <option value="Male">Male</option>
-                                    <option value="Female">Female</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="doctorPosition" class="form-label">Position</label>
-                                <input type="text" class="form-control" id="doctorPosition" name="doctorPosition"
-                                    required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="doctorStatus" class="form-label">Status</label>
-                                <select class="form-select" id="doctorStatus" name="doctorStatus" required>
-                                    <option value="Active">Active</option>
-                                    <option value="Inactive">Inactive</option>
-                                </select>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="doctorName" class="form-label">Name</label>
+                                        <input type="text" class="form-control" id="doctorName" name="doctorName"
+                                            required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="doctorLicense" class="form-label">License No.</label>
+                                        <input type="text" class="form-control" id="doctorLicense" name="doctorLicense"
+                                            required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="doctorPtrNo" class="form-label">PTR No.</label>
+                                        <input type="text" class="form-control" id="doctorPtrNo" name="doctorPtrNo"
+                                            required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="doctorGender" class="form-label">Gender</label>
+                                        <select class="form-select" id="doctorGender" name="doctorGender" required>
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="doctorPosition" class="form-label">Position</label>
+                                        <input type="text" class="form-control" id="doctorPosition"
+                                            name="doctorPosition" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="doctorStatus" class="form-label">Status</label>
+                                        <select class="form-select" id="doctorStatus" name="doctorStatus" required>
+                                            <option value="Active">Active</option>
+                                            <option value="Inactive">Inactive</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                             <button type="submit" class="btn btn-primary w-100">Add Doctor</button>
                         </form>
@@ -84,6 +101,8 @@
                             <thead>
                                 <tr>
                                     <th>Name</th>
+                                    <th>License No.</th>
+                                    <th>PTR NO.</th>
                                     <th>Position</th>
                                     <th>Status</th>
                                     <th>Action</th>
@@ -96,6 +115,8 @@
                             const d = doctors[i];
                             html += `<tr>
                                 <td>${d.name || ''}</td>
+                                <td>${d.licenseNo || ''}</td>
+                                <td>${d.ptrNo || ''}</td>
                                 <td>${d.position || ''}</td>
                                 <td>${d.status || 'Active'}</td>
                                 <td><button class="btn btn-outline-primary btn-sm" onclick="editDoctor('${d.id}')">Edit</button></td>
@@ -146,11 +167,15 @@
                         });
                     }
                     const rawName = document.getElementById('doctorName').value.trim();
+                    const rawLicense = document.getElementById('doctorLicense').value.trim();
+                    const rawPtrNo = document.getElementById('doctorPtrNo').value.trim();
                     const gender = document.getElementById('doctorGender').value;
                     const pascalName = toPascalCase(rawName);
                     const prefix = gender === 'Female' ? 'Dra. ' : 'Dr. ';
                     const doctor = {
                         name: pascalName.startsWith(prefix) ? pascalName : prefix + pascalName,
+                        licenseNo: rawLicense,
+                        ptrNo: rawPtrNo,
                         gender: gender,
                         position: document.getElementById('doctorPosition').value,
                         status: document.getElementById('doctorStatus').value
@@ -193,9 +218,11 @@
                 const d = doc.data();
                 // Populate modal fields
                 document.getElementById('doctorName').value = d.name ? d.name.replace(/^Dr\.?\s*|^Dra\.?\s*/i, '') : '';
+                document.getElementById('doctorLicense').value = d.licenseNo || '';
                 document.getElementById('doctorGender').value = d.gender || 'Male';
                 document.getElementById('doctorPosition').value = d.position || '';
                 document.getElementById('doctorStatus').value = d.status || 'Active';
+                document.getElementById('doctorPtrNo').value = d.ptrNo || '';
                 // Show Update button, hide Add button
                 let addBtn = document.querySelector('#addDoctorForm button[type="submit"]');
                 let updateBtn = document.getElementById('updateDoctorBtn');
@@ -217,6 +244,8 @@
                         const prefix = gender === 'Female' ? 'Dra. ' : 'Dr. ';
                         const updatedDoctor = {
                             name: pascalName.startsWith(prefix) ? pascalName : prefix + pascalName,
+                            licenseNo: document.getElementById('doctorLicense').value.trim(),
+                            ptrNo: document.getElementById('doctorPtrNo').value.trim(),
                             gender: gender,
                             position: document.getElementById('doctorPosition').value,
                             status: document.getElementById('doctorStatus').value
