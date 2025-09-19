@@ -28,65 +28,6 @@
             -moz-appearance: textfield;
         }
     </style>
-    <style>
-        .tooth-surface-checkboxes {
-            position: relative;
-            width: 55px;
-            height: 55px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            border: 2px solid #222;
-            background: #fff;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
-        }
-
-        .surface-checkbox {
-            position: absolute;
-            margin: 0;
-            width: 16px;
-            height: 16px;
-            accent-color: #2563eb;
-            background: #f4f6fa;
-            border-radius: 3px;
-            border: 1px solid #b4b4d8;
-            cursor: pointer;
-            z-index: 2;
-        }
-
-        .surface-top {
-            top: 4px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .surface-bottom {
-            bottom: 4px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .surface-left {
-            left: 4px;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-
-        .surface-right {
-            right: 4px;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-
-        .surface-center {
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 3;
-        }
-    </style>
 </head>
 
 <body style="height: 100%;" id="patients-page">
@@ -224,53 +165,308 @@
                             <div style="flex: 1; min-width: 0;">
                                 <div class="mb-3">
                                     <label class="form-label">Teeth Treated</label>
-                                    <div class="container text-center">
-                                        <div class="row">
-                                            <!-- Loop teeth 11 to 18 -->
-                                            <div class="col p-1">
-                                                <div class="d-flex justify-content-center align-items-center position-relative border rounded-circle"
-                                                    style="width: 50px; height: 50px;">
-                                                    <!-- Top -->
-                                                    <input type="checkbox"
-                                                        class="form-check-input position-absolute p-0 m-0"
-                                                        style="top: 2px; left: 50%; transform: translateX(-50%) scale(0.6);"
-                                                        title="Top">
-                                                    <!-- Left -->
-                                                    <input type="checkbox"
-                                                        class="form-check-input position-absolute p-0 m-0"
-                                                        style="left: 2px; top: 50%; transform: translateY(-50%) scale(0.6);"
-                                                        title="Left">
-                                                    <!-- Center -->
-                                                    <input type="checkbox"
-                                                        class="form-check-input position-absolute p-0 m-0"
-                                                        style="top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.6);"
-                                                        title="Center">
-                                                    <!-- Right -->
-                                                    <input type="checkbox"
-                                                        class="form-check-input position-absolute p-0 m-0"
-                                                        style="right: 2px; top: 50%; transform: translateY(-50%) scale(0.6);"
-                                                        title="Right">
-                                                    <!-- Bottom -->
-                                                    <input type="checkbox"
-                                                        class="form-check-input position-absolute p-0 m-0"
-                                                        style="bottom: 2px; left: 50%; transform: translateX(-50%) scale(0.6);"
-                                                        title="Bottom">
-                                                </div>
-                                                <small>11</small>
+                                    <div id="teethGrid"
+                                        style="background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e5e7eb;">
+                                        <div style="font-weight: 500; color: #2563eb; margin-bottom: 4px;">Permanent
+                                            Teeth</div>
+                                        <!-- Top row: 18-28 -->
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+                                            <!-- 18-11 -->
+                                            <div style="display: flex; gap: 8px;">
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>18</span><input
+                                                        type="checkbox" name="teeth[]" value="18"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>17</span><input
+                                                        type="checkbox" name="teeth[]" value="17"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>16</span><input
+                                                        type="checkbox" name="teeth[]" value="16"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>15</span><input
+                                                        type="checkbox" name="teeth[]" value="15"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>14</span><input
+                                                        type="checkbox" name="teeth[]" value="14"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>13</span><input
+                                                        type="checkbox" name="teeth[]" value="13"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>12</span><input
+                                                        type="checkbox" name="teeth[]" value="12"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>11</span><input
+                                                        type="checkbox" name="teeth[]" value="11"></label>
                                             </div>
-
-                                            <div class="col p-1">
-                                                <div class="d-flex justify-content-center align-items-center position-relative border rounded-circle"
-                                                    style="width: 50px; height: 50px;">
-                                                    <!-- checkboxes here same as above -->
-                                                </div>
-                                                <small>12</small>
+                                            <!-- 21-28 -->
+                                            <div style="display: flex; gap: 8px;">
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>21</span><input
+                                                        type="checkbox" name="teeth[]" value="21"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>22</span><input
+                                                        type="checkbox" name="teeth[]" value="22"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>23</span><input
+                                                        type="checkbox" name="teeth[]" value="23"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>24</span><input
+                                                        type="checkbox" name="teeth[]" value="24"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>25</span><input
+                                                        type="checkbox" name="teeth[]" value="25"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>26</span><input
+                                                        type="checkbox" name="teeth[]" value="26"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>27</span><input
+                                                        type="checkbox" name="teeth[]" value="27"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>28</span><input
+                                                        type="checkbox" name="teeth[]" value="28"></label>
                                             </div>
-
-                                            <!-- Repeat col for 13–18 -->
+                                        </div>
+                                        <!-- Second row: 48-41, 31-38 -->
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+                                            <!-- 48-41 -->
+                                            <div style="display: flex; gap: 8px;">
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>48</span><input
+                                                        type="checkbox" name="teeth[]" value="48"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>47</span><input
+                                                        type="checkbox" name="teeth[]" value="47"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>46</span><input
+                                                        type="checkbox" name="teeth[]" value="46"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>45</span><input
+                                                        type="checkbox" name="teeth[]" value="45"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>44</span><input
+                                                        type="checkbox" name="teeth[]" value="44"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>43</span><input
+                                                        type="checkbox" name="teeth[]" value="43"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>42</span><input
+                                                        type="checkbox" name="teeth[]" value="42"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>41</span><input
+                                                        type="checkbox" name="teeth[]" value="41"></label>
+                                            </div>
+                                            <!-- 31-38 -->
+                                            <div style="display: flex; gap: 8px;">
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>31</span><input
+                                                        type="checkbox" name="teeth[]" value="31"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>32</span><input
+                                                        type="checkbox" name="teeth[]" value="32"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>33</span><input
+                                                        type="checkbox" name="teeth[]" value="33"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>34</span><input
+                                                        type="checkbox" name="teeth[]" value="34"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>35</span><input
+                                                        type="checkbox" name="teeth[]" value="35"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>36</span><input
+                                                        type="checkbox" name="teeth[]" value="36"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>37</span><input
+                                                        type="checkbox" name="teeth[]" value="37"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>38</span><input
+                                                        type="checkbox" name="teeth[]" value="38"></label>
+                                            </div>
+                                        </div>
+                                        <!-- Primary teeth rows: 55-51, 61-65, 85-81, 71-75 -->
+                                        <div style="font-weight: 500; color: #2563eb; margin: 8px 0 4px 0;">Primary
+                                            Teeth</div>
+                                        <div style="display: flex; justify-content: space-around; margin-bottom: 2px;">
+                                            <!-- 55-51 -->
+                                            <div style="display: flex; gap: 8px;">
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>55</span><input
+                                                        type="checkbox" name="teeth[]" value="55"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>54</span><input
+                                                        type="checkbox" name="teeth[]" value="54"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>53</span><input
+                                                        type="checkbox" name="teeth[]" value="53"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>52</span><input
+                                                        type="checkbox" name="teeth[]" value="52"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>51</span><input
+                                                        type="checkbox" name="teeth[]" value="51"></label>
+                                            </div>
+                                            <!-- 61-65 -->
+                                            <div style="display: flex; gap: 8px;">
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>61</span><input
+                                                        type="checkbox" name="teeth[]" value="61"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>62</span><input
+                                                        type="checkbox" name="teeth[]" value="62"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>63</span><input
+                                                        type="checkbox" name="teeth[]" value="63"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>64</span><input
+                                                        type="checkbox" name="teeth[]" value="64"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>65</span><input
+                                                        type="checkbox" name="teeth[]" value="65"></label>
+                                            </div>
+                                        </div>
+                                        <div style="display: flex; justify-content: space-around; margin-bottom: 2px;">
+                                            <!-- 85-81 -->
+                                            <div style="display: flex; gap: 8px;">
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>85</span><input
+                                                        type="checkbox" name="teeth[]" value="85"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>84</span><input
+                                                        type="checkbox" name="teeth[]" value="84"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>83</span><input
+                                                        type="checkbox" name="teeth[]" value="83"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>82</span><input
+                                                        type="checkbox" name="teeth[]" value="82"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>81</span><input
+                                                        type="checkbox" name="teeth[]" value="81"></label>
+                                            </div>
+                                            <!-- 71-75 -->
+                                            <div style="display: flex; gap: 8px;">
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>71</span><input
+                                                        type="checkbox" name="teeth[]" value="71"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>72</span><input
+                                                        type="checkbox" name="teeth[]" value="72"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>73</span><input
+                                                        type="checkbox" name="teeth[]" value="73"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>74</span><input
+                                                        type="checkbox" name="teeth[]" value="74"></label>
+                                                <label
+                                                    style="display:flex; flex-direction:column; align-items:center;"><i
+                                                        class="fa fa-tooth"
+                                                        style="color:#b4b4d8; font-size:20px;"></i><span>75</span><input
+                                                        type="checkbox" name="teeth[]" value="75"></label>
+                                            </div>
                                         </div>
                                     </div>
-
                                     <div class="col-12">
                                         <div class="form-group">
                                             <label for="procedureAmount">Amount</label>

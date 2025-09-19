@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Dashboard - Blessed Smile Dental Clinic</title>
+    <link rel="icon" href="/site-logo.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/styles.css">
     <!-- Firebase SDKs -->
@@ -134,48 +135,80 @@
             const prescriptionsIframe = document.getElementById('prescriptions-iframe');
             // Sidebar links
             const sidebarLinks = document.querySelectorAll('.sidebar .nav-link');
+
+            // Remove dashboardLastTab from localStorage on logout
+            const signoutBtn = document.getElementById('dashboard-signout');
+            if (signoutBtn) {
+                signoutBtn.addEventListener('click', function () {
+                    localStorage.removeItem('dashboardLastTab');
+                });
+            }
+
+            // Helper to show iframe by name
+            function showIframe(name) {
+                patientsIframe.style.display = 'none';
+                proceduresIframe.style.display = 'none';
+                doctorsIframe.style.display = 'none';
+                transactionsIframe.style.display = 'none';
+                prescriptionsIframe.style.display = 'none';
+                switch (name) {
+                    case 'Patients':
+                        patientsIframe.contentWindow.location.reload();
+                        setTimeout(() => { patientsIframe.style.display = 'block'; }, 200);
+                        break;
+                    case 'Procedures':
+                        proceduresIframe.contentWindow.location.reload();
+                        setTimeout(() => { proceduresIframe.style.display = 'block'; }, 200);
+                        break;
+                    case 'Doctors':
+                        doctorsIframe.contentWindow.location.reload();
+                        setTimeout(() => { doctorsIframe.style.display = 'block'; }, 200);
+                        break;
+                    case 'Transactions':
+                        transactionsIframe.contentWindow.location.reload();
+                        setTimeout(() => { transactionsIframe.style.display = 'block'; }, 200);
+                        break;
+                    case 'Prescriptions':
+                        prescriptionsIframe.contentWindow.location.reload();
+                        setTimeout(() => { prescriptionsIframe.style.display = 'block'; }, 200);
+                        break;
+                }
+            }
+
+            // Restore last opened tab from localStorage
+            let lastTab = localStorage.getItem('dashboardLastTab');
+            let foundTab = false;
+            if (lastTab) {
+                sidebarLinks.forEach(l => {
+                    if (l.textContent.includes(lastTab)) {
+                        sidebarLinks.forEach(link => link.classList.remove('active'));
+                        l.classList.add('active');
+                        showIframe(lastTab);
+                        foundTab = true;
+                    }
+                });
+            }
+            if (!foundTab) {
+                // Default to Patients
+                sidebarLinks.forEach(link => link.classList.remove('active'));
+                sidebarLinks[0].classList.add('active');
+                showIframe('Patients');
+            }
+
             sidebarLinks.forEach(link => {
                 link.addEventListener('click', function (e) {
                     e.preventDefault();
-                    // If already active, do nothing
-                    // if (this.classList.contains('active')) return;
                     sidebarLinks.forEach(l => l.classList.remove('active'));
                     this.classList.add('active');
-                    // Hide all iframes
-                    patientsIframe.style.display = 'none';
-                    proceduresIframe.style.display = 'none';
-                    doctorsIframe.style.display = 'none';
-                    transactionsIframe.style.display = 'none';
-                    prescriptionsIframe.style.display = 'none';
-                    // Reload and show corresponding iframe
-                    if (this.textContent.includes('Patients')) {
-                        patientsIframe.contentWindow.location.reload();
-                        setTimeout(() => {
-                            patientsIframe.style.display = 'block';
-                        }, 200);
-                    } else if (this.textContent.includes('Procedures')) {
-                        proceduresIframe.contentWindow.location.reload();
-                        setTimeout(() => {
-                            proceduresIframe.style.display = 'block';
-                        }, 200);
-                    } else if (this.textContent.includes('Doctors')) {
-                        doctorsIframe.contentWindow.location.reload();
-                        setTimeout(() => {
-                            doctorsIframe.style.display = 'block';
-                        }, 200);
-                    }
-                    else if (this.textContent.includes('Transactions')) {
-                        transactionsIframe.contentWindow.location.reload();
-                        setTimeout(() => {
-                            transactionsIframe.style.display = 'block';
-                        }, 200);
-                    }
-                    else if (this.textContent.includes('Prescriptions')) {
-                        prescriptionsIframe.contentWindow.location.reload();
-                        setTimeout(() => {
-                            prescriptionsIframe.style.display = 'block';
-                        }, 200);
-                    }
+                    // Store last opened tab in localStorage
+                    let tabName = '';
+                    if (this.textContent.includes('Patients')) tabName = 'Patients';
+                    else if (this.textContent.includes('Procedures')) tabName = 'Procedures';
+                    else if (this.textContent.includes('Doctors')) tabName = 'Doctors';
+                    else if (this.textContent.includes('Transactions')) tabName = 'Transactions';
+                    else if (this.textContent.includes('Prescriptions')) tabName = 'Prescriptions';
+                    localStorage.setItem('dashboardLastTab', tabName);
+                    showIframe(tabName);
                 });
             });
         });

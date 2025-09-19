@@ -1,6 +1,10 @@
 <html lang="en">
 
 <head>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <!-- jsPDF and jsPDF-AutoTable for PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prescription List</title>
@@ -22,108 +26,523 @@
     <div class="container mt-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>Prescriptions </h2>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#prescriptionModal">
-                Add Prescription
+            <button type="button" class="btn btn-primary" id="printPrescriptionBtn">
+                Print Prescription
+            </button>
+            <button type="button" class="btn btn-primary" id="printCertificateBtn" style="display:none;">
+                Print Certificate
             </button>
         </div>
-
     </div>
-    <!-- Prescription Modal -->
-    <div class="modal fade" id="prescriptionModal" tabindex="-1" aria-labelledby="prescriptionModalLabel"
-        aria-hidden="true">
-        <!-- Close button fixed at top right of viewport -->
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-            style="position:fixed; top:32px; padding: 5px 10px 15px 10px; right:48px; z-index:1056; background:white; box-shadow:0 2px 8px rgba(0,0,0,0.08);">X</button>
-        <div class="modal-dialog modal-dialog-centered" style="max-width:700px;">
-            <div class="modal-content position-relative" style="padding:32px 24px; border-radius:20px;">
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-8">
-                            <div class="mb-2">
-                                <div id="doctorContainer">
-                                    <div id="doctorRow" style="display: flex;"><input type="text" id="doctor"
-                                            class="form-control" placeholder="Doctor's Name"> <i class="fa fa-plus"
-                                            style="align-self: center; font-size: 1.3em; margin-left: 8px;"></i>
+    <!-- tabs -->
+    <div class="container">
+        <ul class="nav nav-tabs" id="prescriptionTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="all-prescriptions-tab" data-bs-toggle="tab"
+                    data-bs-target="#all-prescriptions" type="button" role="tab" aria-controls="all-prescriptions"
+                    aria-selected="true">Dental Prescriptions</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="recent-prescriptions-tab" data-bs-toggle="tab"
+                    data-bs-target="#recent-prescriptions" type="button" role="tab" aria-controls="recent-prescriptions"
+                    aria-selected="false">Dental Certificate</button>
+            </li>
+        </ul>
+        <div class="tab-content mt-3" id="prescriptionTabsContent">
+            <div class="tab-pane fade show active" id="all-prescriptions" role="tabpanel"
+                aria-labelledby="all-prescriptions-tab">
+                <div id="allPrescriptionsList" class="mb-64">
+                    <div id="prescription" style="max-width:700px; margin: 0 auto;">
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="mb-2">
+                                    <div id="doctorContainer">
+                                        <!-- <div id="doctorRow" style="display: flex;">
+                                            <input type="text" id="doctor"
+                                                class="form-control" placeholder="Doctor's Name"> <i class="fa fa-plus"
+                                                style="align-self: center; font-size: 1.3em; margin-left: 8px;"></i>
+                                        </div> -->
+                                        <div>
+                                            <div class="col-7 text-left">
+                                                <div style="font-family:serif; font-size:1.3rem; font-weight:bold;">Kristine
+                                                    Mae
+                                                    Felipe,
+                                                    DMD</div>
+                                            </div>
+                                            <div class="col-7 text-left">
+                                                <div style="font-family:serif; font-size:1.3rem; font-weight:bold;">Ronald
+                                                    O.
+                                                    Felipe,
+                                                    DMD</div>
+                                            </div>
+                                        </div>
                                     </div>
+                                    <span class="fw-bold">DENTISTRY</span>
+                                    <div style="font-size:14px;">
+                                        General Dentistry, Prosthodontics, Endodontics, Surgery, Orthodontics<br>
+                                        Member, Philippine Dental Association<br>
+                                        Member, Quezon City Dental Chapter, Inc<br>
+                                        Member, Philippine Prosthodontic Society<br>
+                                        Member, Philippine Endodontic Society
+                                    </div>
+
                                 </div>
-                                <span class="fw-bold">DENTISTRY</span>
-                                <div style="font-size:14px;">
-                                    General Dentistry, Prosthodontics, Endodontics, Surgery, Orthodontics<br>
-                                    Member, Philippine Dental Association<br>
-                                    Member, Quezon City Dental Chapter, Inc<br>
-                                    Member, Philippine Prosthodontic Society<br>
-                                    Member, Philippine Endodontic Society
+                            </div>
+                            <div class="col-4 text-end">
+                                <img src="/site-logo.png" alt="Blessed Smile Logo"
+                                    style="width:120px; margin-bottom:4px;">
+                                <div class="fw-bold" style="margin-bottom:2px;">Blessed Smile<br><span
+                                        style="font-size:16px;">Dental
+                                        Clinic</span></div>
+                                <div style="font-size:12px; margin-bottom:0;">EST. 2005</div>
+                            </div>
+                        </div>
+                        <div class="row mt-3 mb-2">
+                            <div class="col-8">
+                                <div class="mb-2" style="display: flex; gap: 5px;">
+                                    <label for="patientName" class="form-label mb-1" style="font-weight: 500;">Patient's
+                                        Name: </label>
+                                    <input class="form-control" type="text" name="" id="patientName"
+                                        list="patientNamesDatalist"
+                                        style="max-width: 220px; height: 28px; font-size: 0.95rem;">
                                 </div>
+                                <div class="mb-2" style="display: flex; gap: 5px;">
+                                    <label for="patientAddress" class="form-label mb-1 "
+                                        style="font-weight: 500;">Address:
+                                    </label>
+                                    <input class="form-control" type="text" name="" id="patientAddress"
+                                        style="max-width: 220px; height: 28px; font-size: 0.95rem;">
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="mb-2" style="display: flex; gap: 5px;">
+                                    <label for="date" class="form-label mb-1" style="font-weight: 500;">Date:</label>
+                                    <input class="form-control" type="date" name="" id="date"
+                                        style="height: 28px; font-size: 0.95rem;">
+                                </div>
+                                <div class="mb-2" style="display: flex; gap: 5px;">
+                                    <label for="age" class="form-label mb-1" style="font-weight: 500;">Age:</label>
+                                    <input class="form-control" type="text" name="" id="age"
+                                        style="max-width: 50px; text-align: center; height: 28px; font-size: 0.95rem;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <div class="fs-1 fw-bold" style="font-family:serif;"><img src="/rx-logo.svg" alt=""
+                                        style="max-height: 50px;"></div>
+                                <div style="display: flex; align-items: center; gap: 5px; padding: 0 50px;"
+                                    id="rxContainer">
+                                    <img src="/sig.png" alt="" style="width: 80px;">
+                                    <textarea class="form-control mt-2" rows="2"
+                                        placeholder="Prescription details..."></textarea>
+                                </div>
+                                <div style="display: flex; justify-content: center; margin-top: 12px;"
+                                    id="addPrescriptionContainer">
+                                    <button class="btn btn-dark btn-sm px-3 py-1" style="font-size: 0.95rem;">Add
+                                        Prescription</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-5">
+                            <div id="doctorSignatureRow" class="row" style="justify-content:center;">
+                                <div class="col-6 text-center" style="margin-bottom: 18px;">
+                                    <div style="font-family:serif; font-size:1.3rem; font-weight:bold;">Kristine Mae
+                                        Felipe,
+                                        DMD</div>
+                                    <div style="font-size:13px;">LICENSE NO. : 47494<br>PTR NO.</div>
+                                </div>
+                                <div class="col-6 text-center">
+                                    <div style="font-family:serif; font-size:1.3rem; font-weight:bold;">Ronald O.
+                                        Felipe,
+                                        DMD</div>
+                                    <div style="font-size:13px;">LICENSE NO. : 46872<br>PTR NO.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-12 text-center" style="font-size:15px;  margin-bottom: 50px;">
+                                <span class="fw-bold">Contact #:</span> 09209548773 / 09298031380<br>
+                                <span class="fw-bold">Email:</span> blessedsmiledentalclinic@gmail.com
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="recent-prescriptions" role="tabpanel"
+                aria-labelledby="recent-prescriptions-tab">
+                <div id="certificateTemplate">
+                    <div id="certificate" style="max-width:700px; margin: 0 auto;">
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="mb-2">
+                                    <div>
+                                        <div class="col-7 text-left">
+                                            <div style="font-family:serif; font-size:1.3rem; font-weight:bold;">Kristine
+                                                Mae
+                                                Felipe,
+                                                DMD</div>
+                                        </div>
+                                        <div class="col-7 text-left">
+                                            <div style="font-family:serif; font-size:1.3rem; font-weight:bold;">Ronald
+                                                O.
+                                                Felipe,
+                                                DMD</div>
+                                        </div>
+                                    </div>
+                                    <span class="fw-bold">DENTISTRY</span>
+                                    <div style="font-size:14px;">
+                                        General Dentistry, Prosthodontics, Endodontics, Surgery, Orthodontics<br>
+                                        Member, Philippine Dental Association<br>
+                                        Member, Quezon City Dental Chapter, Inc<br>
+                                        Member, Philippine Prosthodontic Society<br>
+                                        Member, Philippine Endodontic Society
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-4 text-end">
+                                <img src="/site-logo.png" alt="Blessed Smile Logo"
+                                    style="width:120px; margin-bottom:4px;">
+                                <div class="fw-bold" style="margin-bottom:2px;">Blessed Smile<br><span
+                                        style="font-size:16px;">Dental
+                                        Clinic</span></div>
+                                <div style="font-size:12px; margin-bottom:0;">EST. 2005</div>
+                            </div>
+                        </div>
+                        <div class="row mt-3 mb-2">
+                            <div class="col-8">
+                                <div class="mb-2" style="display: flex; gap: 5px;">
+                                    <label for="certificatePatientName" class="form-label mb-1"
+                                        style="font-weight: 500;">Patient's
+                                        Name:</label>
+                                    <input class="form-control" type="text" name="" id="certificatePatientName"
+                                        list="patientNamesDatalist"
+                                        style="max-width: 220px; height: 28px; font-size: 0.95rem;">
+                                </div>
+                                <div class="mb-2" style="display: flex; gap: 5px;">
+                                    <label for="certificateAddress" class="form-label mb-1"
+                                        style="font-weight: 500;">Address:
+                                    </label>
+                                    <input class="form-control" type="text" name="" id="certificateAddress"
+                                        style="max-width: 220px; height: 28px; font-size: 0.95rem;">
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="mb-2" style="display: flex; gap: 5px;">
+                                    <label for="certificateDate" class="form-label mb-1"
+                                        style="font-weight: 500;">Date:</label>
+                                    <input class="form-control" type="date" name="" id="certificateDate"
+                                        style="height: 28px; font-size: 0.95rem;">
+                                </div>
+                                <div class="mb-2" style="display: flex; gap: 5px;">
+                                    <label for="certificateAge" class="form-label mb-1"
+                                        style="font-weight: 500;">Age:</label>
+                                    <input class="form-control" type="text" name="" id="certificateAge"
+                                        style="max-width: 50px; text-align: center; height: 28px; font-size: 0.95rem;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h1 class="text-center " style="font-size: 30px;">Dental Certificate</h1>
+
+                                <textarea class="form-control mt-2" rows="6" placeholder="Certificate details..."
+                                    style="width: 100%; min-height: 200px; font-size: 1.1rem; padding: 12px; box-sizing: border-box; line-height: 1.4;">This is to certify that [Patient Name], [Age] years old, residing at [Address], was examined and treated at Blessed Smile Dental Clinic on [Date]. The patient is advised to [rest/abstain from work/school/other instructions] for [number] days due to [reason/condition]. If you have any questions, please feel free to contact us.
+                                </textarea>
 
                             </div>
                         </div>
-                        <div class="col-4 text-end">
-                            <img src="/site-logo.png" alt="Blessed Smile Logo" style="width:120px; margin-bottom:4px;">
-                            <div class="fw-bold" style="margin-bottom:2px;">Blessed Smile<br><span
-                                    style="font-size:16px;">Dental Clinic</span></div>
-                            <div style="font-size:12px; margin-bottom:0;">EST. 2005</div>
-                        </div>
-                    </div>
-                    <div class="row mt-3 mb-2">
-                        <div class="col-8">
-                            <div class="mb-2" style="display: flex; gap: 5px;">
-                                <label for="patientName" class="form-label mb-1" style="font-weight: 500;">Patient's
-                                    Name: </label>
-                                <input class="form-control" type="text" name="" id="patientName" list="patientNames"
-                                    style="max-width: 220px; height: 28px; font-size: 0.95rem;">
-                            </div>
-                            <div class="mb-2" style="display: flex; gap: 5px;">
-                                <label for="patientAddress" class="form-label mb-1 " style="font-weight: 500;">Address:
-                                </label>
-                                <input class="form-control" type="text" name="" id="patientAddress"
-                                    style="max-width: 220px; height: 28px; font-size: 0.95rem;">
+                        <div class="row mt-5">
+                            <div id="doctorSignatureRow" class="row" style="justify-content:center;">
+                                <div class="col-6 text-center" style="margin-bottom: 18px;">
+                                    <div style="font-family:serif; font-size:1.3rem; font-weight:bold;">Kristine Mae
+                                        Felipe,
+                                        DMD</div>
+                                    <div style="font-size:13px;">LICENSE NO. : 47494<br>PTR NO.</div>
+                                </div>
+                                <div class="col-6 text-center">
+                                    <div style="font-family:serif; font-size:1.3rem; font-weight:bold;">Ronald O.
+                                        Felipe,
+                                        DMD</div>
+                                    <div style="font-size:13px;">LICENSE NO. : 46872<br>PTR NO.</div>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-4">
-                            <div class="mb-2" style="display: flex; gap: 5px;">
-                                <label for="date" class="form-label mb-1" style="font-weight: 500;">Date:</label>
-                                <input class="form-control" type="date" name="" id="date"
-                                    style="height: 28px; font-size: 0.95rem;">
+                        <div class="row mt-4">
+                            <div class="col-12 text-center" style="font-size:15px;  margin-bottom: 50px;">
+                                <span class="fw-bold">Contact #:</span> 09209548773 / 09298031380<br>
+                                <span class="fw-bold">Email:</span> blessedsmiledentalclinic@gmail.com
                             </div>
-                            <div class="mb-2" style="display: flex; gap: 5px;">
-                                <label for="age" class="form-label mb-1" style="font-weight: 500;">Age:</label>
-                                <input class="form-control" type="text" name="" id="age"
-                                    style="max-width: 40px; text-align: center; height: 28px; font-size: 0.95rem;">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <div class="fs-1 fw-bold" style="font-family:serif;">Rx</div>
-                            <div style="display: flex; align-items: center; gap: 5px; padding: 0 50px;"
-                                id="rxContainer">
-                                <img src="/sig.png" alt="" style="width: 80px;">
-                                <textarea class="form-control mt-2" rows="2"
-                                    placeholder="Prescription details..."></textarea>
-                            </div>
-                            <div style="display: flex; justify-content: center; margin-top: 12px;"
-                                id="addPrescriptionContainer">
-                                <button class="btn btn-dark btn-sm px-3 py-1" style="font-size: 0.95rem;">Add
-                                    Prescription</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mt-5">
-                        <div id="doctorSignatureRow" class="row"></div>
-                    </div>
-                    <div class="row mt-4">
-                        <div class="col-12 text-center" style="font-size:15px;">
-                            <span class="fw-bold">Contact #:</span> 09209548773 / 09298031380<br>
-                            <span class="fw-bold">Email:</span> blessedsmiledentalclinic@gmail.com
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="  /app.js" defer></script>
+
     <script>
+        // Show the correct print button based on active tab
+        document.addEventListener('DOMContentLoaded', function () {
+            var printPrescriptionBtn = document.getElementById('printPrescriptionBtn');
+            var printCertificateBtn = document.getElementById('printCertificateBtn');
+            var prescriptionTabs = document.getElementById('prescriptionTabs');
+            if (prescriptionTabs && printPrescriptionBtn && printCertificateBtn) {
+                prescriptionTabs.addEventListener('click', function (e) {
+                    var target = e.target;
+                    if (target && target.classList.contains('nav-link')) {
+                        if (target.id === 'all-prescriptions-tab') {
+                            printPrescriptionBtn.style.display = '';
+                            printCertificateBtn.style.display = 'none';
+                        } else if (target.id === 'recent-prescriptions-tab') {
+                            printPrescriptionBtn.style.display = 'none';
+                            printCertificateBtn.style.display = '';
+                        }
+                    }
+                });
+                // On load, ensure correct button is shown
+                var activeTab = prescriptionTabs.querySelector('.nav-link.active');
+                if (activeTab && activeTab.id === 'recent-prescriptions-tab') {
+                    printPrescriptionBtn.style.display = 'none';
+                    printCertificateBtn.style.display = '';
+                } else {
+                    printPrescriptionBtn.style.display = '';
+                    printCertificateBtn.style.display = 'none';
+                }
+            }
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            // Certificate live update logic
+            var certName = document.getElementById('certificatePatientName');
+            var certAddress = document.getElementById('certificateAddress');
+            var certAge = document.getElementById('certificateAge');
+            var certDate = document.getElementById('certificateDate');
+            var certTextarea = document.querySelector('#certificate textarea');
+
+            if (certTextarea && certName && certAddress && certAge && certDate) {
+                // Store the original template
+                var template = certTextarea.value;
+
+                function updateCertificateText() {
+                    var text = template;
+                    text = text.replace(/\[Patient Name\]/g, certName.value || '[Patient Name]');
+                    text = text.replace(/\[Address\]/g, certAddress.value || '[Address]');
+                    text = text.replace(/\[Age\]/g, certAge.value || '[Age]');
+                    text = text.replace(/\[Date\]/g, certDate.value || '[Date]');
+                    certTextarea.value = text;
+                }
+
+                // Listen for input changes
+                certName.addEventListener('input', updateCertificateText);
+                certAddress.addEventListener('input', updateCertificateText);
+                certAge.addEventListener('input', updateCertificateText);
+                certDate.addEventListener('input', updateCertificateText);
+
+                // Optionally, update on page load if fields are pre-filled
+                updateCertificateText();
+            }
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Set the date input to today
+            var dateInput = document.getElementById('date');
+            if (dateInput) {
+                var today = new Date();
+                var yyyy = today.getFullYear();
+                var mm = String(today.getMonth() + 1).padStart(2, '0');
+                var dd = String(today.getDate()).padStart(2, '0');
+                dateInput.value = yyyy + '-' + mm + '-' + dd;
+            }
+
+            // Print logic for prescription div (profile.html style)
+            document.getElementById('printPrescriptionBtn').addEventListener('click', function () {
+                var prescriptionDiv = document.getElementById('prescription');
+                var replaced = [];
+                // 1. Convert all input fields and textareas to plain text for print, but keep sig images
+                // For doctor names at the top, add a special class for bold/large style
+                var doctorRowSpans = [];
+                prescriptionDiv.querySelectorAll('#doctorContainer input').forEach(function (input) {
+                    var span = document.createElement('span');
+                    span.textContent = input.value;
+                    span.style.display = input.style.display;
+                    span.className = input.className + ' doctor-print-bold';
+                    span.style.cssText += input.style.cssText;
+                    input.parentNode.replaceChild(span, input);
+                    replaced.push({ original: input, replacement: span });
+                    doctorRowSpans.push(span);
+                });
+                // Other input fields (if any)
+                prescriptionDiv.querySelectorAll('input:not(#doctorContainer input)').forEach(function (input) {
+                    var span = document.createElement('span');
+                    span.textContent = input.value;
+                    span.style.display = input.style.display;
+                    span.className = input.className;
+                    span.style.cssText += input.style.cssText;
+                    input.parentNode.replaceChild(span, input);
+                    replaced.push({ original: input, replacement: span });
+                });
+                // Add style for doctor-print-bold (bold and larger)
+                var style = document.createElement('style');
+                style.id = 'doctor-print-bold-style';
+                style.textContent = '.doctor-print-bold { font-weight: bold !important; font-size: 1.15em !important; }';
+                document.head.appendChild(style);
+                prescriptionDiv.querySelectorAll('textarea').forEach(function (textarea) {
+                    var div = document.createElement('div');
+                    div.textContent = textarea.value;
+                    div.className = textarea.className;
+                    div.style.cssText = textarea.style.cssText;
+                    div.style.whiteSpace = 'pre-line';
+                    textarea.parentNode.replaceChild(div, textarea);
+                    replaced.push({ original: textarea, replacement: div });
+                });
+                // 2. Hide all X icons (remove buttons), plus icons (add doctor row), and minus icons (remove doctor row)
+                var removedX = [];
+                prescriptionDiv.querySelectorAll('button.btn-link').forEach(function (btn) {
+                    btn.style.display = 'none';
+                    removedX.push(btn);
+                });
+                // Hide all .fa-plus icons inside #prescription
+                var hiddenPlus = [];
+                prescriptionDiv.querySelectorAll('.fa-plus').forEach(function (plusIcon) {
+                    plusIcon.style.display = 'none';
+                    hiddenPlus.push(plusIcon);
+                });
+                // Hide all .fa-minus icons inside #prescription
+                var hiddenMinus = [];
+                prescriptionDiv.querySelectorAll('.fa-minus').forEach(function (minusIcon) {
+                    minusIcon.style.display = 'none';
+                    hiddenMinus.push(minusIcon);
+                });
+                // 3. Hide Add Prescription button
+                var addBtn = document.querySelector('#addPrescriptionContainer');
+                var addBtnDisplay = null;
+                if (addBtn) {
+                    addBtnDisplay = addBtn.style.display;
+                    addBtn.style.display = 'none';
+                }
+                // 4. Remove borders from prescription blocks
+                var borderRemoved = [];
+                prescriptionDiv.querySelectorAll('.form-control').forEach(function (el) {
+                    borderRemoved.push({ el: el, border: el.style.border, background: el.style.background });
+                    el.style.border = 'none';
+                    el.style.background = 'none';
+                });
+                // 5. Hide empty prescription fields (sig + empty text)
+                var hiddenEmpty = [];
+                prescriptionDiv.querySelectorAll('.prescription-block').forEach(function (block) {
+                    var textDiv = block.querySelector('.form-control');
+                    if (textDiv && !textDiv.textContent.trim()) {
+                        block.style.display = 'none';
+                        hiddenEmpty.push(block);
+                    }
+                });
+                // 6. Use html2canvas to render the actual HTML layout (WYSIWYG)
+                html2canvas(prescriptionDiv, { scale: 2 }).then(function (canvas) {
+                    var imgData = canvas.toDataURL('image/png');
+                    var jsPDFLib = window.jspdf ? window.jspdf.jsPDF : window.jsPDF;
+                    var pdf = new jsPDFLib({ unit: 'pt', format: 'a4' });
+                    var pageWidth = pdf.internal.pageSize.getWidth();
+                    var pageHeight = pdf.internal.pageSize.getHeight();
+                    // Calculate image dimensions to fit A4
+                    var imgWidth = pageWidth - 40;
+                    var imgHeight = canvas.height * imgWidth / canvas.width;
+                    var y = 20;
+                    if (imgHeight > pageHeight - 40) {
+                        imgHeight = pageHeight - 40;
+                        imgWidth = canvas.width * imgHeight / canvas.height;
+                    }
+                    pdf.addImage(imgData, 'PNG', 20, y, imgWidth, imgHeight);
+                    var patientName = document.getElementById('patientName') ? document.getElementById('patientName').value : '';
+                    var fileName = 'prescription-' + (patientName ? patientName.replace(/\s+/g, '_') : 'print') + '.pdf';
+                    pdf.save(fileName);
+                    // Restore original fields
+                    replaced.forEach(function (pair) {
+                        pair.replacement.parentNode.replaceChild(pair.original, pair.replacement);
+                    });
+                    removedX.forEach(function (btn) { btn.style.display = ''; });
+                    hiddenPlus.forEach(function (plusIcon) { plusIcon.style.display = ''; });
+                    hiddenMinus.forEach(function (minusIcon) { minusIcon.style.display = ''; });
+                    if (addBtn) addBtn.style.display = addBtnDisplay;
+                    borderRemoved.forEach(function (obj) {
+                        obj.el.style.border = obj.border;
+                        obj.el.style.background = obj.background;
+                    });
+                    hiddenEmpty.forEach(function (block) { block.style.display = ''; });
+                    // Remove the temporary style
+                    var tempStyle = document.getElementById('doctor-print-bold-style');
+                    if (tempStyle) tempStyle.remove();
+                });
+            });
+
+            // Print logic for certificate div (no borders, no icons)
+            document.getElementById('printCertificateBtn').addEventListener('click', function () {
+                var certificateDiv = document.getElementById('certificate');
+                var replaced = [];
+                // Convert all input fields to plain text
+                certificateDiv.querySelectorAll('input').forEach(function (input) {
+                    var span = document.createElement('span');
+                    span.textContent = input.value;
+                    span.style.display = input.style.display;
+                    span.className = input.className;
+                    span.style.cssText += input.style.cssText;
+                    input.parentNode.replaceChild(span, input);
+                    replaced.push({ original: input, replacement: span });
+                });
+                // Convert textarea to plain text
+                certificateDiv.querySelectorAll('textarea').forEach(function (textarea) {
+                    var div = document.createElement('div');
+                    div.textContent = textarea.value;
+                    div.className = textarea.className;
+                    div.style.cssText = textarea.style.cssText;
+                    div.style.whiteSpace = 'pre-line';
+                    textarea.parentNode.replaceChild(div, textarea);
+                    replaced.push({ original: textarea, replacement: div });
+                });
+                // Remove borders from form-control elements
+                var borderRemoved = [];
+                certificateDiv.querySelectorAll('.form-control').forEach(function (el) {
+                    borderRemoved.push({ el: el, border: el.style.border, background: el.style.background });
+                    el.style.border = 'none';
+                    el.style.background = 'none';
+                });
+                // Use html2canvas to render the actual HTML layout (WYSIWYG)
+                html2canvas(certificateDiv, { scale: 2 }).then(function (canvas) {
+                    var imgData = canvas.toDataURL('image/png');
+                    var jsPDFLib = window.jspdf ? window.jspdf.jsPDF : window.jsPDF;
+                    var pdf = new jsPDFLib({ unit: 'pt', format: 'a4' });
+                    var pageWidth = pdf.internal.pageSize.getWidth();
+                    var pageHeight = pdf.internal.pageSize.getHeight();
+                    // Calculate image dimensions to fit A4
+                    var imgWidth = pageWidth - 40;
+                    var imgHeight = canvas.height * imgWidth / canvas.width;
+                    var y = 20;
+                    if (imgHeight > pageHeight - 40) {
+                        imgHeight = pageHeight - 40;
+                        imgWidth = canvas.width * imgHeight / canvas.height;
+                    }
+                    pdf.addImage(imgData, 'PNG', 20, y, imgWidth, imgHeight);
+                    var patientName = document.getElementById('certificatePatientName') ? document.getElementById('certificatePatientName').value : '';
+                    var fileName = 'certificate-' + (patientName ? patientName.replace(/\s+/g, '_') : 'print') + '.pdf';
+                    pdf.save(fileName);
+                    // Restore original fields
+                    replaced.forEach(function (pair) {
+                        pair.replacement.parentNode.replaceChild(pair.original, pair.replacement);
+                    });
+                    borderRemoved.forEach(function (obj) {
+                        obj.el.style.border = obj.border;
+                        obj.el.style.background = obj.background;
+                    });
+                });
+            });
+        });
         document.addEventListener('DOMContentLoaded', function () {
             // Doctor row add/remove logic
             function addDoctorRow() {
@@ -172,18 +591,7 @@
                 staticRow.parentNode.removeChild(staticRow);
                 addDoctorRow();
             }
-            // Set date input to today when modal opens
-            const prescriptionModal = document.getElementById('prescriptionModal');
-            const dateInput = document.getElementById('date');
-            if (dateInput) {
-                prescriptionModal.addEventListener('shown.bs.modal', function () {
-                    const today = new Date();
-                    const yyyy = today.getFullYear();
-                    const mm = String(today.getMonth() + 1).padStart(2, '0');
-                    const dd = String(today.getDate()).padStart(2, '0');
-                    dateInput.value = `${yyyy}-${mm}-${dd}`;
-                });
-            }
+
             const addBtn = document.querySelector('#addPrescriptionContainer .btn-dark.btn-sm');
             const rxInputContainer = document.getElementById('rxContainer');
             const rxColContainer = addBtn.closest('.col-12');
@@ -263,61 +671,7 @@
                 rxColContainer.insertBefore(newBlock, addBtn.parentNode);
             });
         });
-        // Helper to get license number from Firestore for a doctor name
-        async function getLicenseNoByName(name) {
-            // Normalize input for matching
-            const normalizedInput = name.trim().toLowerCase();
-            const snapshot = await window.doctorsCollection.get();
-            for (const doc of snapshot.docs) {
-                const data = doc.data();
-                // Remove Dr./Dra. and extra spaces from Firestore name
-                let firestoreName = (data.name || '').replace(/^(dr\.?|dra\.?|dr|dra|a\.)\s*/i, '').trim().toLowerCase();
-                if (firestoreName.includes(normalizedInput)) {
-                    return data.licenseNo || '';
-                }
-            }
-            return '';
-        }
-        // Render doctor signature row
-        function renderDoctorSignatureRow() {
-            const container = document.getElementById('doctorSignatureRow');
-            container.innerHTML = '';
-            const doctorRows = document.querySelectorAll('#doctorContainer .doctor-row input');
-            let count = 0;
-            for (const input of doctorRows) {
-                const name = input.value.trim();
-                if (!name) continue;
-                const colDiv = document.createElement('div');
-                colDiv.className = 'col-6 text-center';
-                const nameDiv = document.createElement('div');
-                nameDiv.className = 'fw-bold';
-                nameDiv.textContent = name;
-                const licDiv = document.createElement('div');
-                licDiv.style.fontSize = '13px';
-                licDiv.innerHTML = 'LICENSE NO.: <span class="doctor-license-loading">Loading...</span><br>PTR NO.';
-                colDiv.appendChild(nameDiv);
-                colDiv.appendChild(licDiv);
-                container.appendChild(colDiv);
-                count++;
-                // Fetch license asynchronously and update
-                getLicenseNoByName(name).then(licenseNo => {
-                    console.log('Fetched license for', name, ':', licenseNo);
-                    licDiv.innerHTML = licenseNo ? `LICENSE NO.: ${licenseNo}<br>PTR NO.` : 'PTR NO.';
-                });
-            }
-            // If no doctors, show nothing
-            if (count === 0) container.innerHTML = '';
-        }
-        // Listen for changes in doctor rows
-        const observer = new MutationObserver(() => {
-            renderDoctorSignatureRow();
-        });
-        observer.observe(document.getElementById('doctorContainer'), { childList: true, subtree: true });
-        document.getElementById('doctorContainer').addEventListener('input', function (e) {
-            if (e.target && e.target.tagName === 'INPUT') {
-                renderDoctorSignatureRow();
-            }
-        });
+
     </script>
 
 </body>

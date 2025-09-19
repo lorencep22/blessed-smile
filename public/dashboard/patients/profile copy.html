@@ -578,220 +578,41 @@
     <script src="/app.js" defer></script>
     <!-- jsPDF and html2canvas for PDF export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <!-- jsPDF AutoTable -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            // Print procedure history table as PDF (with medical record)
+            // Print procedure history table as PDF
             document.getElementById('printProcedureHistoryBtn').addEventListener('click', function () {
-                // Gather patient info
-                const patientInfo = {};
-                try {
-                    const spans = document.querySelectorAll('#patientDetails span');
-                    patientInfo.firstName = spans[1]?.textContent?.trim() || '';
-                    patientInfo.middleName = spans[3]?.textContent?.trim() || '';
-                    patientInfo.lastName = spans[5]?.textContent?.trim() || '';
-                    patientInfo.gender = spans[7]?.textContent?.trim() || '';
-                    patientInfo.contactNo = spans[9]?.textContent?.trim() || '';
-                    patientInfo.email = spans[11]?.textContent?.trim() || '';
-                    patientInfo.address = spans[13]?.textContent?.trim() || '';
-                    patientInfo.birthday = spans[15]?.textContent?.trim() || '';
-                    patientInfo.occupation = spans[17]?.textContent?.trim() || '';
-                    patientInfo.civilStatus = spans[19]?.textContent?.trim() || '';
-                } catch (e) { }
-                const fullName = [patientInfo.firstName, patientInfo.middleName, patientInfo.lastName].filter(Boolean).join(' ');
-
-                // Gather procedure history table data (exclude 'View' column)
-                const tableRows = Array.from(document.querySelectorAll('#procedureHistory tr'));
-                const tableData = tableRows.map(row => {
-                    const cells = Array.from(row.querySelectorAll('td'));
-                    // Only take the first 3 columns: Procedure Name, Doctor Name, Date
-                    return cells.slice(0, 3).map(cell => cell.textContent.trim());
-                }).filter(row => row.length === 3); // Only data rows
-
-                // Fetch medical record (if any) and then generate PDF
-                if (window.patientRecordsCollection && window.location.search.includes('id=')) {
-                    const urlParams = new URLSearchParams(window.location.search);
-                    const patientId = urlParams.get('id');
-                    window.patientRecordsCollection.where('patientId', '==', patientId).limit(1).get().then(function (querySnapshot) {
-                        let medRecord = null;
-                        if (!querySnapshot.empty) {
-                            medRecord = querySnapshot.docs[0].data();
-                        }
-                        generatePDF(patientInfo, fullName, tableData, medRecord);
-                    }).catch(function () {
-                        generatePDF(patientInfo, fullName, tableData, null);
-                    });
-                } else {
-                    generatePDF(patientInfo, fullName, tableData, null);
-                }
-
-                function generatePDF(patientInfo, fullName, tableData, medRecord) {
-                    const pdf = new jspdf.jsPDF({ orientation: 'vertical', unit: 'pt', format: 'a4' });
-                    const logoImg = new Image();
-                    logoImg.src = '/site-logo.png';
-                    logoImg.onload = function () {
-                        const logoHeight = 32;
-                        const logoWidth = logoImg.width * (logoHeight / logoImg.height);
-                        pdf.addImage(logoImg, 'PNG', 40, 20, logoWidth, logoHeight);
-                        pdf.setFontSize(18);
-                        pdf.text('Blessed Smile Dental Clinic', 40 + logoWidth + 10, 40);
-                        // Two-column layout for profile and medical record
-                        pdf.setFontSize(12);
-                        let y = 65;
-                        let col1x = 40;
-                        let col2x = 380;
-                        let colWidth = 320;
-                        let lineHeight = 16;
-                        let yStart = y;
-                        // Patient Profile (left column)
-                        pdf.setFontSize(12);
-                        pdf.text('Patient Profile', col1x, y);
-                        pdf.setFontSize(10);
-                        let y1 = y + 18;
-                        let y2 = y + 18;
-                        pdf.text(`Name: ${fullName}`, col1x, y1); y1 += lineHeight;
-                        pdf.text(`Gender: ${patientInfo.gender || ''}`, col1x, y1); y1 += lineHeight;
-                        pdf.text(`Birthday: ${patientInfo.birthday || ''}`, col1x, y1); y1 += lineHeight;
-                        pdf.text(`Contact No.: ${patientInfo.contactNo || ''}`, col1x, y1); y1 += lineHeight;
-                        pdf.text(`Email: ${patientInfo.email || ''}`, col1x, y1); y1 += lineHeight;
-                        pdf.text(`Address: ${patientInfo.address || ''}`, col1x, y1); y1 += lineHeight;
-                        pdf.text(`Occupation: ${patientInfo.occupation || ''}`, col1x, y1); y1 += lineHeight;
-                        pdf.text(`Civil Status: ${patientInfo.civilStatus || ''}`, col1x, y1); y1 += lineHeight;
-
-                        // Medical-Dental History (right column)
-                        if (medRecord) {
-                            pdf.setFontSize(12);
-                            pdf.text('Medical-Dental History', col2x, y);
-                            pdf.setFontSize(10);
-                            const medFields = [
-                                { label: "Under Physician's Care", value: medRecord.physicianCare },
-                                { label: "Pregnant", value: medRecord.pregnant },
-                                { label: "Taking Medicine", value: medRecord.medicine },
-                                { label: "Medicine Details", value: medRecord.medicineDetails },
-                                { label: "History", value: Array.isArray(medRecord.history) ? medRecord.history.join(', ') : '' },
-                                { label: "Other History", value: medRecord.otherHistory },
-                                { label: "Allergy to Local Anesthesia", value: medRecord.allergyAnesthesia },
-                                { label: "Allergy to Antibiotics", value: medRecord.allergyAntibiotics },
-                                { label: "Allergy to Pain Killer", value: medRecord.allergyPainKiller },
-                                { label: "Allergy to Others", value: medRecord.allergyOthers },
-                                { label: "Hospitalized", value: medRecord.hospitalized },
-                                { label: "Worn Denture", value: medRecord.denture }
-                            ];
-                            medFields.forEach(f => {
-                                if (f.value) {
-                                    pdf.text(`${f.label}: ${f.value}`, col2x, y2); y2 += lineHeight;
-                                }
-                            });
-                        }
-                        // Find the max y for next section
-                        let yEnd = Math.max(y1, y2) + 10;
-
-                        // Procedure history table
-                        const headers = [[
-                            'Procedure Name',
-                            'Doctor Name',
-                            'Date'
-                        ]];
-                        pdf.autoTable({
-                            head: headers,
-                            body: tableData,
-                            startY: yEnd,
-                            styles: { fontSize: 10, cellPadding: 4 },
-                            headStyles: { fillColor: [244, 246, 248], textColor: 51 },
-                            margin: { left: 40, right: 40 },
-                            theme: 'grid',
-                        });
-
-                        // Save PDF and open in new tab
-                        const fileName = fullName ? `patient-profile-${fullName.replace(/\s+/g, '_')}.pdf` : 'patient-profile.pdf';
-                        const pdfBlob = pdf.output('blob');
-                        if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-                            window.navigator.msSaveOrOpenBlob(pdfBlob, fileName);
-                        } else {
-                            const blobUrl = URL.createObjectURL(pdfBlob);
-                            const a = document.createElement('a');
-                            a.href = blobUrl;
-                            a.download = fileName;
-                            document.body.appendChild(a);
-                            a.click();
-                            document.body.removeChild(a);
-                            window.open(blobUrl, '_blank');
-                            setTimeout(() => URL.revokeObjectURL(blobUrl), 5000);
-                        }
-                    };
-                    logoImg.onerror = function () {
-                        pdf.setFontSize(18);
-                        pdf.text('Blessed Smile Dental Clinic', 40, 40);
-                        pdf.setFontSize(12);
-                        let y = 65;
-                        pdf.text('Patient Profile', 40, y);
-                        y += 20;
-                        pdf.setFontSize(10);
-                        pdf.text(`Name: ${fullName}`, 40, y); y += 16;
-                        pdf.text(`Gender: ${patientInfo.gender || ''}`, 40, y); y += 16;
-                        pdf.text(`Birthday: ${patientInfo.birthday || ''}`, 40, y); y += 16;
-                        pdf.text(`Contact No.: ${patientInfo.contactNo || ''}`, 40, y); y += 16;
-                        pdf.text(`Email: ${patientInfo.email || ''}`, 40, y); y += 16;
-                        pdf.text(`Address: ${patientInfo.address || ''}`, 40, y); y += 16;
-                        pdf.text(`Occupation: ${patientInfo.occupation || ''}`, 40, y); y += 16;
-                        pdf.text(`Civil Status: ${patientInfo.civilStatus || ''}`, 40, y); y += 24;
-                        if (medRecord) {
-                            pdf.setFontSize(12);
-                            pdf.text('Medical-Dental History', 40, y); y += 18;
-                            pdf.setFontSize(10);
-                            const medFields = [
-                                { label: "Under Physician's Care", value: medRecord.physicianCare },
-                                { label: "Pregnant", value: medRecord.pregnant },
-                                { label: "Taking Medicine", value: medRecord.medicine },
-                                { label: "Medicine Details", value: medRecord.medicineDetails },
-                                { label: "History", value: Array.isArray(medRecord.history) ? medRecord.history.join(', ') : '' },
-                                { label: "Other History", value: medRecord.otherHistory },
-                                { label: "Allergy to Local Anesthesia", value: medRecord.allergyAnesthesia },
-                                { label: "Allergy to Antibiotics", value: medRecord.allergyAntibiotics },
-                                { label: "Allergy to Pain Killer", value: medRecord.allergyPainKiller },
-                                { label: "Allergy to Others", value: medRecord.allergyOthers },
-                                { label: "Hospitalized", value: medRecord.hospitalized },
-                                { label: "Worn Denture", value: medRecord.denture }
-                            ];
-                            medFields.forEach(f => {
-                                if (f.value) {
-                                    pdf.text(`${f.label}: ${f.value}`, 40, y); y += 14;
-                                }
-                            });
-                            y += 10;
-                        }
-                        const headers = [[
-                            'Procedure Name',
-                            'Doctor Name',
-                            'Date'
-                        ]];
-                        pdf.autoTable({
-                            head: headers,
-                            body: tableData,
-                            startY: y,
-                            styles: { fontSize: 10, cellPadding: 4 },
-                            headStyles: { fillColor: [244, 246, 248], textColor: 51 },
-                            margin: { left: 40, right: 40 },
-                            theme: 'grid',
-                        });
-                        const fileName = fullName ? `patient-profile-${fullName.replace(/\s+/g, '_')}.pdf` : 'patient-profile.pdf';
-                        const pdfBlob = pdf.output('blob');
-                        if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-                            window.navigator.msSaveOrOpenBlob(pdfBlob, fileName);
-                        } else {
-                            const blobUrl = URL.createObjectURL(pdfBlob);
-                            const a = document.createElement('a');
-                            a.href = blobUrl;
-                            a.download = fileName;
-                            document.body.appendChild(a);
-                            a.click();
-                            document.body.removeChild(a);
-                            window.open(blobUrl, '_blank');
-                            setTimeout(() => URL.revokeObjectURL(blobUrl), 5000);
-                        }
-                    };
-                }
+                // Print the whole main content area as PDF
+                const mainContent = document.querySelector('.container');
+                if (!mainContent) return;
+                html2canvas(mainContent, { scale: 2 }).then(canvas => {
+                    const imgData = canvas.toDataURL('image/png');
+                    const pdf = new window.jspdf.jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+                    const pageWidth = pdf.internal.pageSize.getWidth();
+                    const pageHeight = pdf.internal.pageSize.getHeight();
+                    // Fit image to page width
+                    let imgWidth = pageWidth - 40;
+                    let imgHeight = canvas.height * imgWidth / canvas.width;
+                    // If content is taller than one page, add pages
+                    let position = 20;
+                    pdf.addImage(imgData, 'PNG', 20, position, imgWidth, imgHeight);
+                    while (imgHeight + position > pageHeight) {
+                        position = position + pageHeight - 40;
+                        pdf.addPage();
+                        pdf.addImage(imgData, 'PNG', 20, 20, imgWidth, imgHeight);
+                    }
+                    // Get patient full name for file name
+                    let fullName = '';
+                    try {
+                        const firstName = document.querySelector('#patientDetails span:nth-child(2)')?.textContent?.trim() || '';
+                        const middleName = document.querySelector('#patientDetails span:nth-child(4)')?.textContent?.trim() || '';
+                        const lastName = document.querySelector('#patientDetails span:nth-child(6)')?.textContent?.trim() || '';
+                        fullName = [firstName, middleName, lastName].filter(Boolean).join('_');
+                    } catch (e) { fullName = ''; }
+                    const fileName = fullName ? `patient-profile-${fullName}.pdf` : 'patient-profile.pdf';
+                    pdf.save(fileName);
+                });
             });
             const patientDetails = document.getElementById("patientDetails");
             const viewMedicalRecordBtn = document.getElementById("viewMedicalRecordBtn");
@@ -878,7 +699,6 @@
                             medicine: formData.get("medicine"),
                             history: formData.getAll("history[]"),
                             otherHistory: formData.get("otherHistory"),
-                            medicineDetails: formData.get("medicineDetails"),
                             allergyAnesthesia: formData.get("allergyAnesthesia"),
                             allergyAntibiotics: formData.get("allergyAntibiotics"),
                             allergyPainKiller: formData.get("allergyPainKiller"),
