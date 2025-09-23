@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intraoral Examination</title>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        label,
+        .form-label,
+        .left-label,
+        .right-labels,
+        .vertical-label,
+        .input-group-text,
+        .legend,
+        .container,
+        .chart-wrapper,
+        .chart-row,
+        .form-control,
+        .form-select,
+        .btn,
+        .legend *,
+        .col-12,
+        .col,
+        .row,
+        .mb-3,
+        .mb-4,
+        .mb-2,
+        .mb-1,
+        .form-group,
+        .input-group,
+        .input-group-text,
+        .legend,
+        .legend *,
+        .text-center,
+        .text-light,
+        .text-dark,
+        .text-primary,
+        .text-secondary,
+        .text-success,
+        .text-danger,
+        .text-warning,
+        .text-info,
+        .text-muted,
+        .text-white,
+        .text-black {
+            color: #000 !important;
+        }
+
+        .chart-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h2 {
+            margin-bottom: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .chart-row {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .left-label {
+            width: 100px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .right-labels {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin-left: 8px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .vertical-label {
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            margin-left: 6px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        svg {
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+        }
+
+        .section {
+            fill: white;
+            stroke: black;
+            stroke-width: 1.2;
+            transition: fill 0.3s;
+        }
+
+        .active {
+            fill: red !important;
+        }
+    </style>
+</head>
+
+<body class="bg-gray text-light">
+    <div class="container my-4"
+        style="display: flex; flex-direction: row; gap: 60px; align-items: flex-start; flex-wrap: wrap;">
+        <div id="procedureFormContainer" style="flex: 1 1 350px; min-width: 320px; max-width: 380px;">
+            <h1 class="mb-4">Patient Procedure</h1>
+            <form id="addProcedureForm">
+                <div style="display: flex; gap: 24px; align-items: flex-start;">
+                    <div style="flex: 1; min-width: 0;">
+
+                        <div class="mb-2">
+                            <label for="procedure" class="form-label">Procedure</label>
+                            <select class="form-select" id="procedure" name="procedure" required>
+                                <option value="">Select Procedure</option>
+                                <optgroup label="Surgical Procedures">
+                                    <option>Frenectomy (lip or tongue tie release)</option>
+                                    <option>Biopsy of oral lesions</option>
+                                    <option>Cyst or tumor removal</option>
+                                    <option>Corrective jaw surgery (orthognathic surgery)</option>
+                                </optgroup>
+                                <optgroup label="Orthodontic Procedures">
+                                    <option>Braces (metal, ceramic, lingual)</option>
+                                    <option>Clear aligners (e.g., Invisalign)</option>
+                                    <option>Space maintainers (for children)</option>
+                                    <option>Retainers (post-braces)</option>
+                                    <option>Interceptive orthodontics (for early correction)</option>
+                                </optgroup>
+                                <optgroup label="Cosmetic Dentistry">
+                                    <option>Teeth whitening (in-office or take-home)</option>
+                                    <option>Veneers (porcelain or composite)</option>
+                                    <option>Smile makeovers</option>
+                                    <option>Gum contouring (reshaping gum line)</option>
+                                    <option>Composite bonding for aesthetic improvement</option>
+                                </optgroup>
+                                <optgroup label="Prosthodontics / Full Mouth Rehabilitation">
+                                    <option>Full-mouth reconstructions</option>
+                                    <option>Implant-supported dentures or bridges</option>
+                                    <option>Occlusal adjustments and bite rehabilitation</option>
+                                </optgroup>
+                                <optgroup label="Emergency Dental Care">
+                                    <option>Treatment for dental trauma (fractured or knocked-out teeth)
+                                    </option>
+                                    <option>Pain management (infections, abscesses)</option>
+                                    <option>Temporary restorations</option>
+                                    <option>Draining oral infections or abscesses</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <div class="mb-2">
+                            <label for="doctor" class="form-label">Doctor</label>
+                            <input itemid="doctorList" type="text" class="form-control" id="doctor" name="doctor"
+                                required list="doctorNamesDatalist">
+                        </div>
+                        <div class="mb-2">
+                            <label for="date" class="form-label">Date</label>
+                            <input type="date" class="form-control" id="date" name="date" required max="">
+
+                        </div>
+                        <div class="mb-2">
+                            <label for="remarks" class="form-label">Remarks</label>
+                            <textarea class="form-control" id="remarks" name="remarks" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-2">
+
+
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="procedureAmount">Amount</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text" id="peso-addon"><i
+                                                class="fa fa-peso-sign"></i></span>
+                                        <input type="number" class="form-control" id="procedureAmount" required
+                                            placeholder="Enter amount" min="1" aria-describedby="peso-addon">
+                                    </div>
+                                    <label for="procedureBalance">Balance</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text" id="peso-addon"><i
+                                                class="fa fa-peso-sign"></i></span>
+                                        <input type="number" class="form-control" id="procedureBalance"
+                                            placeholder="Enter balance" min="0" aria-describedby="peso-addon">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div id="teethChartContainer" style="flex: 2 1 600px; min-width: 340px; max-width: 900px;">
+            <div class="chart-wrapper">
+                <h2>INTRAORAL EXAMINATION</h2>
+
+                <!-- Top Primary -->
+                <div class="chart-row">
+                    <div class="left-label">TEMPORARY<br>TEETH</div>
+                    <div class="left-label">STATUS<br>RIGHT</div>
+                    <div id="row-topPrimary"></div>
+                    <div class="left-label">STATUS<br>LEFT</div>
+                </div>
+
+                <!-- Top Permanent -->
+                <div class="chart-row">
+                    <div class="left-label">PERMANENT<br>TEETH</div>
+                    <div class="left-label">STATUS<br>RIGHT</div>
+                    <div id="row-topPermanent"></div>
+                    <div class="left-label">STATUS<br>LEFT</div>
+                </div>
+
+                <!-- Bottom Permanent -->
+                <div class="chart-row">
+                    <div class="left-label">PERMANENT<br>TEETH</div>
+                    <div class="left-label">STATUS<br>RIGHT</div>
+                    <div id="row-bottomPermanent"></div>
+                    <div class="left-label">STATUS<br>LEFT</div>
+                </div>
+
+                <!-- Bottom Primary -->
+                <div class="chart-row">
+                    <div class="left-label">TEMPORARY<br>TEETH</div>
+                    <div class="left-label">STATUS<br>RIGHT</div>
+                    <div id="row-bottomPrimary"></div>
+                    <div class="left-label">STATUS<br>LEFT</div>
+                </div>
+            </div>
+
+            <!-- Legend Here -->
+            <div style="width: 100%; display: flex; justify-content: center; margin-top: -30px;">
+
+                <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+                    <div
+                        style="font-size: 15px; font-weight: bold; margin-top: 18px; margin-bottom: 2px; letter-spacing: 1px;">
+                        LEGEND:</div>
+                    <div
+                        style="display: flex; flex-direction: row; justify-content: center; gap: 40px; font-size: 13px; color: #222; margin-bottom: 10px;">
+                        <div style="min-width: 210px; line-height: 1.7;">
+                            C – Caries<br>
+                            Am – Amalgam Filling<br>
+                            G – Gold filling<br>
+                            Im – Impacted Tooth<br>
+                            PFS – Pit &amp; Fissure Sealant
+                        </div>
+                        <div style="min-width: 270px; line-height: 1.7;">
+                            JC – Jacket Crown (P-Porcelain, M-Metal, G-Gold, A-Acrylic, C-Ceramic)<br>
+                            Co – Composite<br>
+                            In – Inlay/On-Inlay (G: Gold; M: Metal; C: Ceramic)<br>
+                            Frac – Fractured (Co, AM, Tooth)<br>
+                            TF – Temporary Filling
+                        </div>
+                        <div style="min-width: 170px; line-height: 1.7;">
+                            X – Extraction due to Caries<br>
+                            Sp – Supernumerary
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script>
+        const addProcedureForm = document.getElementById('addProcedureForm');
+
+        if (addProcedureForm) {
+            addProcedureForm.onsubmit = function (e) {
+                e.preventDefault();
+                // Verify patient name
+                const patientNameInput = document.getElementById('patientName');
+                const patientName = patientNameInput.value.trim(); // keep original case
+                const patientDatalist = document.getElementById('patientNamesDatalist');
+                const patientMatches = patientDatalist ? Array.from(patientDatalist.options).filter(opt => opt.value.trim().toLowerCase() === patientName.toLowerCase()) : [];
+                if (!patientName || patientMatches.length === 0) {
+                    alert('Please select a valid patient name from the list.');
+                    patientNameInput.focus();
+                    return;
+                }
+                // Verify doctor name
+                const doctorInput = document.getElementById('doctor');
+                const doctorName = doctorInput.value.trim(); // keep original case
+                const doctorDatalist = document.getElementById('doctorNamesDatalist');
+                const doctorMatches = doctorDatalist ? Array.from(doctorDatalist.options).filter(opt => opt.value.trim().toLowerCase() === doctorName.toLowerCase()) : [];
+                if (!doctorName || doctorMatches.length === 0) {
+                    alert('Please select a valid doctor name from the list.');
+                    doctorInput.focus();
+                    return;
+                }
+                if (confirm('Are you sure you want to add this procedure?')) {
+                    // Collect treated teeth
+                    const treatedTeeth = Array.from(document.querySelectorAll('input[name="teeth[]"]:checked')).map(input => input.value);
+                    // Find patientId if available (assumes datalist option value="name" data-id="id")
+                    let patientId = null;
+                    const remarks = document.getElementById('remarks').value.trim();
+                    if (patientDatalist) {
+                        // Find all options that match the input value (case-insensitive, trimmed)
+                        if (patientMatches.length >= 1 && patientMatches[0].dataset.id) {
+                            patientId = patientMatches[0].dataset.id;
+                        }
+                    }
+                    const procedureData = {
+                        patientName: patientName, // original case
+                        patientId: patientId,
+                        procedure: document.getElementById('procedure').value,
+                        doctor: doctorInput.value, // original case
+                        date: document.getElementById('date').value,
+                        remarks: remarks,
+                        amount: amount.value,
+                        balance: balance.value,
+                        treatedTeeth: treatedTeeth
+                    };
+                    if (window.proceduresCollection) {
+
+                        window.proceduresCollection.add(procedureData)
+                            .then(() => {
+                                setFormDisabled(true);
+                                addBtn.classList.add('d-none');
+                                editBtn.classList.remove('d-none');
+                                updateBtn.classList.add('d-none');
+                                alert('Procedure added for ' + procedureData.patientName);
+                                location.reload();
+                                fetchProcedures(); // Refresh table and pagination
+                                addProcedureForm.reset();
+                                currentProcedureId = null;
+                                // Close modal
+                                const modalEl = document.getElementById('addProcedureModal');
+                                const modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                                modalInstance.hide();
+                            })
+                            .catch((error) => {
+                                alert('Error adding procedure: ' + error);
+                            });
+                    }
+                }
+            };
+        }
+    </script>
+    <script>
+        // SVG template for a single tooth
+        function getToothSVG() {
+            return `
+        <svg viewBox="0 0 50 50" width="36" height="36" style="margin:1px;">
+            <g transform="rotate(45,25,25)">
+                <circle id="center" class="section" cx="25" cy="25" r="10"></circle>
+                <path id="right" class="section" d="M25,5 A20,20 0 0,1 45,25 L35,25 A10,10 0 0,0 25,15 Z"></path>
+                <path id="bottom" class="section" d="M45,25 A20,20 0 0,1 25,45 L25,35 A10,10 0 0,0 35,25 Z"></path>
+                <path id="left" class="section" d="M25,45 A20,20 0 0,1 5,25 L15,25 A10,10 0 0,0 25,35 Z"></path>
+                <path id="top" class="section" d="M5,25 A20,20 0 0,1 25,5 L25,15 A10,10 0 0,0 15,25 Z"></path>
+            </g>
+        </svg>`;
+        }
+
+        // Tooth numbers for each row
+        const topPrimary = [55, 54, 53, 52, 51, 61, 62, 63, 64, 65];
+        const topPermanent = [18, 17, 16, 15, 14, 13, 12, 11, 21, 22, 23, 24, 25, 26, 27, 28];
+        const bottomPermanent = [48, 47, 46, 45, 44, 43, 42, 41, 31, 32, 33, 34, 35, 36, 37, 38];
+        const bottomPrimary = [85, 84, 83, 82, 81, 71, 72, 73, 74, 75];
+
+        // Create row with 2 status boxes and tooth
+        function createToothRow(numbers) {
+            const row = document.createElement('div');
+            row.style.display = 'flex';
+            row.style.justifyContent = 'center';
+            row.style.alignItems = 'center';
+            row.style.marginBottom = '6px';
+
+            numbers.forEach(num => {
+                const col = document.createElement('div');
+                col.style.display = 'flex';
+                col.style.flexDirection = 'column';
+                col.style.alignItems = 'center';
+                col.style.margin = '0 1px';
+
+                // Box 1: Treatment Done
+                const box1 = document.createElement('div');
+                box1.style.width = '36px';
+                box1.style.height = '20px';
+                box1.id = 'treatmentBox';
+                box1.style.border = '1px solid black';
+                box1.style.marginBottom = '1px';
+                box1.style.display = 'flex';
+                box1.style.alignItems = 'center';
+                box1.style.justifyContent = 'center';
+                const input1 = document.createElement('input');
+                input1.type = 'text';
+                input1.style.width = '90%';
+                input1.style.height = '70%';
+                input1.style.fontSize = '10px';
+                input1.style.border = 'none';
+                input1.maxLength = 5;
+                input1.style.outline = 'none';
+                input1.style.background = 'transparent';
+                input1.style.textAlign = 'center';
+                box1.appendChild(input1);
+
+                // Box 2: Existing Condition
+                const box2 = document.createElement('div');
+                box2.style.width = '36px';
+                box2.style.height = '20px';
+                box2.id = 'existingConditionBox';
+                box2.style.border = '1px solid black';
+                box2.style.marginBottom = '2px';
+                box2.style.display = 'flex';
+                box2.style.alignItems = 'center';
+                box2.style.justifyContent = 'center';
+                const input2 = document.createElement('input');
+                input2.type = 'text';
+                input2.style.width = '90%';
+                input2.style.height = '70%';
+                input2.style.fontSize = '10px';
+                input2.maxLength = 5;
+                input2.style.border = 'none';
+                input2.style.outline = 'none';
+                input2.style.background = 'transparent';
+                input2.style.textAlign = 'center';
+                box2.appendChild(input2);
+
+                // Tooth diagram
+                const toothWrapper = document.createElement('div');
+                toothWrapper.style.display = 'flex';
+                toothWrapper.style.flexDirection = 'column';
+                toothWrapper.style.alignItems = 'center';
+                toothWrapper.innerHTML = getToothSVG() + `<div style="font-size:9px; margin-top:1px;">${num}</div>`;
+
+                col.appendChild(box1);
+                col.appendChild(box2);
+                col.appendChild(toothWrapper);
+                row.appendChild(col);
+            });
+            return row;
+        }
+
+        // Insert rows
+        document.getElementById('row-topPrimary').appendChild(createToothRow(topPrimary));
+        document.getElementById('row-topPermanent').appendChild(createToothRow(topPermanent));
+        document.getElementById('row-bottomPermanent').appendChild(createToothRow(bottomPermanent));
+        document.getElementById('row-bottomPrimary').appendChild(createToothRow(bottomPrimary));
+
+        // Toggle red on click
+        document.addEventListener('click', function (e) {
+            if (e.target.classList.contains('section')) {
+                e.target.classList.toggle('active');
+            }
+        });
+    </script>
+</body>
+
+</html>

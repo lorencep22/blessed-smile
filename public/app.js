@@ -72,7 +72,7 @@ if (window.location.pathname === "/") {
       whenSignedOut.style.display = "block";
       dashSection.style.display = "block";
       drDiv.style.visibility = "visible";
-      drName.innerHTML = user.displayName;
+      // drName.innerHTML = user.displayName;
     } else {
       // userDetails.innerHTML = "";
       whenSignedIn.style.display = "block";

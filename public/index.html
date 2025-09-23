@@ -20,7 +20,7 @@
             justify-content: center;
             font-size: 2rem;
             font-weight: 600;
-            color: #2563eb;
+            color: #FFD700;
             gap: 12px;
             text-decoration: none;
         }
@@ -29,15 +29,15 @@
             height: 48px;
             width: 48px;
             border-radius: 50%;
-            box-shadow: 0 4px 16px rgba(13, 138, 188, 0.15);
+            box-shadow: 0 4px 16px rgba(255, 215, 0, 0.15);
             object-fit: cover;
-            border: 2px solid #0D8ABC;
+            border: 2px solid #FFD700;
             background: #fff;
             transition: box-shadow 0.3s;
         }
 
         .logo img:hover {
-            box-shadow: 0 8px 32px rgba(13, 138, 188, 0.25);
+            box-shadow: 0 8px 32px rgba(255, 215, 0, 0.25);
         }
     </style>
 </head>
@@ -46,15 +46,16 @@
     <!-- Navigation -->
     <nav class="navbar" id="navbar">
         <div class="nav-container">
-            <div class="logo"><a href="/"><img src="/site-logo.png" alt="Blessed Smile Logo">Blessed Smile</a></div>
+            <div class="logo"><a href="/"><img src="/teeth1.png" alt="Blessed Smile Logo">Blessed Smile</a></div>
             <ul class="nav-links">
                 <li><a href="/#home">Home</a></li>
                 <li><a href="/#services">Services</a></li>
                 <li><a href="/#about">About</a></li>
                 <li><a href="/#team">Team</a></li>
+                <li><a href="/#gallery">Gallery</a></li>
                 <!-- <li><a href="#contact">Contact</a></li> -->
                 <li class="dropdown desktop-only">
-                    <a href="#" class="dropdown-toggle">Forms <i class="fas fa-chevron-down"></i></a>
+                    <a href="#" class="dropdown-toggle">Account <i class="fas fa-chevron-down"></i></a>
                     <ul class="dropdown-menu">
                         <li id="whenSignedIn"><button id="signInBtn"
                                 style="border: none; background:none; color: #333; ">Login</button></li>
@@ -80,19 +81,67 @@
 
     <!-- Hero Section -->
     <section class="hero" id="home">
+        <div class="hero-background">
+            <div class="hero-shapes">
+                <div class="shape shape-1"></div>
+                <div class="shape shape-2"></div>
+                <div class="shape shape-3"></div>
+            </div>
+        </div>
         <div class="hero-content">
             <div class="hero-text fade-in">
-                <h1>Your Smile, Our Priority</h1>
+                <div class="hero-badge">
+                    <i class="fas fa-star"></i>
+                    <span>Trusted Dental Care Since 2009</span>
+                </div>
+                <h1>Creating Confident Smiles witn a Touch of Grace</h1>
+
                 <p>Experience modern dental care in a comfortable, welcoming environment. Our team of experts is
                     dedicated to giving you the brightest, healthiest smile possible.</p>
-                <!-- <a href="/patient-form.html" class="cta-button">Sign In</a> -->
+                <div class="hero-buttons">
+                    <a href="#contact" class="cta-button primary">
+                        <i class="fas fa-calendar-alt"></i>
+                        Book Appointment
+                    </a>
+                    <a href="#services" class="cta-button secondary">
+                        <i class="fas fa-info-circle"></i>
+                        Our Services
+                    </a>
+                </div>
+                <!-- <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number">5000+</span>
+                        <span class="stat-label">Happy Patients</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">15+</span>
+                        <span class="stat-label">Years Experience</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">100%</span>
+                        <span class="stat-label">Satisfaction</span>
+                    </div>
+                </div> -->
             </div>
             <div class="hero-image">
-
                 <div id="drDiv" style="visibility: hidden;">
-                    <h1 style="color: white; font-size: 40px;">Hello Dr. <span id="drName"></span></h1>
+                    <!-- <h1 style="color: white; font-size: 40px;">Hello Dr. <span id="drName"></span></h1> -->
+                    <h1 style="color: white; font-size: 40px;">Welcome to Blessed Smile Dental System</h1>
                 </div>
-                <i class="fas fa-tooth"></i>
+                <div class="image-container">
+                    <img src="/teeth1.png" alt="Dental Care Image" class="hero-main-image">
+                    <div class="floating-elements">
+                        <div class="floating-icon icon-1">
+                            <i class="fas fa-tooth"></i>
+                        </div>
+                        <div class="floating-icon icon-2">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="floating-icon icon-3">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -121,14 +170,14 @@
                 </div>
                 <div class="service-card fade-in">
                     <div class="service-icon">
-                        <i class="fas fa-tooth"></i>
+                        <i class="fas fa-adjust"></i>
                     </div>
                     <h3>Orthodontics</h3>
                     <p>Straighten your teeth with modern orthodontic solutions including braces and clear aligners.</p>
                 </div>
                 <div class="service-card fade-in">
                     <div class="service-icon">
-                        <i class="fas fa-implant"></i>
+                        <i class="fas fa-plus-circle"></i>
                     </div>
                     <h3>Dental Implants</h3>
                     <p>Restore your smile with permanent dental implants that look and feel like natural teeth.</p>
@@ -197,21 +246,125 @@
             <div class="team-grid">
                 <div class="team-card fade-in">
                     <div class="team-avatar">
-                        <i class="fas fa-user-md"></i>
+                        <!-- <i class="fas fa-user-md"></i> -->
+                        <img src="/images/image10.png" alt="Dr. Ronald Orbase Felipe">
                     </div>
                     <div class="team-info">
-                        <h3>Dr. Ronnie Felipe</h3>
+                        <h3>Dr. Ronald Orbase Felipe</h3>
                         <p>Dentist</p>
                     </div>
                 </div>
                 <div class="team-card fade-in">
                     <div class="team-avatar">
-                        <i class="fas fa-user-md"></i>
+                        <!-- <i class="fas fa-user-md"></i> -->
+                        <img src="/images/image11.png" alt="Dr. Kristine Mae Del Rio Felipe">
                     </div>
                     <div class="team-info">
-                        <h3>Dr. Tin Felipe</h3>
+                        <h3>Dr. Kristine Mae Del Rio Felipe</h3>
                         <p>Dentist</p>
                     </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery" id="gallery">
+        <div class="container">
+            <h2 class="section-title fade-in">Discover Our Clinic</h2>
+            <p class="section-subtitle fade-in">Take a look at our modern facilities and equipment</p>
+
+            <div class="carousel-container">
+                <div class="carousel-wrapper">
+                    <div class="carousel-slide active">
+                        <div class="slide-content">
+                            <img src="/images/image1.png" alt="Modern Reception Area" loading="lazy">
+                            <div class="slide-info">
+                                <h3>Modern Reception Area</h3>
+                                <p>Welcoming and comfortable waiting space designed for patient comfort and relaxation.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carousel-slide">
+                        <div class="slide-content">
+                            <img src="/images/image3.png" alt="Advanced Equipment" loading="lazy">
+                            <div class="slide-info">
+                                <h3>Advanced Equipment</h3>
+                                <p>State-of-the-art dental technology ensuring precise and efficient treatments.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carousel-slide">
+                        <div class="slide-content">
+                            <img src="/images/image4.png" alt="Treatment Rooms" loading="lazy">
+                            <div class="slide-info">
+                                <h3>Treatment Rooms</h3>
+                                <p>Comfortable and sterile environment designed for optimal patient care.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carousel-slide">
+                        <div class="slide-content">
+                            <img src="/images/image5.png" alt="Clinic Interior" loading="lazy">
+                            <div class="slide-info">
+                                <h3>Clinic Interior</h3>
+                                <p>Clean and modern design creating a welcoming atmosphere for all patients.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carousel-slide">
+                        <div class="slide-content">
+                            <img src="/images/image6.png" alt="Comfortable Dental Chairs" loading="lazy">
+                            <div class="slide-info">
+                                <h3>Comfortable Dental Chairs</h3>
+                                <p>Patient comfort is our priority with ergonomically designed seating.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carousel-slide">
+                        <div class="slide-content">
+                            <img src="/images/image7.png" alt="Precision Treatment" loading="lazy">
+                            <div class="slide-info">
+                                <h3>Precision Treatment</h3>
+                                <p>Expert care with attention to detail using advanced dental techniques.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carousel-slide">
+                        <div class="slide-content">
+                            <img src="/images/image8.png" alt="Sterile Environment" loading="lazy">
+                            <div class="slide-info">
+                                <h3>Sterile Environment</h3>
+                                <p>Maintaining highest hygiene standards for patient safety and care.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Arrows -->
+                <button class="carousel-btn prev-btn" onclick="changeSlide(-1)">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="carousel-btn next-btn" onclick="changeSlide(1)">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+
+                <!-- Dots Indicator -->
+                <div class="carousel-dots">
+                    <span class="dot active" onclick="currentSlide(1)"></span>
+                    <span class="dot" onclick="currentSlide(2)"></span>
+                    <span class="dot" onclick="currentSlide(3)"></span>
+                    <span class="dot" onclick="currentSlide(4)"></span>
+                    <span class="dot" onclick="currentSlide(5)"></span>
+                    <span class="dot" onclick="currentSlide(6)"></span>
+                    <span class="dot" onclick="currentSlide(7)"></span>
                 </div>
             </div>
         </div>
@@ -231,7 +384,7 @@
                         </div>
                         <div class="contact-text">
                             <h4>Address</h4>
-                            <p>123 Dental Street, Healthcare District<br>City, State 12345</p>
+                            <p>2/F 37 Regalado Street Fairview, Quezon City,<br> Philippines</p>
                         </div>
                     </div>
                     <div class="contact-item">
@@ -263,25 +416,43 @@
                     </div>
                 </div>
                 <div class="contact-form slide-in-right">
-                    <form id="contact-form">
-                        <div class="form-group">
-                            <label for="name">Full Name</label>
-                            <input type="text" id="name" name="name" required>
+                    <div class="viber-chat-container">
+                        <div class="viber-header">
+                            <div class="viber-logo">
+                                <i class="fab fa-viber"></i>
+                                <span>Chat with us on Viber</span>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" id="email" name="email" required>
+                        <div class="viber-content">
+                            <div class="viber-welcome">
+                                <h3>Get Instant Support</h3>
+                                <p>Chat with our team directly on Viber for quick assistance with appointments,
+                                    questions, or emergency care.</p>
+                            </div>
+                            <div class="viber-features">
+                                <div class="feature-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>24/7 Available</span>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fas fa-calendar-check"></i>
+                                    <span>Quick Appointments</span>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fas fa-ambulance"></i>
+                                    <span>Emergency Support</span>
+                                </div>
+                            </div>
+                            <a href="viber://chat?number=+1234567890" class="viber-chat-btn">
+                                <i class="fab fa-viber"></i>
+                                Start Viber Chat
+                            </a>
+                            <div class="viber-alternative">
+                                <p>Don't have Viber? <a href="https://www.viber.com/download/" target="_blank">Download
+                                        it here</a></p>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="phone">Phone</label>
-                            <input type="tel" id="phone" name="phone" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="message">Message</label>
-                            <textarea id="message" name="message" rows="4" required></textarea>
-                        </div>
-                        <button type="submit" class="submit-btn">Send Message</button>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -316,6 +487,53 @@
     <script src="script.js"></script>
     <script src="app.js" defer></script>
     <!-- <script src="sheet.js"></script> -->
+
+    <script>
+        let currentSlideIndex = 0;
+        const slides = document.querySelectorAll('.carousel-slide');
+        const dots = document.querySelectorAll('.dot');
+        const totalSlides = slides.length;
+
+        function showSlide(n) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            dots.forEach(dot => dot.classList.remove('active'));
+
+            if (n >= totalSlides) currentSlideIndex = 0;
+            if (n < 0) currentSlideIndex = totalSlides - 1;
+
+            slides[currentSlideIndex].classList.add('active');
+            dots[currentSlideIndex].classList.add('active');
+        }
+
+        function changeSlide(direction) {
+            currentSlideIndex += direction;
+            showSlide(currentSlideIndex);
+        }
+
+        function currentSlide(n) {
+            currentSlideIndex = n - 1;
+            showSlide(currentSlideIndex);
+        }
+
+        // Auto-play functionality
+        function autoPlay() {
+            currentSlideIndex++;
+            showSlide(currentSlideIndex);
+        }
+
+        // Start auto-play (change slide every 5 seconds)
+        setInterval(autoPlay, 5000);
+
+        // Pause auto-play on hover
+        const carousel = document.querySelector('.carousel-container');
+        carousel.addEventListener('mouseenter', () => {
+            clearInterval(window.carouselInterval);
+        });
+
+        carousel.addEventListener('mouseleave', () => {
+            window.carouselInterval = setInterval(autoPlay, 5000);
+        });
+    </script>
 </body>
 
 </html>

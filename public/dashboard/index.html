@@ -12,13 +12,61 @@
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <style>
+        body {
+            background: linear-gradient(135deg, #fff 0%, #ffd700 50%, #fff 100%);
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+
+        iframe {
+            background: white;
+        }
+
+        .navbar-dark.bg-primary {
+            background: linear-gradient(135deg, #ffd700 0%, #fff 50%, #ffd700 100%) !important;
+            border-bottom: 2px solid #ffd700;
+            box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+        }
+
+        .sidebar {
+            background: linear-gradient(180deg, #fff 0%, #ffd700 50%, #fff 100%) !important;
+            border-right: 2px solid #ffd700;
+            box-shadow: 2px 0 8px rgba(255, 215, 0, 0.2);
+            height: 90vh;
+        }
+
+        .sidebar .nav-link {
+            color: #000 !important;
+            font-weight: 600;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin: 4px 8px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .sidebar .nav-link:hover {
+            background: #ffd700;
+            color: #000 !important;
+            transform: translateX(4px);
+            box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
+        }
+
+        .sidebar .nav-link.active {
+            background: linear-gradient(90deg, #ffd700 0%, #fff 50%, #ffd700 100%);
+            color: #000 !important;
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+        }
+
         .logo {
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 2rem;
-            font-weight: 600;
-            color: white;
+            font-weight: 700;
+            color: #000;
             gap: 12px;
             text-decoration: none;
         }
@@ -27,21 +75,61 @@
             height: 48px;
             width: 48px;
             border-radius: 50%;
-            box-shadow: 0 4px 16px rgba(13, 138, 188, 0.15);
+            box-shadow: 0 4px 16px rgba(255, 215, 0, 0.3);
             object-fit: cover;
-            border: 2px solid #0D8ABC;
+            border: 2px solid #ffd700;
             background: #fff;
-            transition: box-shadow 0.3s;
+            transition: all 0.3s ease;
         }
 
         .logo img:hover {
-            box-shadow: 0 8px 32px rgba(13, 138, 188, 0.25);
+            box-shadow: 0 8px 32px rgba(255, 215, 0, 0.5);
+            transform: scale(1.05);
+        }
+
+        .navbar-nav .nav-link {
+            color: #000 !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #000 !important;
+            background: rgba(255, 215, 0, 0.2);
+        }
+
+        .navbar-nav .nav-link.active {
+            color: #000 !important;
+            font-weight: 600;
+        }
+
+        #dashboard-signout {
+            background: #fff;
+            border: 2px solid #ffd700;
+            border-radius: 6px;
+            padding: 6px 12px;
+            transition: all 0.3s ease;
+            color: #000;
+        }
+
+        #dashboard-signout:hover {
+            background: #ffd700;
+            color: #000 !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(255, 215, 0, 0.3);
+        }
+
+        main {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px 0 0 0;
+            box-shadow: -2px 0 12px rgba(255, 215, 0, 0.2);
+            backdrop-filter: blur(10px);
         }
     </style>
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
             <div class="logo"><img src="/site-logo.png" alt="Blessed Smile Logo">Blessed Smile</div>
 
@@ -52,7 +140,8 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/">Home</a>
+                        <a class="nav-link active" aria-current="page" href="/"
+                            style="color: #000000 !important;">Home</a>
                     </li>
                     <li class="nav-item">
                         <button class="nav-link" href="#" id="dashboard-signout">Sign Out</button>
@@ -66,7 +155,7 @@
     </nav>
     <div class="container-fluid">
         <div class="row">
-            <nav class="col-md-2 d-none d-md-block bg-light sidebar py-4">
+            <nav class="col-md-2 d-none d-md-block sidebar py-4">
                 <div class="position-sticky">
                     <ul class="nav flex-column">
                         <li class="nav-item">
@@ -76,12 +165,12 @@
                             </a>
                         </li>
 
-                        <li class="nav-item">
+                        <!-- <li class="nav-item">
                             <a class="nav-link active" href="#">
                                 <span data-feather="home"></span>
                                 Procedures 🏥
                             </a>
-                        </li>
+                        </li> -->
                         <li class="nav-item">
                             <a class="nav-link active" href="#">
                                 <span data-feather="home"></span>
@@ -113,8 +202,8 @@
             <main id="dashboard-content" class="col-md-9 ms-sm-auto col-lg-10 px-md-4" style="height: 100% !important;">
                 <iframe id="patients-iframe" src="/dashboard/patients/index.html"
                     style="width:100%;height:90dvh;border:none;"></iframe>
-                <iframe id="procedures-iframe" src="/dashboard/procedures/index.html"
-                    style="width:100%;height:90dvh;border:none; display: none;"></iframe>
+                <!-- <iframe id="procedures-iframe" src="/dashboard/procedures/index.html"
+                    style="width:100%;height:90dvh;border:none; display: none;"></iframe> -->
                 <iframe id="doctors-iframe" src="/dashboard/doctors/index.html"
                     style="width:100%;height:90dvh;border:none; display: none;"></iframe>
                 <iframe id="transactions-iframe" src="/dashboard/transactions/index.html"
@@ -129,7 +218,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const patientsIframe = document.getElementById('patients-iframe');
-            const proceduresIframe = document.getElementById('procedures-iframe');
+            // const proceduresIframe = document.getElementById('procedures-iframe');
             const doctorsIframe = document.getElementById('doctors-iframe');
             const transactionsIframe = document.getElementById('transactions-iframe');
             const prescriptionsIframe = document.getElementById('prescriptions-iframe');
@@ -147,7 +236,7 @@
             // Helper to show iframe by name
             function showIframe(name) {
                 patientsIframe.style.display = 'none';
-                proceduresIframe.style.display = 'none';
+                // proceduresIframe.style.display = 'none';
                 doctorsIframe.style.display = 'none';
                 transactionsIframe.style.display = 'none';
                 prescriptionsIframe.style.display = 'none';
@@ -156,10 +245,10 @@
                         patientsIframe.contentWindow.location.reload();
                         setTimeout(() => { patientsIframe.style.display = 'block'; }, 200);
                         break;
-                    case 'Procedures':
-                        proceduresIframe.contentWindow.location.reload();
-                        setTimeout(() => { proceduresIframe.style.display = 'block'; }, 200);
-                        break;
+                    // case 'Procedures':
+                    //     proceduresIframe.contentWindow.location.reload();
+                    //     setTimeout(() => { proceduresIframe.style.display = 'block'; }, 200);
+                    //     break;
                     case 'Doctors':
                         doctorsIframe.contentWindow.location.reload();
                         setTimeout(() => { doctorsIframe.style.display = 'block'; }, 200);
@@ -203,7 +292,7 @@
                     // Store last opened tab in localStorage
                     let tabName = '';
                     if (this.textContent.includes('Patients')) tabName = 'Patients';
-                    else if (this.textContent.includes('Procedures')) tabName = 'Procedures';
+                    // else if (this.textContent.includes('Procedures')) tabName = 'Procedures';
                     else if (this.textContent.includes('Doctors')) tabName = 'Doctors';
                     else if (this.textContent.includes('Transactions')) tabName = 'Transactions';
                     else if (this.textContent.includes('Prescriptions')) tabName = 'Prescriptions';

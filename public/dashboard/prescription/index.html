@@ -15,6 +15,62 @@
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        body {
+            /* background: linear-gradient(135deg, #fff 0%, #ffd700 50%, #fff 100%); */
+            background-color: #fff;
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2);
+        }
+
+        h2 {
+            color: #000;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ffd700 0%, #fff 50%, #ffd700 100%);
+            border: 2px solid #ffd700;
+            color: #000;
+            font-weight: 500;
+        }
+
+        .btn-primary:hover {
+            background: #ffd700;
+            border-color: #ffd700;
+            color: #000;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(255, 215, 0, 0.3);
+        }
+
+        .nav-tabs .nav-link {
+            color: #000;
+            border: 1px solid #ffd700;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .nav-tabs .nav-link:hover {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: #ffd700;
+            color: #000;
+        }
+
+        .nav-tabs .nav-link.active {
+            background: #ffd700;
+            border-color: #ffd700;
+            color: #000;
+            font-weight: 600;
+        }
+
         #prescriptionModal .modal-body .mb-2 div[style*='font-size:14px;'] {
             line-height: 1.2;
         }
@@ -64,13 +120,15 @@
                                         </div> -->
                                         <div>
                                             <div class="col-7 text-left">
-                                                <div style="font-family:serif; font-size:1.3rem; font-weight:bold;">Kristine
+                                                <div style="font-family:serif; font-size:1.3rem; font-weight:bold;">
+                                                    Kristine
                                                     Mae
                                                     Felipe,
                                                     DMD</div>
                                             </div>
                                             <div class="col-7 text-left">
-                                                <div style="font-family:serif; font-size:1.3rem; font-weight:bold;">Ronald
+                                                <div style="font-family:serif; font-size:1.3rem; font-weight:bold;">
+                                                    Ronald
                                                     O.
                                                     Felipe,
                                                     DMD</div>
