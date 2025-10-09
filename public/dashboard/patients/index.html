@@ -6,154 +6,203 @@
     <title>Patients List</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../theme/theme-variables.css" rel="stylesheet">
+    <link href="../theme/theme-immediate.css" rel="stylesheet">
+
+    <!-- Critical CSS - Apply theme immediately before any rendering -->
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem('easysmile-theme');
+            if (savedTheme) {
+                const themes = {
+                    gold: { bg: 'linear-gradient(135deg, #fff 0%, #ffd700 50%, #fff 100%)', text: '#000', isDark: false },
+                    blue: { bg: 'linear-gradient(135deg, #e3f2fd 0%, #007bff 50%, #e3f2fd 100%)', text: '#1a1a1a', isDark: false },
+                    green: { bg: 'linear-gradient(135deg, #e8f5e8 0%, #28a745 50%, #e8f5e8 100%)', text: '#1a1a1a', isDark: false },
+                    purple: { bg: 'linear-gradient(135deg, #f3e5f5 0%, #6f42c1 50%, #f3e5f5 100%)', text: '#1a1a1a', isDark: false },
+                    dark: { bg: 'linear-gradient(135deg, #1a202c 0%, #2d3748 50%, #1a202c 100%)', text: '#fff', isDark: true },
+                    midnight: { bg: 'linear-gradient(135deg, #0f1419 0%, #1a365d 50%, #0f1419 100%)', text: '#e2e8f0', isDark: true }
+                };
+                const theme = themes[savedTheme];
+                if (theme) {
+                    document.documentElement.style.background = theme.bg;
+                    const style = document.createElement('style');
+                    style.innerHTML = `html, body { background: ${theme.bg} !important; color: ${theme.text} !important; transition: none !important; }`;
+                    document.head.appendChild(style);
+                    document.documentElement.className = theme.isDark ? 'theme-dark' : 'theme-light';
+                }
+            }
+        })();
+    </script>
+
+    <script src="../theme/theme-immediate.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../../toast.js" defer></script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="../theme/theme-manager.js" defer></script>
+    <script src="../theme/theme-communication.js" defer></script>
 
     <style>
+        /* Theme-aware styles using CSS custom properties */
         body {
-            background: white;
+            background: var(--theme-background);
+            color: var(--theme-text);
             min-height: 100vh;
         }
 
+        /* Hide page content until theme is fully loaded */
+        body.theme-loading .container {
+            opacity: 0;
+            transition: opacity 0.3s ease-in;
+        }
+
+        body:not(.theme-loading) .container {
+            opacity: 1;
+            transition: opacity 0.3s ease-in;
+        }
+
         .btn-primary {
-            background: linear-gradient(135deg, #ffd700 0%, #fff 50%, #ffd700 100%);
-            border: 2px solid #ffd700;
-            color: #000;
+            background: var(--theme-primary-bg);
+            border: 2px solid var(--theme-accent);
+            color: var(--theme-text);
             font-weight: 600;
             transition: all 0.3s ease;
         }
 
         .btn-primary:hover {
-            background: #ffd700;
+            background: var(--theme-accent);
             transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(255, 215, 0, 0.4);
-            color: #000;
+            box-shadow: 0 4px 8px var(--theme-shadow);
+            color: var(--theme-text);
         }
 
         .btn-outline-primary {
-            border-color: #ffd700;
-            color: #000;
+            border-color: var(--theme-accent);
+            color: var(--theme-text);
             font-weight: 600;
-            background: #fff;
+            background: var(--theme-surface);
         }
 
         .btn-outline-primary:hover {
-            background: #ffd700;
-            border-color: #ffd700;
-            color: #000;
+            background: var(--theme-accent);
+            border-color: var(--theme-accent);
+            color: var(--theme-text);
         }
 
         .form-control {
-            border-color: #ffd700;
-            color: #000;
+            border-color: var(--theme-accent);
+            color: var(--theme-text);
             font-weight: 500;
-            background: #fff;
+            background: var(--theme-surface);
         }
 
         .form-control:focus {
-            border-color: #ffd700;
-            box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.25);
-            background: #fff;
+            border-color: var(--theme-accent);
+            box-shadow: 0 0 0 0.2rem var(--theme-focus);
+            background: var(--theme-surface);
         }
 
         .form-select {
-            border-color: #ffd700;
-            color: #000;
+            border-color: var(--theme-accent);
+            color: var(--theme-text);
             font-weight: 500;
-            background: #fff;
+            background: var(--theme-surface);
         }
 
         .form-select:focus {
-            border-color: #ffd700;
-            box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.25);
-            background: #fff;
+            border-color: var(--theme-accent);
+            box-shadow: 0 0 0 0.2rem var(--theme-focus);
+            background: var(--theme-surface);
         }
 
         .table {
-            background: #fff;
+            background: var(--theme-surface);
+        }
+
+        .table thead {
+            background: var(--theme-primary-bg);
         }
 
         .table thead th {
-            background: linear-gradient(135deg, #ffd700 0%, #fff 50%, #ffd700 100%);
-            color: #000;
+            background: transparent;
+            color: var(--theme-text);
             font-weight: 700;
-            border: 2px solid #ffd700;
+            border: 2px solid var(--theme-accent);
         }
 
         .table tbody td {
-            color: #000;
+            color: var(--theme-text);
             font-weight: 500;
-            background: #fff;
-            border-color: #ffd700;
+            background: var(--theme-surface);
+            border-color: var(--theme-accent);
         }
 
         .table tbody tr:hover {
-            background: rgba(255, 215, 0, 0.2);
+            background: var(--theme-hover);
         }
 
         .modal-content {
-            background: #fff;
+            background: var(--theme-surface);
         }
 
         .modal-header {
-            background: linear-gradient(135deg, #ffd700 0%, #fff 50%, #ffd700 100%);
-            color: #000;
+            background: var(--theme-primary-bg);
+            color: var(--theme-text);
             border: none;
         }
 
         .btn-close {
-            filter: none;
-            color: #000;
+            filter: var(--theme-close-filter);
+            color: var(--theme-text);
         }
 
         .form-label {
-            color: #000;
+            color: var(--theme-text);
             font-weight: 600;
         }
 
         h2 {
-            color: #000;
+            color: var(--theme-text);
             font-weight: 700;
         }
 
         .pagination .page-link {
-            border-color: #ffd700;
-            color: #000;
+            border-color: var(--theme-accent);
+            color: var(--theme-text);
             font-weight: 600;
-            background: #fff;
+            background: var(--theme-surface);
         }
 
         .pagination .page-link:hover {
-            background: #ffd700;
-            border-color: #ffd700;
-            color: #000;
+            background: var(--theme-accent);
+            border-color: var(--theme-accent);
+            color: var(--theme-text);
         }
 
         .pagination .page-item.disabled .page-link {
-            background: linear-gradient(135deg, #ffd700 0%, #fff 50%, #ffd700 100%);
-            border-color: #ffd700;
-            color: #000 !important;
+            background: var(--theme-primary-bg);
+            border-color: var(--theme-accent);
+            color: var(--theme-text) !important;
         }
 
         .container {
-            background: rgba(255, 255, 255, 0.9);
+            background: var(--theme-card-bg);
             border-radius: 12px;
-            box-shadow: 0 4px 16px rgba(255, 215, 0, 0.3);
+            box-shadow: 0 4px 16px var(--theme-shadow);
             padding: 2rem;
         }
 
         .d-flex.justify-content-between {
-            background: rgba(255, 215, 0, 0.1);
+            background: var(--theme-highlight-bg);
             padding: 1rem;
             border-radius: 8px;
-            border: 1px solid #ffd700;
+            border: 1px solid var(--theme-accent);
         }
     </style>
 </head>
 
-<body style="height: 100%;" id="patients-page">
+<body style="height: 100%;" id="patients-page" class="theme-loading">
 
     <div class="container mt-4">
         <div class="d-flex justify-content-between gap-3 align-items-center mb-2">
@@ -279,7 +328,7 @@
                         .get()
                         .then(snapshot => {
                             if (!snapshot.empty) {
-                                alert('A patient with the same name already exists!');
+                                showError('A patient with the same name already exists!');
                                 return;
                             }
                             const patient = {
@@ -296,7 +345,7 @@
                             };
                             window.patientDetailsCollection.add(patient)
                                 .then(() => {
-                                    alert('Patient added successfully!');
+                                    showSuccess('Patient added successfully!');
                                     document.getElementById('addPatientForm').reset();
                                     // Hide modal
                                     const modalEl = document.getElementById('patientModal');
@@ -314,7 +363,7 @@
                                     window.dispatchEvent(new Event('newPatientAdded'));
                                 })
                                 .catch((error) => {
-                                    alert('Error adding patient: ' + error);
+                                    showError('Error adding patient: ' + error);
                                 });
                         });
                 }
@@ -442,7 +491,7 @@
                         searchBtn.addEventListener('click', function () {
                             const name = searchInput.value.trim();
                             if (!name) {
-                                alert('Please enter or select a patient name.');
+                                showWarning('Please enter or select a patient name.');
                                 searchInput.focus();
                                 return;
                             }
@@ -450,14 +499,14 @@
                             const datalist = document.getElementById('patientNamesDatalist');
                             const matches = datalist ? Array.from(datalist.options).filter(opt => opt.value === name) : [];
                             if (matches.length === 0) {
-                                alert('Please select a valid patient name from the list.');
+                                showWarning('Please select a valid patient name from the list.');
                                 searchInput.focus();
                                 return;
                             }
                             // Filter patients by full name
                             const filteredPatients = patients.filter(p => `${p.firstName} ${p.middleName} ${p.lastName}` === name);
                             if (filteredPatients.length === 0) {
-                                alert('No patient found with that name.');
+                                showError('No patient found with that name.');
                                 return;
                             }
                             renderTable(1, filteredPatients);
@@ -471,6 +520,8 @@
                 }
             }, 200);
         });
+
+        // Wait for Firebase to be initialized by app.js (no need to redeclare config)
     </script>
 </body>
 

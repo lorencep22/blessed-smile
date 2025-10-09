@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing Report - {{PATIENT_NAME}}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.4;
+        }
+
+        #billingContainer {
+            max-width: 1100px;
+
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #333;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            margin: 0;
+            color: #333;
+            font-size: 24px;
+        }
+
+        .header p {
+            margin: 5px 0;
+            color: #666;
+        }
+
+        .patient-info {
+            background-color: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+
+        .summary {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .summary h3 {
+            margin-top: 0;
+            color: #495057;
+        }
+
+        .status-paid {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .status-unpaid {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .status-partial {
+            color: #ffc107;
+            font-weight: bold;
+        }
+
+        .print-date {
+            text-align: right;
+            font-size: 12px;
+            color: #666;
+            margin-top: 20px;
+        }
+
+        @media print {
+            body {
+                margin: 0;
+            }
+
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="profile.css">
+</head>
+
+<body>
+    <div id="billingContainer">
+        <div class="header">
+            <h1>Blessed Smile Dental Clinic</h1>
+            <p>Billing Statement</p>
+        </div>
+
+        <div class="patient-info">
+            <strong>Patient:</strong> {{PATIENT_NAME}}<br>
+            <strong>Report Date:</strong> {{REPORT_DATE}}<br>
+            <strong>Period:</strong> {{PERIOD_DESCRIPTION}}
+        </div>
+        <!-- screenshot image here -->
+        <div>
+            <img src="{{SCREENSHOT_URL}}" alt="Billing Screenshot" style="max-width: 100%; height: auto;">
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Procedure</th>
+                    <th>Tooth No./S</th>
+                    <th>Amount</th>
+                    <th>Balance</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{BILLING_RECORDS}}
+            </tbody>
+        </table>
+
+        <div class="summary">
+            <h3>Summary</h3>
+            <p><strong>Total Procedures:</strong> {{TOTAL_PROCEDURES}}</p>
+            <p><strong>Total Amount:</strong> ₱{{TOTAL_AMOUNT}}</p>
+            <p><strong>Total Paid:</strong> ₱{{TOTAL_PAID}}</p>
+            <p><strong>Outstanding Balance:</strong> ₱{{TOTAL_BALANCE}}</p>
+        </div>
+
+        <div class="print-date">
+            Generated on: {{GENERATED_DATE}}
+        </div>
+    </div>
+
+</body>
+
+</html>

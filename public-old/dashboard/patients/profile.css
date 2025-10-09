@@ -1,0 +1,764 @@
+.chart-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  gap: 5px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding: 5px;
+}
+
+/* --- Profile/Procedure Section Theme --- */
+.section-card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(30, 41, 59, 0.08),
+    0 1.5px 6px rgba(255, 215, 0, 0.08);
+  margin-bottom: 2.5rem;
+  padding: 2.5rem 2rem;
+  border: 1.5px solid #f3f4f6;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.section-icon {
+  width: 54px;
+  height: 54px;
+  background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1e293b;
+  font-size: 2rem;
+  box-shadow: 0 4px 16px rgba(255, 215, 0, 0.13);
+}
+
+.section-title {
+  color: #1e293b;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0;
+  text-align: left;
+}
+
+.section-body {
+  background: #f8fafc;
+  border-radius: 14px;
+  /* padding: 2rem 1.5rem; */
+  margin-top: 0.5rem;
+  padding-bottom: 30px;
+  padding-top: 30px;
+}
+
+/* Procedure form container */
+#procedureFormContainer {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(30, 41, 59, 0.07);
+  padding: 2rem 1.5rem;
+  border: 1px solid #f3f4f6;
+}
+
+#procedureFormContainer h1 {
+  color: #1e293b;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/* Teeth chart container */
+#teethChartContainer {
+  background: #f8fafc;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(30, 41, 59, 0.07);
+  padding: 1rem;
+  border: 1px solid #f3f4f6;
+  overflow-x: auto;
+  min-width: 600px;
+}
+
+.input-group-text {
+  background: #ffd700;
+  color: #1e293b;
+  border: none;
+  font-weight: 600;
+}
+
+/* Modern button styles */
+.btn-modern {
+  background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);
+  color: #1e293b;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  padding: 0.7rem 1.6rem;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.13);
+}
+.btn-modern:hover {
+  background: linear-gradient(135deg, #ffa500 0%, #ffd700 100%);
+  color: #1e293b;
+  box-shadow: 0 4px 16px rgba(255, 215, 0, 0.18);
+}
+
+.btn-secondary-modern {
+  background: #1e293b;
+  color: #ffd700;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  padding: 0.7rem 1.6rem;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(30, 41, 59, 0.13);
+}
+.btn-secondary-modern:hover {
+  background: #ffd700;
+  color: #1e293b;
+  box-shadow: 0 4px 16px rgba(30, 41, 59, 0.18);
+}
+
+.left-label {
+  width: 80px;
+  min-width: 80px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: bold;
+  margin-right: 3px;
+  flex-shrink: 0;
+}
+
+.right-labels {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 8px;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.vertical-label {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  margin-left: 6px;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+svg {
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.section {
+  fill: white;
+  stroke: black;
+  stroke-width: 1.2;
+  transition: fill 0.3s;
+}
+
+.active {
+  fill: red !important;
+}
+
+/* --- Profile/Procedure Section Theme --- */
+
+@media (min-width: 1400px) {
+  .container,
+  .container-lg,
+  .container-md,
+  .container-sm,
+  .container-xl,
+  .container-xxl {
+    max-width: 1600px;
+  }
+}
+
+body {
+  background-color: black;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  min-height: 100vh;
+  color: #2d3748;
+}
+
+.main-container {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+  margin: 2rem auto;
+  padding: 0;
+  overflow: hidden;
+}
+
+.header-section {
+  background: linear-gradient(135deg, #ffd700 0%, #1e293b 100%);
+  color: white;
+  padding: 2.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.header-section::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent 70%
+  );
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-20px) rotate(5deg);
+  }
+}
+
+.clinic-logo {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.page-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.content-section {
+  padding: 2.5rem;
+  background: white;
+}
+
+.section-card {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.section-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.section-header {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.section-icon {
+  width: 40px;
+  height: 40px;
+  /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+  background: #ffd700;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.2rem;
+}
+
+.section-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 0;
+  color: #2d3748;
+}
+
+/* .section-body {
+  padding: 2rem;
+} */
+
+.patient-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.info-item {
+  background: #f8fafc;
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+}
+
+.info-item:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.info-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
+}
+
+.info-value {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #1e293b;
+  margin: 0;
+}
+
+.medical-record-form {
+  background: #fafbfc;
+  border-radius: 16px;
+  padding: 2rem;
+  border: 1px solid #e2e8f0;
+}
+
+.form-group {
+  margin-bottom: 2rem;
+}
+
+.form-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.radio-group {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1rem;
+}
+
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.form-check {
+  background: white;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+}
+
+.form-check:hover {
+  border-color: #667eea;
+  background: #f8fafc;
+}
+
+.form-check-input:checked + .form-check-label {
+  color: #667eea;
+  font-weight: 600;
+}
+
+.btn-modern {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 12px;
+  padding: 0.75rem 2rem;
+  font-weight: 600;
+  color: white;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.btn-modern:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+  color: white;
+}
+
+.btn-secondary-modern {
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 0.75rem 2rem;
+  font-weight: 600;
+  color: #64748b;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary-modern:hover {
+  background: #e2e8f0;
+  color: #475569;
+  transform: translateY(-1px);
+}
+
+.procedures-table {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.table {
+  margin: 0;
+}
+
+.table thead th {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  border: none;
+  font-weight: 600;
+  color: #374151;
+  padding: 1.5rem 1rem;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  letter-spacing: 0.5px;
+}
+
+.table tbody td {
+  padding: 1.25rem 1rem;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+
+.table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.btn-view {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1.5rem;
+  font-weight: 500;
+  color: white;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+}
+
+.btn-view:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  color: white;
+}
+
+.btn-gold-gradient {
+  background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%) !important;
+  color: #1e293b !important;
+  border: none;
+  font-weight: 600;
+  transition: background 0.2s, color 0.2s;
+}
+
+.btn-gold-gradient:hover,
+.btn-gold-gradient:focus {
+  background: linear-gradient(135deg, #ffd700 0%, #000 100%) !important;
+  color: #ffd700 !important;
+}
+
+.pagination {
+  margin-top: 2rem;
+}
+
+.page-link {
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  margin: 0 0.25rem;
+  padding: 0.75rem 1.25rem;
+  color: #64748b;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.page-link:hover {
+  background: #667eea;
+  border-color: #667eea;
+  color: white;
+  transform: translateY(-1px);
+}
+
+.page-item.active .page-link {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-color: #667eea;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .main-container {
+    margin: 1rem;
+    border-radius: 16px;
+  }
+
+  .header-section {
+    padding: 2rem 1.5rem;
+  }
+
+  .content-section {
+    padding: 1.5rem;
+  }
+
+  .page-title {
+    font-size: 2rem;
+  }
+
+  .patient-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .checkbox-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .radio-group {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.alert-modern {
+  border-radius: 12px;
+  border: none;
+  padding: 1.25rem 1.5rem;
+  font-weight: 500;
+}
+
+.alert-success {
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+  color: #065f46;
+}
+
+.alert-warning {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  color: #92400e;
+}
+
+.alert-danger {
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+  color: #991b1b;
+}
+
+.patient-info-section,
+.medical-record-section {
+  background: #fafbfc;
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 1px solid #e2e8f0;
+  height: fit-content;
+}
+
+.medical-record-status {
+  padding: 1rem;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.status-no-record {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  color: #92400e;
+  border: 1px solid #f59e0b;
+}
+
+.status-has-record {
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+  color: #065f46;
+  border: 1px solid #10b981;
+}
+
+/* Enhanced Teeth Chart Styling */
+.chart-wrapper {
+  background: #fff;
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
+  min-width: 100%;
+}
+
+.chart-wrapper h2 {
+  text-align: center;
+  color: #1e293b;
+  font-weight: 700;
+  margin-bottom: 20px;
+  font-size: 1.3rem;
+}
+
+#treatmentBox input,
+#existingConditionBox input {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+#treatmentBox input:focus,
+#existingConditionBox input:focus {
+  background: #fff;
+  border-color: #ffd700;
+  box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.2);
+}
+
+#treatmentBox {
+  background: #fff3cd;
+  border-color: #ffd700;
+}
+
+#existingConditionBox {
+  background: #e7f3ff;
+  border-color: #0ea5e9;
+}
+
+.section:hover {
+  stroke-width: 2;
+  stroke: #ffd700;
+}
+
+.section.active:hover {
+  stroke: #dc2626;
+  stroke-width: 2;
+}
+
+/* Tooltip for teeth sections */
+.section {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.left-label {
+  background: #f1f5f9;
+  border-radius: 6px;
+  padding: 8px 4px;
+  margin: 2px;
+  color: #475569;
+  font-weight: 600;
+}
+
+/* Legend styling */
+.chart-wrapper .legend-container {
+  margin-top: 20px;
+  padding: 15px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+/* Instructions help button */
+.btn-outline-info.btn-sm {
+  transition: all 0.2s ease;
+}
+
+.btn-outline-info.btn-sm:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(23, 162, 184, 0.3);
+}
+
+/* Instructions modal styling */
+.instructions-content .instruction-item {
+  transition: all 0.2s ease;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.instructions-content .instruction-item:hover {
+  background: #f8f9fa;
+}
+
+.instructions-content .badge {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Teeth Summary Styling */
+#teethSummary {
+  background: linear-gradient(135deg, #fff 0%, #fff9e6 50%, #fff 100%);
+  border: 1px solid #e6d700;
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.1);
+}
+
+#teethSummary strong {
+  color: #000;
+  font-weight: 700;
+  margin-bottom: 10px;
+  display: block;
+}
+
+#teethSummaryContent {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.teeth-summary-item {
+  background: linear-gradient(90deg, #fff 0%, #fffbf0 100%);
+  color: #000;
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #f0e68c;
+  box-shadow: 0 2px 6px rgba(255, 215, 0, 0.08);
+  word-wrap: break-word;
+  white-space: normal;
+  line-height: 1.4;
+  transition: all 0.2s ease;
+}
+
+.teeth-summary-item:hover {
+  background: #fff9e6;
+  transform: translateX(2px);
+  box-shadow: 0 4px 8px rgba(255, 215, 0, 0.15);
+}

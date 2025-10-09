@@ -1,0 +1,962 @@
+<html lang="en">
+
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <!-- jsPDF and jsPDF-AutoTable for PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prescription List</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+    <!-- Google Fonts for Roboto and Montserrat -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.7/quill.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/quill-image-resize-module@3.0.0/image-resize.min.js"></script>
+
+    <style>
+        /* Show correct font names in Quill font dropdown */
+        .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="sans-serif"]::before,
+        .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="sans-serif"]::before {
+            content: "Sans Serif";
+        }
+
+        .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="arial"]::before,
+        .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="arial"]::before {
+            content: "Arial";
+        }
+
+        .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="timesnewroman"]::before,
+        .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="timesnewroman"]::before {
+            content: "Times New Roman";
+        }
+
+        .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="roboto"]::before,
+        .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="roboto"]::before {
+            content: "Roboto";
+        }
+
+        .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="montserrat"]::before,
+        .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="montserrat"]::before {
+            content: "Montserrat";
+        }
+
+        body {
+            /* background: linear-gradient(135deg, #fff 0%, #ffd700 50%, #fff 100%); */
+            background-color: #fff;
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2);
+        }
+
+        h2 {
+            color: #000;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #ffd700 0%, #ffec8b 100%);
+            border: none;
+            color: #000;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(255, 215, 0, 0.18), 0 1.5px 0 #fff inset;
+            border-radius: 6px;
+        }
+
+
+        #editor .ql-editor {
+            scrollbar-width: none;
+            /* Firefox */
+            -ms-overflow-style: none;
+            /* IE 10+ */
+        }
+
+        #editor .ql-editor::-webkit-scrollbar {
+            display: none;
+            /* Chrome, Safari, Opera */
+        }
+
+        #editor .ql-editor img {
+            cursor: grab;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(90deg, #ffec8b 0%, #ffd700 100%);
+            border-color: #ffd700;
+            color: #000;
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 6px 16px rgba(255, 215, 0, 0.32), 0 1.5px 0 #fff inset;
+        }
+
+        .nav-tabs .nav-link {
+            color: #000;
+            border: 1px solid #ffd700;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .nav-tabs .nav-link:hover {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: #ffd700;
+            color: #000;
+        }
+
+        .nav-tabs .nav-link.active {
+            background: #ffd700;
+            border-color: #ffd700;
+            color: #000;
+            font-weight: 600;
+        }
+
+        #prescriptionModal .modal-body .mb-2 div[style*='font-size:14px;'] {
+            line-height: 1.2;
+        }
+
+        /* Change cursor to grab hand when hovering over images in Quill editor */
+        #editor .ql-editor img {
+            cursor: grab;
+        }
+
+        /* Custom font styles for Quill */
+        .ql-font-arial {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .ql-font-timesnewroman {
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .ql-font-roboto {
+            font-family: 'Roboto', Arial, sans-serif;
+        }
+
+        .ql-font-montserrat {
+            font-family: 'Montserrat', Arial, sans-serif;
+        }
+
+        /* Show pixel values in Quill size dropdown */
+        .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="10px"]::before,
+        .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="10px"]::before {
+            content: "10px";
+        }
+
+        .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="12px"]::before,
+        .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="12px"]::before {
+            content: "12px";
+        }
+
+        .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="14px"]::before,
+        .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="14px"]::before {
+            content: "14px";
+        }
+
+        .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="16px"]::before,
+        .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="16px"]::before {
+            content: "16px";
+        }
+
+        .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="18px"]::before,
+        .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="18px"]::before {
+            content: "18px";
+        }
+
+        .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="24px"]::before,
+        .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="24px"]::before {
+            content: "24px";
+        }
+
+        .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="32px"]::before,
+        .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="32px"]::before {
+            content: "32px";
+        }
+
+        .ql-snow .ql-picker.ql-size .ql-picker-label:not([data-value]),
+        .ql-snow .ql-picker.ql-size .ql-picker-item:not([data-value]) {
+            content: "Default";
+            /* display: none; */
+        }
+
+        #ql-picker-options-1>span.ql-picker-item.ql-selected {
+            display: none;
+        }
+
+        #editor {
+            min-height: 500px;
+            transition: height 0.2s ease;
+        }
+    </style>
+</head>
+
+<body style="height: 100%;" id="patients-page">
+
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Documents </h2>
+            <button type="button" class="btn btn-primary" id="printPrescriptionBtn">
+                Save Prescription
+            </button>
+            <button type="button" class="btn btn-primary" id="printCertificateBtn" style="display:none;">
+                Save Certificate
+            </button>
+            <button type="button" class="btn btn-primary" id="printMedicalClearanceBtn" style="display:none;">
+                Save Medical Clearance
+            </button>
+            <button type="button" class="btn btn-primary" id="printCaseReportBtn" style="display:none;">
+                Save Case Report
+            </button>
+        </div>
+    </div>
+    <!-- tabs -->
+    <div class="container">
+        <ul class="nav nav-tabs" id="prescriptionTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="all-prescriptions-tab" data-bs-toggle="tab"
+                    data-bs-target="#all-prescriptions" type="button" role="tab" aria-controls="all-prescriptions"
+                    aria-selected="true">Dental Prescriptions</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="recent-prescriptions-tab" data-bs-toggle="tab"
+                    data-bs-target="#recent-prescriptions" type="button" role="tab" aria-controls="recent-prescriptions"
+                    aria-selected="false">Dental Certificate</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="medical-clearance-tab" data-bs-toggle="tab"
+                    data-bs-target="#medical-clearance" type="button" role="tab" aria-controls="medical-clearance"
+                    aria-selected="false">Medical Clearance</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="dental-case-report-tab" data-bs-toggle="tab"
+                    data-bs-target="#dental-case-report" type="button" role="tab" aria-controls="dental-case-report"
+                    aria-selected="false">Dental Case
+                    Report</button>
+            </li>
+        </ul>
+        <div class="tab-content mt-3" id="prescriptionTabsContent">
+            <div class="tab-pane fade show active" id="all-prescriptions" role="tabpanel"
+                aria-labelledby="all-prescriptions-tab">
+                <div id="allPrescriptionsList" class="mb-64">
+                    <div id="prescription" style="max-width:700px; margin: 0 auto;">
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="mb-2">
+                                    <div id="doctorContainer">
+                                        <div>
+                                            <div class="col-7 text-left">
+                                                <div style="font-family:serif; font-size:1.3rem; font-weight:bold;">
+                                                    Kristine
+                                                    Mae
+                                                    Felipe,
+                                                    DMD</div>
+                                            </div>
+                                            <div class="col-7 text-left">
+                                                <div style="font-family:serif; font-size:1.3rem; font-weight:bold;">
+                                                    Ronald
+                                                    O.
+                                                    Felipe,
+                                                    DMD</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span class="fw-bold">DENTISTRY</span>
+                                    <div style="font-size:14px;">
+                                        General Dentistry, Prosthodontics, Endodontics, Surgery, Orthodontics<br>
+                                        Member, Philippine Dental Association<br>
+                                        Member, Quezon City Dental Chapter, Inc<br>
+                                        Member, Philippine Prosthodontic Society<br>
+                                        Member, Philippine Endodontic Society
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-4 text-end">
+                                <img src="/site-logo.png" alt="Blessed Smile Logo"
+                                    style="width:120px; margin-bottom:4px;">
+                                <div class="fw-bold" style="margin-bottom:2px;">Blessed Smile<br><span
+                                        style="font-size:16px;">Dental
+                                        Clinic</span></div>
+                                <div style="font-size:12px; margin-bottom:0;">EST. 2005</div>
+                            </div>
+                        </div>
+                        <div class="row mt-3 mb-2">
+                            <div class="col-8">
+                                <div class="mb-2" style="display: flex; gap: 5px;">
+                                    <label for="patientName" class="form-label mb-1" style="font-weight: 500;">Patient's
+                                        Name: </label>
+                                    <input class="form-control" type="text" name="" id="patientName"
+                                        list="patientNamesDatalist"
+                                        style="max-width: 220px; height: 28px; font-size: 0.95rem;">
+                                </div>
+                                <div class="mb-2" style="display: flex; gap: 5px;">
+                                    <label for="patientAddress" class="form-label mb-1 "
+                                        style="font-weight: 500;">Address:
+                                    </label>
+                                    <input class="form-control" type="text" name="" id="patientAddress"
+                                        style="max-width: 220px; height: 28px; font-size: 0.95rem;">
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="mb-2" style="display: flex; gap: 5px;">
+                                    <label for="date" class="form-label mb-1" style="font-weight: 500;">Date:</label>
+                                    <input class="form-control" type="date" name="" id="date"
+                                        style="height: 28px; font-size: 0.95rem;">
+                                </div>
+                                <div class="mb-2" style="display: flex; gap: 5px;">
+                                    <label for="age" class="form-label mb-1" style="font-weight: 500;">Age:</label>
+                                    <input class="form-control" type="text" name="" id="age"
+                                        style="max-width: 50px; text-align: center; height: 28px; font-size: 0.95rem;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <div class="fs-1 fw-bold" style="font-family:serif;"><img src="/rx-logo.svg" alt=""
+                                        style="max-height: 50px;"></div>
+                                <div style="display: flex; align-items: center; gap: 5px; padding: 0 50px;"
+                                    id="rxContainer">
+                                    <img src="/sig.png" alt="" style="width: 80px;">
+                                    <textarea class="form-control mt-2" rows="2"
+                                        placeholder="Prescription details..."></textarea>
+                                </div>
+                                <div style="display: flex; justify-content: center; margin-top: 12px;"
+                                    id="addPrescriptionContainer">
+                                    <button class="btn btn-dark btn-sm px-3 py-1" style="font-size: 0.95rem;">Add
+                                        Prescription</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-5">
+                            <div id="doctorSignatureRow"
+                                style="display: flex; justify-content: center; gap: 60px; margin-bottom: 18px;">
+                                <div style="text-align: center; min-width: 220px;">
+                                    <div style="font-family:serif; font-size:1.3rem; font-weight:bold;">Kristine Mae
+                                        Felipe, DMD</div>
+                                    <div style="font-size:15px; margin-top:4px;">LICENSE NO. : 47494</div>
+                                    <div style="font-size:15px; margin-top:2px;">PTR NO.</div>
+                                </div>
+                                <div style="text-align: center; min-width: 220px;">
+                                    <div style="font-family:serif; font-size:1.3rem; font-weight:bold;">Ronald O.
+                                        Felipe, DMD</div>
+                                    <div style="font-size:15px; margin-top:4px;">LICENSE NO. : 46872</div>
+                                    <div style="font-size:15px; margin-top:2px;">PTR NO.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-12 text-center" style="font-size:15px;  margin-bottom: 50px;">
+                                <span class="fw-bold">Contact #:</span> 09209548773 / 09298031380<br>
+                                <span class="fw-bold">Email:</span> blessedsmiledentalclinic@gmail.com
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="recent-prescriptions" role="tabpanel"
+                aria-labelledby="recent-prescriptions-tab">
+                <div id="certificateTemplate">
+                    <div id="certificate" style="max-width:700px; margin: 0 auto;">
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="mb-2">
+                                    <div>
+                                        <div class="col-7 text-left">
+                                            <div style="font-family:serif; font-size:1.3rem; font-weight:bold;">Kristine
+                                                Mae
+                                                Felipe,
+                                                DMD</div>
+                                        </div>
+                                        <div class="col-7 text-left">
+                                            <div style="font-family:serif; font-size:1.3rem; font-weight:bold;">Ronald
+                                                O.
+                                                Felipe,
+                                                DMD</div>
+                                        </div>
+                                    </div>
+                                    <span class="fw-bold">DENTISTRY</span>
+                                    <div style="font-size:14px;">
+                                        General Dentistry, Prosthodontics, Endodontics, Surgery, Orthodontics<br>
+                                        Member, Philippine Dental Association<br>
+                                        Member, Quezon City Dental Chapter, Inc<br>
+                                        Member, Philippine Prosthodontic Society<br>
+                                        Member, Philippine Endodontic Society
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-4 text-end">
+                                <img src="/site-logo.png" alt="Blessed Smile Logo"
+                                    style="width:120px; margin-bottom:4px;">
+                                <div class="fw-bold" style="margin-bottom:2px;">Blessed Smile<br><span
+                                        style="font-size:16px;">Dental
+                                        Clinic</span></div>
+                                <div style="font-size:12px; margin-bottom:0;">EST. 2005</div>
+                            </div>
+                        </div>
+                        <div class="row mt-3 mb-2">
+                            <div class="col-8">
+                                <div class="mb-2" style="display: flex; gap: 5px;">
+                                    <label for="certificatePatientName" class="form-label mb-1"
+                                        style="font-weight: 500;">Patient's
+                                        Name:</label>
+                                    <input class="form-control" type="text" name="" id="certificatePatientName"
+                                        list="patientNamesDatalist"
+                                        style="max-width: 220px; height: 28px; font-size: 0.95rem;">
+                                </div>
+                                <div class="mb-2" style="display: flex; gap: 5px;">
+                                    <label for="certificateAddress" class="form-label mb-1"
+                                        style="font-weight: 500;">Address:
+                                    </label>
+                                    <input class="form-control" type="text" name="" id="certificateAddress"
+                                        style="max-width: 220px; height: 28px; font-size: 0.95rem;">
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="mb-2" style="display: flex; gap: 5px;">
+                                    <label for="certificateDate" class="form-label mb-1"
+                                        style="font-weight: 500;">Date:</label>
+                                    <input class="form-control" type="date" name="" id="certificateDate"
+                                        style="height: 28px; font-size: 0.95rem;">
+                                </div>
+                                <div class="mb-2" style="display: flex; gap: 5px;">
+                                    <label for="certificateAge" class="form-label mb-1"
+                                        style="font-weight: 500;">Age:</label>
+                                    <input class="form-control" type="text" name="" id="certificateAge"
+                                        style="max-width: 50px; text-align: center; height: 28px; font-size: 0.95rem;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h1 class="text-center " style="font-size: 30px;">Dental Certificate</h1>
+
+                                <textarea class="form-control mt-2" rows="6" placeholder="Certificate details..."
+                                    style="width: 100%; min-height: 200px; font-size: 1.1rem; padding: 12px; box-sizing: border-box; line-height: 1.4;">This is to certify that [Patient Name], [Age] years old, residing at [Address], was examined and treated at Blessed Smile Dental Clinic on [Date]. The patient is advised to [rest/abstain from work/school/other instructions] for [number] days due to [reason/condition]. If you have any questions, please feel free to contact us.
+                                </textarea>
+
+                            </div>
+                        </div>
+                        <div class="row mt-5">
+                            <div id="doctorSignatureRow"
+                                style="display: flex; justify-content: center; gap: 60px; margin-bottom: 18px;">
+                                <div style="text-align: center; display: inline-block; min-width: 220px;">
+                                    <div style="font-family:serif; font-size:1.3rem; font-weight:bold;">Kristine Mae
+                                        Felipe, DMD</div>
+                                    <div style="font-size:15px; margin-top:4px;">LICENSE NO. : 47494</div>
+                                    <div style="font-size:15px; margin-top:2px;">PTR NO.</div>
+                                </div>
+                                <div style="text-align: center; display: inline-block; min-width: 220px;">
+                                    <div style="font-family:serif; font-size:1.3rem; font-weight:bold;">Ronald O.
+                                        Felipe, DMD</div>
+                                    <div style="font-size:15px; margin-top:4px;">LICENSE NO. : 46872</div>
+                                    <div style="font-size:15px; margin-top:2px;">PTR NO.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-12 text-center" style="font-size:15px;  margin-bottom: 50px;">
+                                <span class="fw-bold">Contact #:</span> 09209548773 / 09298031380<br>
+                                <span class="fw-bold">Email:</span> blessedsmiledentalclinic@gmail.com
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="medical-clearance" role="tabpanel" aria-labelledby="medical-clearance-tab">
+                <div id="medicalClearanceTemplate">
+                    <div id="medicalClearance" style="max-width:800px; margin: 0 auto;">
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="mb-2">
+                                    <div>
+                                        <div class="col-7 text-left">
+                                            <div style="font-family:serif; font-size:1.3rem; font-weight:bold;">Kristine
+                                                Mae
+                                                Felipe,
+                                                DMD</div>
+                                        </div>
+                                        <div class="col-7 text-left">
+                                            <div style="font-family:serif; font-size:1.3rem; font-weight:bold;">Ronald
+                                                O.
+                                                Felipe,
+                                                DMD</div>
+                                        </div>
+                                    </div>
+                                    <span class="fw-bold">DENTISTRY</span>
+                                    <div style="font-size:14px;">
+                                        General Dentistry, Prosthodontics, Endodontics, Surgery, Orthodontics<br>
+                                        Member, Philippine Dental Association<br>
+                                        Member, Quezon City Dental Chapter, Inc<br>
+                                        Member, Philippine Prosthodontic Society<br>
+                                        Member, Philippine Endodontic Society
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-4 text-end">
+                                <img src="/site-logo.png" alt="Blessed Smile Logo"
+                                    style="width:120px; margin-bottom:4px;">
+                                <div class="fw-bold" style="margin-bottom:2px;">Blessed Smile<br><span
+                                        style="font-size:16px;">Dental
+                                        Clinic</span></div>
+                                <div style="font-size:12px; margin-bottom:0;">EST. 2005</div>
+                            </div>
+                            <div class="row mt-3 mb-2">
+                                <div class="col-8">
+                                    <div class="mb-2" style="display: flex; gap: 5px;">
+                                        <label for="certificateDate" class="form-label mb-1"
+                                            style="font-weight: 500;">Date:</label>
+                                        <input class="form-control" type="date" name="" id="certificateDate"
+                                            style="height: 28px; font-size: 0.95rem;">
+                                    </div>
+                                    <div class="mb-2" style="display: flex; gap: 5px;">
+                                        <label for="toDr" class="form-label mb-1" style="font-weight: 500;">To
+                                            Dr. :</label>
+                                        <input class="form-control" type="text" name="" id="toDr"
+                                            style="max-width: 220px; height: 28px; font-size: 0.95rem;">
+                                    </div>
+
+                                </div>
+                                <div class="col-4">
+
+                                    <div class="mb-2" style="display: flex; gap: 5px;">
+                                        <label for="certificatePhone" class="form-label mb-1"
+                                            style="font-weight: 500;">Phone:</label>
+                                        <input class="form-control" type="text" name="" id="certificatePhone"
+                                            style="max-width: 100%; text-align: center; height: 28px; font-size: 0.95rem;">
+                                    </div>
+                                    <div class="mb-2" style="display: flex; gap: 5px;">
+                                        <label for="certificateFax" class="form-label mb-1"
+                                            style="font-weight: 500;">Fax:</label>
+                                        <input class="form-control" type="text" name="" id="certificateFax"
+                                            style="max-width: 100%; text-align: center; height: 28px; font-size: 0.95rem;">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-3 mb-2">
+                                <div class="col-12">
+                                    <div
+                                        style="font-family:serif; font-size:1.15rem; font-weight:bold; margin-bottom:10px;">
+                                        RE: REQUEST FOR MEDICAL CLEARANCE</div>
+                                    <div style="margin-bottom:10px; font-size:1.05rem;"><span
+                                            style="font-weight:bold;">Name of Patient:</span> <input type="text"
+                                            class="form-control d-inline-block"
+                                            style="width:60%; max-width:350px; display:inline-block; margin-left:8px; margin-bottom:4px;"
+                                            id="clearancePatientName" list="patientNamesDatalist"></div>
+                                    <div style="margin-bottom:10px; font-size:1.05rem;">I have examined the patient and
+                                        recommended the following dental treatment in my office:</div>
+                                    <div style="margin-bottom:10px; display: flex; justify-content: space-around;">
+                                        <label style="margin-right:18px;"><input type="checkbox"
+                                                id="clearanceToothExtraction"> Tooth extraction</label>
+                                        <label style="margin-right:18px;"><input type="checkbox"
+                                                id="clearanceRootCanal"> Root Canal</label>
+                                        <label style="margin-right:18px;"><input type="checkbox" id="clearanceFillings">
+                                            Fillings</label>
+                                        <label style="margin-right:18px;"><input type="checkbox"
+                                                id="clearanceProphylaxis"> Prophylaxis</label>
+                                    </div>
+                                    <div style="margin-bottom:10px; font-size:1.05rem;">Based on the medical information
+                                        given to us by the above patient, it is noted that the patient was previously,
+                                        or presently under your care for an existing medical condition as reported by
+                                        her/him.</div>
+                                    <div
+                                        style="width:100%; margin-bottom:10px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                                        <div class="flex  " style="width: 90%; font-size: 22px;">(<input type="text"
+                                                class="form-control d-inline-block"
+                                                style="width:90%; display:inline-block; text-align:center;"
+                                                id="clearanceCondition"></input>)</div>
+
+                                        <span style="font-size:0.95rem; text-align:center;">(Brief description of
+                                            medical condition as
+                                            reported by patient)</span>
+                                    </div>
+                                    <div style="margin-bottom:10px; font-size:1.05rem;">
+                                        <textarea name="" id="" style="width: 100%; border:none; height:450px;">In order for us to deliver safe and efficient dental treatment while being aware of patient's medical condition, I would like to request a brief written medical clearance to ensure that any of the above proposed treatment is permissible. Specifically, the above procedures may need local anesthetic (2% lidocaine with epinephrine) and analgesic for post operative pain. In order for us to deliver safe and efficient dental treatment while being aware of patient's medical condition, I would like to request a brief written medical clearance to ensure that any of the above proposed treatment is permissible. Specifically, the above procedures may need local anesthetic (2% lidocaine with epinephrine) and analgesic for post operative pain.
+                                     
+In your opinion, is there any contraindication to any of the proposed dental treatment? Finally, are there any other medical considerations of which I should be aware that the patient might not have fully disclosed to me?
+
+If you have any questions or concerns, please do not hesitate to give me a call. Your cooperation is greatly appreciated.
+</textarea>
+                                    </div>
+
+                                    <div style="margin-bottom:10px; font-size:1.05rem;">Thank you,</div>
+                                    <div style="font-size:1.05rem; font-weight:bold; margin-bottom: 20px;"><input
+                                            type="text" id="belowName" style="border-top: none; border-left: none;
+    border-right: none;" placeholder="Name Here"></div>
+
+                                    <div>
+                                        <div
+                                            style="border:1px solid #222; border-radius:4px; padding:16px; margin-bottom:18px;">
+                                            <div
+                                                style="font-weight:bold; text-align:center; font-size:1.15rem; margin-bottom:8px;">
+                                                Medical Doctor’s Brief Notes/Recommendations:</div>
+                                            <div style="margin-bottom:12px;">
+                                                <textarea rows="3"
+                                                    style="width:100%; border-top: none; border-left: none;
+    border-right: none; border-bottom:1px solid #222; border-radius:2px; resize:none; font-size:1rem; margin-bottom:8px;"></textarea>
+                                                <textarea rows="1"
+                                                    style="width:100%; border-top: none;
+    border-left: none;
+    border-right: none; border-bottom:1px solid #222; border-radius:2px; resize:none; font-size:1rem; margin-bottom:8px;"></textarea>
+                                                <textarea rows="1" style="width:100%;    border-top: none;
+    border-left: none;
+    border-right: none; border-bottom:1px solid #222; border-radius:2px; resize:none; font-size:1rem;"></textarea>
+                                            </div>
+                                            <div
+                                                style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+                                                <span>Doctor's Signature: <span
+                                                        style="display:inline-block; min-width:180px; border-bottom:1px solid #222;"></span></span>
+                                                <span>Date: <input type="date" name="patientConsentDate"
+                                                        id="patientConsentDate" style="border-top: none; border-left: none;
+                                                    border-right: none;"></span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div>
+                                        <div
+                                            style="border:1px solid #222; border-radius:4px; padding:16px; margin-bottom:18px;">
+                                            <div
+                                                style="font-weight:bold; text-align:center; font-size:1.08rem; margin-bottom:8px;">
+                                                Patient's Consent to Authorize the Release of Medical Information</div>
+                                            <div style="margin-bottom:12px; font-size:1rem;">I hereby authorize the
+                                                release my medical records as requested above:</div>
+                                            <div
+                                                style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+                                                <span>Patient's Signature: <span
+                                                        style="display:inline-block; min-width:180px; border-bottom:1px solid #222;"></span></span>
+                                                <span>Date: <input type="date" name="patientConsentDate"
+                                                        id="patientConsentDate" style="border-top: none; border-left: none;
+    border-right: none;"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="tab-pane fade" id="dental-case-report" role="tabpanel" aria-labelledby="dental-case-report-tab">
+                <div id="dentalCaseReportTemplate">
+                    <div id="dentalCaseReport" style="max-width:850px; margin: 0 auto;">
+                        <!-- Dental Case Report content goes here -->
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="mb-2">
+                                    <div>
+                                        <div class="col-7 text-left">
+                                            <div style="font-family:serif; font-size:1.3rem; font-weight:bold;">Kristine
+                                                Mae
+                                                Felipe,
+                                                DMD</div>
+                                        </div>
+                                        <div class="col-7 text-left">
+                                            <div style="font-family:serif; font-size:1.3rem; font-weight:bold;">Ronald
+                                                O.
+                                                Felipe,
+                                                DMD</div>
+                                        </div>
+                                    </div>
+                                    <span class="fw-bold">DENTISTRY</span>
+                                    <div style="font-size:14px;">
+                                        General Dentistry, Prosthodontics, Endodontics, Surgery, Orthodontics<br>
+                                        Member, Philippine Dental Association<br>
+                                        Member, Quezon City Dental Chapter, Inc<br>
+                                        Member, Philippine Prosthodontic Society<br>
+                                        Member, Philippine Endodontic Society
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-4 text-end">
+                                <img src="/site-logo.png" alt="Blessed Smile Logo"
+                                    style="width:120px; margin-bottom:4px;">
+                                <div class="fw-bold" style="margin-bottom:2px;">Blessed Smile<br><span
+                                        style="font-size:16px;">Dental
+                                        Clinic</span></div>
+                                <div style="font-size:12px; margin-bottom:0;">EST. 2005</div>
+                            </div>
+                        </div>
+                        <div id="editor" style="height: 500px; background: #fff; margin-bottom: 10px;"></div>
+                        <div id="doctorSignatureRow"
+                            style="display: flex; justify-content: center; gap: 40px; margin-top: 10px; margin-bottom: 10px;">
+                            <div style="text-align: center; min-width: 180px;">
+                                <div style="font-family:serif; font-size:1.1rem; font-weight:bold;">Kristine Mae Felipe,
+                                    DMD</div>
+                                <div
+                                    style="font-size:13px; margin-top:2px; display:flex; justify-content:center; gap:4px;">
+                                    <span>LICENSE <span style=" margin-left:10px;">NO.:</span></span>
+                                    <span style="letter-spacing:1px;">47494</span>
+                                </div>
+                                <div style="font-size:13px; margin-top:1px;">PTR NO.</div>
+                            </div>
+                            <div style="text-align: center; min-width: 180px;">
+                                <div style="font-family:serif; font-size:1.1rem; font-weight:bold;">Ronald O. Felipe,
+                                    DMD</div>
+                                <div
+                                    style="font-size:13px; margin-top:2px; display:flex; justify-content:center; gap:4px;">
+                                    <span>LICENSE <span style=" margin-left:10px;">NO.:</span></span>
+                                    <span style="letter-spacing:1px;">46872</span>
+                                </div>
+                                <div style="font-size:13px; margin-top:1px;">PTR NO.</div>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-12 text-center" style="font-size:15px;  margin-bottom: 50px;">
+                                <span class="fw-bold">Contact #:</span> 09209548773 / 09298031380<br>
+                                <span class="fw-bold">Email:</span> blessedsmiledentalclinic@gmail.com
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/app.js" defer></script>
+    <script src="print.js" defer></script>
+    <script>
+        // // Dental Case Report PDF export using jsPDF (not html2canvas)
+        // document.addEventListener("DOMContentLoaded", function () {
+        //     var printCaseReportBtn = document.getElementById("printCaseReportBtn");
+        //     if (printCaseReportBtn) {
+        //         printCaseReportBtn.addEventListener("click", function () {
+        //             var caseReportDiv = document.getElementById("dentalCaseReport");
+        //             var editor = document.getElementById("editor");
+        //             var toolbar = document.querySelector(".ql-toolbar.ql-snow");
+        //             // Save original styles
+        //             var originalToolbarDisplay = toolbar ? toolbar.style.display : null;
+        //             var originalEditorBorder = editor ? editor.style.border : null;
+        //             var originalMaxHeight = caseReportDiv.style.maxHeight;
+        //             // Apply print styles
+        //             if (toolbar) toolbar.style.display = "none";
+        //             if (editor) editor.style.border = "none";
+
+        //             var jsPDFLib = window.jspdf ? window.jspdf.jsPDF : window.jsPDF;
+        //             var pdf = new jsPDFLib({ unit: "pt", format: "a4" });
+        //             var pageWidth = pdf.internal.pageSize.getWidth();
+        //             var pageHeight = pdf.internal.pageSize.getHeight();
+
+        //             // 1 inch = 72pt
+        //             var margin = 72;
+        //             // Set max-height to printable area
+        //             caseReportDiv.style.maxHeight = (pageHeight - margin * 2) + "pt";
+
+        //             pdf.html(caseReportDiv, {
+        //                 x: margin,
+        //                 y: margin,
+        //                 width: pageWidth - margin * 2,
+        //                 windowWidth: caseReportDiv.offsetWidth,
+        //                 callback: function (doc) {
+        //                     var fileName = "dental-case-report.pdf";
+        //                     pdf.save(fileName);
+        //                     // Reset styles after export
+        //                     if (toolbar) toolbar.style.display = originalToolbarDisplay;
+        //                     if (editor) editor.style.border = originalEditorBorder;
+        //                     caseReportDiv.style.maxHeight = originalMaxHeight;
+        //                 }
+        //             });
+        //         });
+        //     }
+        // });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            var printCaseReportBtn = document.getElementById("printCaseReportBtn");
+            if (printCaseReportBtn) {
+                printCaseReportBtn.addEventListener("click", function () {
+                    var caseReportDiv = document.getElementById("dentalCaseReport");
+                    var editor = document.getElementById("editor");
+                    var toolbar = document.querySelector(".ql-toolbar.ql-snow");
+
+                    // Save original styles
+                    var originalToolbarDisplay = toolbar ? toolbar.style.display : null;
+                    var originalEditorBorder = editor ? editor.style.border : null;
+                    var originalMaxHeight = caseReportDiv.style.maxHeight;
+
+                    // Apply print styles
+                    if (toolbar) toolbar.style.display = "none";
+                    if (editor) editor.style.border = "none";
+
+                    var jsPDFLib = window.jspdf ? window.jspdf.jsPDF : window.jsPDF;
+                    var pdf = new jsPDFLib({ unit: "pt", format: "a4" });
+                    var pageWidth = pdf.internal.pageSize.getWidth();
+                    var pageHeight = pdf.internal.pageSize.getHeight();
+
+                    // 1 inch = 72pt
+                    var marginTop = 72;      // 1 inch top
+                    var marginBottom = 72;   // 1 inch bottom
+                    var marginLeftRight = 72;
+
+                    // Set max-height to printable area (excluding top + bottom margins)
+                    caseReportDiv.style.maxHeight = (pageHeight - (marginTop + marginBottom)) + "pt";
+
+                    pdf.html(caseReportDiv, {
+                        margin: [marginTop, marginLeftRight, marginBottom, marginLeftRight], // [top, left, bottom, right]
+                        autoPaging: "text", // ensures multi-page respects margins
+                        width: pageWidth - marginLeftRight * 2,
+                        windowWidth: caseReportDiv.offsetWidth,
+                        callback: function (doc) {
+                            doc.save("dental-case-report.pdf");
+
+                            // Reset styles after export
+                            if (toolbar) toolbar.style.display = originalToolbarDisplay;
+                            if (editor) editor.style.border = originalEditorBorder;
+                            caseReportDiv.style.maxHeight = originalMaxHeight;
+                        }
+                    });
+
+                });
+            }
+        });
+
+    </script>
+
+    <script>
+        Quill.register('modules/imageResize', window.ImageResize.default);
+        // Register font size style with allowed pixel values BEFORE initializing Quill
+        var Size = Quill.import('attributors/style/size');
+        Size.whitelist = ['10px', '12px', '14px', '16px', '18px', '24px', '32px'];
+        Quill.register(Size, true);
+        // Register custom fonts
+        var Font = Quill.import('attributors/class/font');
+        Font.whitelist = ['sans-serif', 'arial', 'timesnewroman', 'roboto', 'montserrat'];
+        Quill.register(Font, true);
+
+        const quill = new Quill('#editor', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    [{ 'font': ['sans-serif', 'arial', 'timesnewroman', 'roboto', 'montserrat'] }],
+                    [{ 'size': ['10px', '12px', '14px', '16px', '18px', '24px', '32px', false] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'color': [] }, { 'background': [] }],
+                    [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
+                    [{ 'direction': 'rtl' }],
+                    [{ 'align': [] }],
+                    ['link', 'image'],
+                ],
+                imageResize: {
+                    modules: ['Resize', 'DisplaySize', 'Toolbar']
+                }
+            }
+        });
+
+        // Auto-adjust height
+        quill.on('text-change', function () {
+            const editor = document.querySelector('#editor .ql-editor');
+            const container = document.getElementById('editor');
+
+            container.style.height = "auto"; // reset
+            container.style.height = editor.scrollHeight + "px";
+        });
+
+        // Make images draggable inside the editor and prevent highlight on drag
+        function enableImageDragging() {
+            const editor = document.querySelector('#editor .ql-editor');
+            if (!editor) return;
+            editor.querySelectorAll('img').forEach(img => {
+                img.setAttribute('draggable', 'true');
+                img.addEventListener('dragstart', function (e) {
+                    e.dataTransfer.setData('text/plain', '');
+                    window.draggedImage = img;
+                    // Prevent highlight/selection
+                    img.style.userSelect = 'none';
+                });
+                img.addEventListener('selectstart', function (e) {
+                    e.preventDefault();
+                });
+            });
+            editor.addEventListener('dragover', function (e) {
+                e.preventDefault();
+            });
+            editor.addEventListener('drop', function (e) {
+                e.preventDefault();
+                const dragged = window.draggedImage;
+                if (dragged) {
+                    // Get drop position
+                    const range = document.caretRangeFromPoint(e.clientX, e.clientY);
+                    if (range) {
+                        // Remove the image from its old position
+                        dragged.parentNode.removeChild(dragged);
+                        // Insert at new position
+                        range.insertNode(dragged);
+                        window.draggedImage = null;
+                        quill.update();
+                    }
+                }
+            });
+        }
+        quill.on('text-change', enableImageDragging);
+        window.addEventListener('load', enableImageDragging);
+
+        // Make images draggable inside the editor
+        function enableImageDragging() {
+            const editor = document.querySelector('#editor .ql-editor');
+            if (!editor) return;
+            editor.querySelectorAll('img').forEach(img => {
+                img.setAttribute('draggable', 'true');
+                img.addEventListener('dragstart', function (e) {
+                    e.dataTransfer.setData('text/plain', '');
+                    window.draggedImage = img;
+                });
+            });
+            editor.addEventListener('dragover', function (e) {
+                e.preventDefault();
+            });
+            editor.addEventListener('drop', function (e) {
+                e.preventDefault();
+                const dragged = window.draggedImage;
+                if (dragged) {
+                    // Get drop position
+                    const range = document.caretRangeFromPoint(e.clientX, e.clientY);
+                    if (range) {
+                        // Remove the image from its old position
+                        dragged.parentNode.removeChild(dragged);
+                        // Insert at new position
+                        range.insertNode(dragged);
+                        window.draggedImage = null;
+                        quill.update();
+                    }
+                }
+            });
+        }
+        quill.on('text-change', enableImageDragging);
+        window.addEventListener('load', enableImageDragging);
+
+    </script>
+    <script>
+        // Get today's date in YYYY-MM-DD format
+        const today = new Date().toISOString().split('T')[0];
+
+        // Select all date inputs and set their value
+        document.querySelectorAll('input[type="date"]').forEach(el => {
+            el.value = today;
+        });
+    </script>
+
+</body>
+
+</html>

@@ -1,3 +1,148 @@
+/* Theme Support - CSS Variables */
+body {
+  background: var(--theme-background, black) !important;
+  color: var(--theme-text, #2d3748) !important;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  min-height: 100vh;
+}
+
+.main-container {
+  background: var(--theme-card-bg, rgba(255, 255, 255, 0.95)) !important;
+  color: var(--theme-text, #2d3748) !important;
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  box-shadow: 0 20px 60px var(--theme-shadow, rgba(0, 0, 0, 0.1));
+  margin: 2rem auto;
+  padding: 0;
+  overflow: hidden;
+}
+
+.header-section {
+  background: var(
+    --theme-primary-bg,
+    linear-gradient(135deg, #fff 0%, #ffd700 60%, #1e293b 100%)
+  ) !important;
+  border-radius: 0 0 24px 24px;
+  box-shadow: 0 4px 24px var(--theme-shadow, rgba(30, 41, 59, 0.07));
+  padding: 2.5rem 2rem 2rem 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.page-title {
+  color: var(--theme-text, #1e293b) !important;
+  font-weight: 700;
+  font-size: 2.5rem;
+  letter-spacing: 1px;
+}
+
+.section-card {
+  background: var(--theme-card-bg, #fff) !important;
+  color: var(--theme-text, #2d3748) !important;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px var(--theme-shadow, rgba(30, 41, 59, 0.08));
+  margin-bottom: 2.5rem;
+  padding: 2.5rem 2rem;
+  border: 1.5px solid var(--theme-accent, #f3f4f6);
+}
+
+.section-header {
+  background: var(--theme-surface, transparent) !important;
+  color: var(--theme-text, #1e293b) !important;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.section-title {
+  color: var(--theme-text, #1e293b) !important;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0;
+  text-align: left;
+}
+
+.section-subtitle {
+  color: var(--theme-text, #1e293b) !important;
+}
+
+.section-body {
+  background: var(--theme-surface, #f8fafc) !important;
+  color: var(--theme-text, #2d3748) !important;
+  border-radius: 14px;
+  margin-top: 0.5rem;
+  padding-bottom: 30px;
+  padding-top: 30px;
+}
+
+.modal-content {
+  background: var(--theme-card-bg, #fff) !important;
+  color: var(--theme-text, #2d3748) !important;
+  border-color: var(--theme-accent, #f3f4f6);
+}
+
+.form-control,
+.form-select {
+  background: var(--theme-card-bg, #fff) !important;
+  color: var(--theme-text, #2d3748) !important;
+  border-color: var(--theme-accent, #ced4da) !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+  background: var(--theme-card-bg, #fff) !important;
+  color: var(--theme-text, #2d3748) !important;
+  border-color: var(--theme-primary, #ffd700) !important;
+  box-shadow: 0 0 0 0.2rem var(--theme-focus, rgba(255, 215, 0, 0.25));
+}
+
+.btn-primary {
+  background: var(
+    --theme-primary-bg,
+    linear-gradient(135deg, #ffd700 0%, #ffa500 100%)
+  ) !important;
+  border-color: var(--theme-accent, #ffd700) !important;
+  color: var(--theme-text, #1e293b) !important;
+}
+
+.btn-primary:hover {
+  background: var(--theme-accent, #ffa500) !important;
+  border-color: var(--theme-accent, #ffa500) !important;
+  color: var(--theme-text, #1e293b) !important;
+}
+
+.table {
+  background: var(--theme-card-bg, #fff) !important;
+  color: var(--theme-text, #2d3748) !important;
+}
+
+.table thead {
+  background: var(
+    --theme-primary-bg,
+    linear-gradient(135deg, #ffd700 0%, #ffa500 100%)
+  ) !important;
+}
+
+.table thead th {
+  background: transparent !important;
+  color: var(--theme-text, #1e293b) !important;
+  border: none;
+}
+
+.table tbody td {
+  background: var(--theme-card-bg, #fff) !important;
+  color: var(--theme-text, #2d3748) !important;
+  border-color: var(--theme-accent, #dee2e6) !important;
+}
+
+.input-group-text {
+  background: var(--theme-accent, #ffd700) !important;
+  color: var(--theme-text, #1e293b) !important;
+  border: none;
+  font-weight: 600;
+}
+
+/* Original Styles Below */
 .chart-row {
   display: flex;
   align-items: center;
@@ -9,118 +154,89 @@
   padding: 5px;
 }
 
-/* --- Profile/Procedure Section Theme --- */
-.section-card {
-  background: #fff;
-  border-radius: 18px;
-  box-shadow: 0 8px 32px rgba(30, 41, 59, 0.08),
-    0 1.5px 6px rgba(255, 215, 0, 0.08);
-  margin-bottom: 2.5rem;
-  padding: 2.5rem 2rem;
-  border: 1.5px solid #f3f4f6;
-}
-
-.section-header {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  margin-bottom: 1.5rem;
-}
+/* Removed duplicate section styles - now using theme variables at top of file */
 
 .section-icon {
   width: 54px;
   height: 54px;
-  background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);
+  background: var(
+    --theme-primary-bg,
+    linear-gradient(135deg, #ffd700 0%, #ffa500 100%)
+  ) !important;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #1e293b;
+  color: var(--theme-text, #1e293b) !important;
   font-size: 2rem;
-  box-shadow: 0 4px 16px rgba(255, 215, 0, 0.13);
-}
-
-.section-title {
-  color: #1e293b;
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 0;
-  text-align: left;
-}
-
-.section-body {
-  background: #f8fafc;
-  border-radius: 14px;
-  /* padding: 2rem 1.5rem; */
-  margin-top: 0.5rem;
-  padding-bottom: 30px;
-  padding-top: 30px;
+  box-shadow: 0 4px 16px var(--theme-shadow, rgba(255, 215, 0, 0.13));
 }
 
 /* Procedure form container */
 #procedureFormContainer {
-  background: #fff;
+  background: var(--theme-card-bg, #fff) !important;
+  color: var(--theme-text, #2d3748) !important;
   border-radius: 14px;
-  box-shadow: 0 2px 12px rgba(30, 41, 59, 0.07);
+  box-shadow: 0 2px 12px var(--theme-shadow, rgba(30, 41, 59, 0.07));
   padding: 2rem 1.5rem;
-  border: 1px solid #f3f4f6;
+  border: 1px solid var(--theme-accent, #f3f4f6);
 }
 
 #procedureFormContainer h1 {
-  color: #1e293b;
+  color: var(--theme-text, #1e293b) !important;
   font-size: 1.5rem;
   font-weight: 700;
 }
 
 /* Teeth chart container */
 #teethChartContainer {
-  background: #f8fafc;
+  background: var(--theme-surface, #f8fafc) !important;
+  color: var(--theme-text, #2d3748) !important;
   border-radius: 14px;
-  box-shadow: 0 2px 12px rgba(30, 41, 59, 0.07);
+  box-shadow: 0 2px 12px var(--theme-shadow, rgba(30, 41, 59, 0.07));
   padding: 1rem;
-  border: 1px solid #f3f4f6;
+  border: 1px solid var(--theme-accent, #f3f4f6);
   overflow-x: auto;
   min-width: 600px;
 }
 
-.input-group-text {
-  background: #ffd700;
-  color: #1e293b;
-  border: none;
-  font-weight: 600;
-}
-
 /* Modern button styles */
 .btn-modern {
-  background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);
-  color: #1e293b;
+  background: var(
+    --theme-primary-bg,
+    linear-gradient(135deg, #ffd700 0%, #ffa500 100%)
+  ) !important;
+  color: var(--theme-text, #1e293b) !important;
   border: none;
   border-radius: 10px;
   font-weight: 600;
   padding: 0.7rem 1.6rem;
   transition: all 0.2s;
-  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.13);
+  box-shadow: 0 2px 8px var(--theme-shadow, rgba(255, 215, 0, 0.13));
 }
 .btn-modern:hover {
-  background: linear-gradient(135deg, #ffa500 0%, #ffd700 100%);
-  color: #1e293b;
-  box-shadow: 0 4px 16px rgba(255, 215, 0, 0.18);
+  background: var(
+    --theme-accent,
+    linear-gradient(135deg, #ffa500 0%, #ffd700 100%)
+  ) !important;
+  color: var(--theme-text, #1e293b) !important;
+  box-shadow: 0 4px 16px var(--theme-shadow, rgba(255, 215, 0, 0.18));
 }
 
 .btn-secondary-modern {
-  background: #1e293b;
-  color: #ffd700;
+  background: var(--theme-surface, #1e293b) !important;
+  color: var(--theme-accent, #ffd700) !important;
   border: none;
   border-radius: 10px;
   font-weight: 600;
   padding: 0.7rem 1.6rem;
   transition: all 0.2s;
-  box-shadow: 0 2px 8px rgba(30, 41, 59, 0.13);
+  box-shadow: 0 2px 8px var(--theme-shadow, rgba(30, 41, 59, 0.13));
 }
 .btn-secondary-modern:hover {
-  background: #ffd700;
-  color: #1e293b;
-  box-shadow: 0 4px 16px rgba(30, 41, 59, 0.18);
+  background: var(--theme-accent, #ffd700) !important;
+  color: var(--theme-text, #1e293b) !important;
+  box-shadow: 0 4px 16px var(--theme-shadow, rgba(30, 41, 59, 0.18));
 }
 
 .left-label {
@@ -181,22 +297,7 @@ svg {
   }
 }
 
-body {
-  background-color: black;
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-  min-height: 100vh;
-  color: #2d3748;
-}
-
-.main-container {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  border-radius: 24px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-  margin: 2rem auto;
-  padding: 0;
-  overflow: hidden;
-}
+/* Removed duplicate body and main-container styles - now using theme variables at top of file */
 
 .header-section {
   background: linear-gradient(135deg, #ffd700 0%, #1e293b 100%);
@@ -307,22 +408,19 @@ body {
 }
 
 .info-item {
-  background: #f8fafc;
+  background: var(--theme-surface, #f8fafc) !important;
+  color: var(--theme-text, #2d3748) !important;
   border-radius: 16px;
   padding: 1.5rem;
-  border: 1px solid #e2e8f0;
-  transition: all 0.3s ease;
+  border: 1px solid var(--theme-accent, #e2e8f0);
 }
 
-.info-item:hover {
-  background: #f1f5f9;
-  border-color: #cbd5e1;
-}
+/* Hover effect removed for better dark theme compatibility */
 
 .info-label {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #64748b;
+  color: var(--theme-text, #64748b) !important;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 0.5rem;
@@ -331,15 +429,16 @@ body {
 .info-value {
   font-size: 1.1rem;
   font-weight: 500;
-  color: #1e293b;
+  color: var(--theme-text, #1e293b) !important;
   margin: 0;
 }
 
 .medical-record-form {
-  background: #fafbfc;
+  background: var(--theme-surface, #fafbfc) !important;
+  color: var(--theme-text, #2d3748) !important;
   border-radius: 16px;
   padding: 2rem;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--theme-accent, #e2e8f0);
 }
 
 .form-group {
@@ -349,7 +448,7 @@ body {
 .form-label {
   font-size: 1rem;
   font-weight: 600;
-  color: #374151;
+  color: var(--theme-text, #374151) !important;
   margin-bottom: 1rem;
   display: block;
 }
@@ -368,16 +467,17 @@ body {
 }
 
 .form-check {
-  background: white;
+  background: var(--theme-card-bg, white) !important;
+  color: var(--theme-text, #2d3748) !important;
   padding: 1rem;
   border-radius: 12px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--theme-accent, #e2e8f0);
   transition: all 0.3s ease;
 }
 
 .form-check:hover {
-  border-color: #667eea;
-  background: #f8fafc;
+  border-color: var(--theme-primary, #667eea);
+  background: var(--theme-hover, #f8fafc) !important;
 }
 
 .form-check-input:checked + .form-check-label {
@@ -429,11 +529,18 @@ body {
   margin: 0;
 }
 
+.table thead {
+  background: var(
+    --theme-primary-bg,
+    linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)
+  ) !important;
+}
+
 .table thead th {
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  background: transparent !important;
   border: none;
   font-weight: 600;
-  color: #374151;
+  color: var(--theme-text, #374151) !important;
   padding: 1.5rem 1rem;
   text-transform: uppercase;
   font-size: 0.875rem;
@@ -442,12 +549,13 @@ body {
 
 .table tbody td {
   padding: 1.25rem 1rem;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--theme-accent, #f1f5f9);
   vertical-align: middle;
+  color: var(--theme-text, #2d3748) !important;
 }
 
 .table tbody tr:hover {
-  background: #f8fafc;
+  background: var(--theme-hover, #f8fafc) !important;
 }
 
 .btn-view {
@@ -467,18 +575,21 @@ body {
   color: white;
 }
 
-.btn-gold-gradient {
+/* .btn-gold-gradient {
   background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%) !important;
   color: #1e293b !important;
   border: none;
   font-weight: 600;
-  transition: background 0.2s, color 0.2s;
-}
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+} */
 
 .btn-gold-gradient:hover,
 .btn-gold-gradient:focus {
-  background: linear-gradient(135deg, #ffd700 0%, #000 100%) !important;
-  color: #ffd700 !important;
+  background: linear-gradient(135deg, #ffed4e 0%, #ffd700 100%) !important;
+  color: #1e293b !important;
+  box-shadow: 0 4px 16px rgba(255, 215, 0, 0.4);
+  transform: translateY(-1px);
 }
 
 .pagination {
@@ -622,7 +733,7 @@ body {
 
 .chart-wrapper h2 {
   text-align: center;
-  color: #1e293b;
+  color: var(--theme-text, #1e293b) !important;
   font-weight: 700;
   margin-bottom: 20px;
   font-size: 1.3rem;
@@ -670,11 +781,11 @@ body {
 }
 
 .left-label {
-  background: #f1f5f9;
+  background: var(--theme-surface, #f1f5f9) !important;
   border-radius: 6px;
   padding: 8px 4px;
   margin: 2px;
-  color: #475569;
+  color: var(--theme-text, #475569) !important;
   font-weight: 600;
 }
 
@@ -761,4 +872,254 @@ body {
   background: #fff9e6;
   transform: translateX(2px);
   box-shadow: 0 4px 8px rgba(255, 215, 0, 0.15);
+}
+
+/* Dark Theme Specific Overrides */
+.theme-dark .info-item {
+  background: var(--theme-surface, #2d3748) !important;
+  color: var(--theme-text, #e2e8f0) !important;
+  border-color: var(--theme-accent, #4a5568);
+}
+
+/* Hover effect removed */
+
+.theme-dark .info-label {
+  color: var(--theme-text, #94a3b8) !important;
+}
+
+.theme-dark .info-value {
+  color: var(--theme-text, #e2e8f0) !important;
+}
+
+.theme-dark .medical-record-form {
+  background: var(--theme-surface, #1f2937) !important;
+  color: var(--theme-text, #e2e8f0) !important;
+  border-color: var(--theme-accent, #374151);
+}
+
+.theme-dark .form-label {
+  color: var(--theme-text, #e2e8f0) !important;
+}
+
+.theme-dark .form-check-label {
+  color: var(--theme-text, #d1d5db) !important;
+}
+
+.theme-dark .section-body {
+  background: var(--theme-surface, #1a202c) !important;
+  color: var(--theme-text, #e2e8f0) !important;
+}
+
+.theme-dark .teeth-summary-item {
+  background: linear-gradient(90deg, #374151 0%, #4b5563 100%);
+  color: #fbbf24;
+  border-color: #6b7280;
+}
+
+.theme-dark .teeth-summary-item:hover {
+  background: #4b5563;
+  box-shadow: 0 4px 8px rgba(251, 191, 36, 0.15);
+}
+
+.theme-dark .patient-info-section h4,
+.theme-dark .medical-record-section h4 {
+  color: #000000 !important;
+}
+
+.theme-dark .patient-info-section h4 span,
+.theme-dark .medical-record-section h4 span {
+  color: #000000 !important;
+}
+
+.theme-dark .patient-info-section h4 i,
+.theme-dark .medical-record-section h4 i {
+  color: #000000 !important;
+}
+
+.theme-dark .section-subtitle {
+  color: #000000 !important;
+}
+
+/* Dark Theme Button Overrides */
+.theme-dark .btn-modern {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%) !important;
+  color: #1a202c !important;
+  box-shadow: 0 2px 8px rgba(251, 191, 36, 0.3);
+}
+
+.theme-dark .btn-modern:hover {
+  background: linear-gradient(135deg, #fcd34d 0%, #fbbf24 100%) !important;
+  color: #1a202c !important;
+  box-shadow: 0 4px 16px rgba(251, 191, 36, 0.4);
+}
+
+.theme-dark .btn-secondary-modern {
+  background: var(--theme-surface, #374151) !important;
+  color: #fbbf24 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.theme-dark .btn-secondary-modern:hover {
+  background: #fbbf24 !important;
+  color: #1a202c !important;
+  box-shadow: 0 4px 16px rgba(251, 191, 36, 0.4);
+}
+
+.theme-dark .btn-gold-gradient {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%) !important;
+  color: #1a202c !important;
+  box-shadow: 0 2px 8px rgba(251, 191, 36, 0.3);
+}
+
+.theme-dark .btn-gold-gradient:hover,
+.theme-dark .btn-gold-gradient:focus {
+  background: linear-gradient(135deg, #fcd34d 0%, #fbbf24 100%) !important;
+  color: #1a202c !important;
+  box-shadow: 0 4px 16px rgba(251, 191, 36, 0.4);
+}
+
+.theme-dark .btn-primary {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%) !important;
+  border-color: #fbbf24 !important;
+  color: #1a202c !important;
+}
+
+.theme-dark .btn-primary:hover {
+  background: linear-gradient(135deg, #fcd34d 0%, #fbbf24 100%) !important;
+  border-color: #fcd34d !important;
+  color: #1a202c !important;
+}
+
+.theme-dark .btn-secondary {
+  background: var(--theme-surface, #374151) !important;
+  border-color: #4b5563 !important;
+  color: #e2e8f0 !important;
+}
+
+.theme-dark .btn-secondary:hover {
+  background: #4b5563 !important;
+  border-color: #6b7280 !important;
+  color: #f3f4f6 !important;
+}
+
+.theme-dark .btn-view {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+  color: #fff !important;
+}
+
+.theme-dark .btn-view:hover {
+  background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%) !important;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+}
+
+.theme-dark .btn-outline-info {
+  border-color: #fbbf24 !important;
+  color: #fbbf24 !important;
+  background: transparent !important;
+}
+
+.theme-dark .btn-outline-info:hover {
+  background: #fbbf24 !important;
+  color: #1a202c !important;
+  border-color: #fbbf24 !important;
+}
+
+/* Filter Section Styling */
+.filter-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  background: var(
+    --theme-primary-bg,
+    linear-gradient(90deg, #fff 0%, #ffd700 80%, #1e293b 100%)
+  );
+  border-radius: 16px;
+  padding: 10px 18px;
+  box-shadow: 0 2px 8px var(--theme-shadow, rgba(30, 41, 59, 0.07));
+}
+
+.filter-select,
+.filter-input {
+  border-radius: 10px;
+  border: 1px solid var(--theme-accent, #ffd700);
+  background: var(--theme-surface, #fff);
+  color: var(--theme-text, #1e293b);
+  font-weight: 500;
+}
+
+.filter-select {
+  max-width: 170px;
+}
+
+.filter-input {
+  max-width: 150px;
+}
+
+.filter-label {
+  background: transparent;
+  color: var(--theme-text, #1e293b);
+  font-weight: 600;
+  border: none;
+}
+
+/* Filter Buttons Styling */
+.filter-container .btn-gold-gradient {
+  border-radius: 10px;
+  font-weight: 700;
+  min-width: 90px;
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+  color: #1e293b;
+  border: 2px solid #ffd700;
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  transition: all 0.3s ease;
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+.filter-container .btn-gold-gradient:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(255, 215, 0, 0.6);
+  background: linear-gradient(135deg, #ffed4e 0%, #ffd700 100%);
+  border-color: #ffed4e;
+}
+
+.filter-container .btn-gold-gradient:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
+}
+
+/* Dark Theme Filter Section */
+.theme-dark .filter-container {
+  background: linear-gradient(90deg, #1f2937 0%, #374151 80%, #1f2937 100%);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.theme-dark .filter-container .btn-gold-gradient {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  border-color: #fbbf24;
+  color: #1e293b;
+  box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+}
+
+.theme-dark .filter-container .btn-gold-gradient:hover {
+  background: linear-gradient(135deg, #fcd34d 0%, #fbbf24 100%);
+  border-color: #fcd34d;
+  box-shadow: 0 6px 16px rgba(251, 191, 36, 0.5);
+}
+
+.theme-dark .filter-select,
+.theme-dark .filter-input {
+  background: #374151;
+  color: #e2e8f0;
+  border-color: #4b5563;
+}
+
+.theme-dark .filter-label {
+  color: #e2e8f0;
+}
+
+.theme-dark .filter-select option {
+  background: #374151;
+  color: #e2e8f0;
 }

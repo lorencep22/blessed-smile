@@ -1,0 +1,465 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Blessed Smile Dental Clinic</title>
+    <link rel="icon" href="/site-logo.png" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+    <!-- Toast System -->
+    <script src="../toast.js" defer></script>
+    <!-- Firebase SDKs -->
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #fff 0%, #ffd700 50%, #fff 100%);
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+
+        iframe {
+            background: white;
+        }
+
+        .navbar-dark.bg-primary {
+            background: linear-gradient(135deg, #ffd700 0%, #fff 50%, #ffd700 100%) !important;
+            border-bottom: 2px solid #ffd700;
+            box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+        }
+
+        .sidebar {
+            background: linear-gradient(180deg, #fff 0%, #ffd700 50%, #fff 100%) !important;
+            border-right: 2px solid #ffd700;
+            box-shadow: 2px 0 8px rgba(255, 215, 0, 0.2);
+            height: 90vh;
+            transition: all 0.3s ease;
+            position: relative;
+            min-width: 250px;
+            width: 250px;
+            flex: 0 0 250px;
+        }
+
+        .sidebar.collapsed {
+            min-width: 80px;
+            max-width: 80px;
+            width: 80px;
+            flex: 0 0 80px;
+        }
+
+        .sidebar.collapsed .nav-link-text {
+            display: none;
+        }
+
+        .sidebar.collapsed .nav-link {
+            justify-content: center;
+            padding: 12px 8px;
+            margin: 4px 4px;
+        }
+
+        .sidebar.collapsed .nav-link:hover {
+            transform: translateX(0px);
+        }
+
+        .sidebar.collapsed #sidebarToggle {
+            margin-right: 0;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none !important;
+            }
+
+            #dashboard-content {
+                width: 100% !important;
+            }
+        }
+
+        .sidebar .nav-link {
+            color: #000 !important;
+            font-weight: 600;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin: 4px 8px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .sidebar .nav-link:hover {
+            background: #ffd700;
+            color: #000 !important;
+            transform: translateX(4px);
+            box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
+        }
+
+        .sidebar .nav-link.active {
+            background: linear-gradient(90deg, #ffd700 0%, #fff 50%, #ffd700 100%);
+            color: #000 !important;
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #000;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo img {
+            height: 48px;
+            width: 48px;
+            border-radius: 50%;
+            box-shadow: 0 4px 16px rgba(255, 215, 0, 0.3);
+            object-fit: cover;
+            border: 2px solid #ffd700;
+            background: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .logo img:hover {
+            box-shadow: 0 8px 32px rgba(255, 215, 0, 0.5);
+            transform: scale(1.05);
+        }
+
+        .navbar-nav .nav-link {
+            color: #000 !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #000 !important;
+            background: rgba(255, 215, 0, 0.2);
+        }
+
+        .navbar-nav .nav-link.active {
+            color: #000 !important;
+            font-weight: 600;
+        }
+
+        #dashboard-signout {
+            background: #fff;
+            border: 2px solid #ffd700;
+            border-radius: 6px;
+            padding: 6px 12px;
+            transition: all 0.3s ease;
+            color: #000;
+        }
+
+        #dashboard-signout:hover {
+            background: #ffd700;
+            color: #000 !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(255, 215, 0, 0.3);
+        }
+
+        main {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px 0 0 0;
+            box-shadow: -2px 0 12px rgba(255, 215, 0, 0.2);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .main-content-expanded {
+            flex: 1;
+            max-width: none;
+        }
+
+        .container-fluid .row {
+            margin: 0;
+        }
+
+        #sidebarToggle {
+            background: linear-gradient(135deg, #fff 0%, #ffd700 50%, #fff 100%) !important;
+            border: 2px solid #ffd700 !important;
+            border-radius: 12px !important;
+            color: #000 !important;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #sidebarToggle:hover {
+            background: linear-gradient(135deg, #ffd700 0%, #fff 50%, #ffd700 100%) !important;
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.5);
+            border-color: #e6c200 !important;
+        }
+
+        #sidebarToggle:active {
+            transform: translateY(0px) scale(0.98);
+            box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
+        }
+
+        #sidebarToggle::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        #sidebarToggle:hover::before {
+            left: 100%;
+        }
+
+        #toggleIcon {
+            font-size: 14px;
+            font-weight: bold;
+            z-index: 2;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar.collapsed #sidebarToggle {
+            margin-right: 8px;
+            margin-left: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <div class="logo"><img src="/site-logo.png" alt="Blessed Smile Logo">Blessed Smile</div>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/"
+                            style="color: #000000 !important;">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" href="#" id="dashboard-signout">Sign Out</button>
+                    </li>
+                    <!-- <li class="nav-item">
+                        <a class="nav-link" href="#">Settings</a>
+                    </li> -->
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container-fluid p-0">
+        <div class="d-flex">
+            <nav class="sidebar py-4" id="sidebar">
+                <div class="position-sticky">
+                    <!-- Toggle Button -->
+                    <div class="d-flex justify-content-center mb-3">
+                        <button class="btn" id="sidebarToggle" title="Toggle Sidebar">
+                            <i class="fas fa-chevron-left" id="toggleIcon"></i>
+                        </button>
+                    </div>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center" href="#">
+                                <span class="me-2">👥</span>
+                                <span class="nav-link-text">Patients</span>
+                            </a>
+                        </li>
+
+                        <!-- <li class="nav-item">
+                            <a class="nav-link active d-flex align-items-center" href="#">
+                                <span class="me-2">🏥</span>
+                                <span class="nav-link-text">Procedures</span>
+                            </a>
+                        </li> -->
+                        <li class="nav-item">
+                            <a class="nav-link active d-flex align-items-center" href="#">
+                                <span class="me-2">🩺</span>
+                                <span class="nav-link-text">Doctors</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active d-flex align-items-center" href="#">
+                                <span class="me-2">💰</span>
+                                <span class="nav-link-text">Transactions</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active d-flex align-items-center" href="#">
+                                <span class="me-2">📄</span>
+                                <span class="nav-link-text">Documents</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active d-flex align-items-center" href="#">
+                                <span class="me-2">🧑‍🤝‍🧑</span>
+                                <span class="nav-link-text">Users</span>
+                            </a>
+                        </li>
+
+                        <!-- <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <span data-feather="settings"></span>
+                                Settings
+                            </a>
+                        </li> -->
+                    </ul>
+                </div>
+            </nav>
+            <main id="dashboard-content" class="flex-grow-1 px-md-4" style="height: 100% !important;">
+                <iframe id="patients-iframe" src="/dashboard/patients/index.html"
+                    style="width:100%;height:90dvh;border:none;"></iframe>
+                <!-- <iframe id="procedures-iframe" src="/dashboard/procedures/index.html"
+                    style="width:100%;height:90dvh;border:none; display: none;"></iframe> -->
+                <iframe id="doctors-iframe" src="/dashboard/doctors/index.html"
+                    style="width:100%;height:90dvh;border:none; display: none;"></iframe>
+                <iframe id="transactions-iframe" src="/dashboard/transactions/index.html"
+                    style="width:100%;height:90dvh;border:none; display: none;"></iframe>
+                <iframe id="documents-iframe" src="/dashboard/prescription/index.html"
+                    style="width:100%;height:90dvh;border:none; display: none;"></iframe>
+                <iframe id="users-iframe" src="/dashboard/users/index.html"
+                    style="width:100%;height:90dvh;border:none; display: none;"></iframe>
+            </main>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/app.js" defer></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const patientsIframe = document.getElementById('patients-iframe');
+            // const proceduresIframe = document.getElementById('procedures-iframe');
+            const doctorsIframe = document.getElementById('doctors-iframe');
+            const transactionsIframe = document.getElementById('transactions-iframe');
+            const documentsIframe = document.getElementById('documents-iframe');
+            const usersIframe = document.getElementById('users-iframe');
+            // Sidebar elements
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const toggleIcon = document.getElementById('toggleIcon');
+            const mainContent = document.getElementById('dashboard-content');
+            const sidebarLinks = document.querySelectorAll('.sidebar .nav-link');
+
+            // Sidebar toggle functionality
+            let sidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+
+            function updateSidebarState() {
+                if (sidebarCollapsed) {
+                    sidebar.classList.add('collapsed');
+                    mainContent.classList.add('main-content-expanded');
+                    toggleIcon.className = 'fas fa-chevron-right';
+                } else {
+                    sidebar.classList.remove('collapsed');
+                    mainContent.classList.remove('main-content-expanded');
+                    toggleIcon.className = 'fas fa-chevron-left';
+                }
+                localStorage.setItem('sidebarCollapsed', sidebarCollapsed);
+            }
+
+            // Initialize sidebar state
+            updateSidebarState();
+
+            sidebarToggle.addEventListener('click', function () {
+                sidebarCollapsed = !sidebarCollapsed;
+                updateSidebarState();
+            });
+
+            // Remove dashboardLastTab from localStorage on logout
+            const signoutBtn = document.getElementById('dashboard-signout');
+            if (signoutBtn) {
+                signoutBtn.addEventListener('click', function () {
+                    localStorage.removeItem('dashboardLastTab');
+                });
+            }
+
+            // Helper to show iframe by name
+            function showIframe(name) {
+                patientsIframe.style.display = 'none';
+                // proceduresIframe.style.display = 'none';
+                doctorsIframe.style.display = 'none';
+                transactionsIframe.style.display = 'none';
+                documentsIframe.style.display = 'none';
+                usersIframe.style.display = 'none';
+                switch (name) {
+                    case 'Patients':
+                        patientsIframe.contentWindow.location.reload();
+                        setTimeout(() => { patientsIframe.style.display = 'block'; }, 200);
+                        break;
+                    // case 'Procedures':
+                    //     proceduresIframe.contentWindow.location.reload();
+                    //     setTimeout(() => { proceduresIframe.style.display = 'block'; }, 200);
+                    //     break;
+                    case 'Doctors':
+                        doctorsIframe.contentWindow.location.reload();
+                        setTimeout(() => { doctorsIframe.style.display = 'block'; }, 200);
+                        break;
+                    case 'Transactions':
+                        transactionsIframe.contentWindow.location.reload();
+                        setTimeout(() => { transactionsIframe.style.display = 'block'; }, 200);
+                        break;
+                    case 'Documents':
+                        documentsIframe.contentWindow.location.reload();
+                        setTimeout(() => { documentsIframe.style.display = 'block'; }, 200);
+                        break;
+                    case 'Users':
+                        usersIframe.contentWindow.location.reload();
+                        setTimeout(() => { usersIframe.style.display = 'block'; }, 200);
+                        break;
+                }
+            }
+
+            // Restore last opened tab from localStorage
+            let lastTab = localStorage.getItem('dashboardLastTab');
+            let foundTab = false;
+            if (lastTab) {
+                sidebarLinks.forEach(l => {
+                    if (l.textContent.includes(lastTab)) {
+                        sidebarLinks.forEach(link => link.classList.remove('active'));
+                        l.classList.add('active');
+                        showIframe(lastTab);
+                        foundTab = true;
+                    }
+                });
+            }
+            if (!foundTab) {
+                // Default to Patients
+                sidebarLinks.forEach(link => link.classList.remove('active'));
+                sidebarLinks[0].classList.add('active');
+                showIframe('Patients');
+            }
+
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    sidebarLinks.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    // Store last opened tab in localStorage
+                    let tabName = '';
+                    if (this.textContent.includes('Patients')) tabName = 'Patients';
+                    // else if (this.textContent.includes('Procedures')) tabName = 'Procedures';
+                    else if (this.textContent.includes('Doctors')) tabName = 'Doctors';
+                    else if (this.textContent.includes('Users')) tabName = 'Users';
+                    else if (this.textContent.includes('Transactions')) tabName = 'Transactions';
+                    else if (this.textContent.includes('Documents')) tabName = 'Documents';
+                    localStorage.setItem('dashboardLastTab', tabName);
+                    showIframe(tabName);
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

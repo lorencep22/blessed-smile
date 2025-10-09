@@ -8,13 +8,49 @@
     <link rel="icon" href="/site-logo.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- ADD THEME SUPPORT -->
+    <link href="../theme/theme-variables.css" rel="stylesheet">
+    <link href="../theme/theme-immediate.css" rel="stylesheet">
+
+    <!-- Critical CSS - Apply theme immediately before any rendering -->
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem('easysmile-theme');
+            if (savedTheme) {
+                const themes = {
+                    gold: { bg: 'linear-gradient(135deg, #fff 0%, #ffd700 50%, #fff 100%)', text: '#000', isDark: false },
+                    blue: { bg: 'linear-gradient(135deg, #e3f2fd 0%, #007bff 50%, #e3f2fd 100%)', text: '#1a1a1a', isDark: false },
+                    green: { bg: 'linear-gradient(135deg, #e8f5e8 0%, #28a745 50%, #e8f5e8 100%)', text: '#1a1a1a', isDark: false },
+                    purple: { bg: 'linear-gradient(135deg, #f3e5f5 0%, #6f42c1 50%, #f3e5f5 100%)', text: '#1a1a1a', isDark: false },
+                    dark: { bg: 'linear-gradient(135deg, #1a202c 0%, #2d3748 50%, #1a202c 100%)', text: '#fff', isDark: true },
+                    midnight: { bg: 'linear-gradient(135deg, #0f1419 0%, #1a365d 50%, #0f1419 100%)', text: '#e2e8f0', isDark: true }
+                };
+                const theme = themes[savedTheme];
+                if (theme) {
+                    document.documentElement.style.background = theme.bg;
+                    const style = document.createElement('style');
+                    style.innerHTML = `html, body { background: ${theme.bg} !important; color: ${theme.text} !important; transition: none !important; }`;
+                    document.head.appendChild(style);
+                    document.documentElement.className = theme.isDark ? 'theme-dark' : 'theme-light';
+                }
+            }
+        })();
+    </script>
+
+    <script src="../theme/theme-immediate.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="profile.css">
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="../../toast.js" defer></script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <!-- ADD THEME SCRIPTS -->
+    <script src="../theme/theme-manager.js" defer></script>
+    <script src="../theme/theme-communication.js" defer></script>
 </head>
 
 <body id="patients-profile">
@@ -67,7 +103,7 @@
                             <div class="col-lg-5">
                                 <div class="patient-info-section">
                                     <h4 class="mb-3" style="color: #ffd700; font-weight: 700;">
-                                        <i class="fas fa-user me-2"></i><span style="color: black;"> Patient
+                                        <i class="fas fa-user me-2"></i><span class="section-subtitle"> Patient
                                             Information</span>
                                     </h4>
                                     <div id="patientDetails">
@@ -81,7 +117,7 @@
                                 <div class="medical-record-section">
                                     <h4 class="mb-3" style="color: #ffd700; font-weight: 700;">
                                         <i class="fas fa-file-medical me-2"></i><span
-                                            style="color: black;">Medical-Dental History</span>
+                                            class="section-subtitle">Medical-Dental History</span>
                                     </h4>
                                     <div id="medicalRecordStatus" class="mb-3"></div>
                                     <form id="medicalRecordForm" class="medical-record-form">
@@ -377,7 +413,7 @@
                         </button>
                         <button class="btn btn-modern btn-sm view-procedure-btn btn-gold-gradient"
                             id="updateProcedureBtn" style="display: none;">
-                            <i class="fas fa-save me-2"></i>Update
+                            <i class="fas fa-save me-2"></i>Update & Print
                         </button>
                         <button class="btn btn-modern btn-sm btn-secondary" id="closeProcedureBtn"
                             style="display: none;">
@@ -397,41 +433,44 @@
 
                                         <div class="mb-2">
                                             <label for="procedure" class="form-label">Procedure</label>
-                                            <select class="form-select" id="procedure" name="procedure" required>
-                                                <option value="">Select Procedure</option>
-                                                <optgroup label="Surgical Procedures">
-                                                    <option>Frenectomy (lip or tongue tie release)</option>
-                                                    <option>Biopsy of oral lesions</option>
-                                                    <option>Cyst or tumor removal</option>
-                                                    <option>Corrective jaw surgery (orthognathic surgery)</option>
-                                                </optgroup>
-                                                <optgroup label="Orthodontic Procedures">
-                                                    <option>Braces (metal, ceramic, lingual)</option>
-                                                    <option>Clear aligners (e.g., Invisalign)</option>
-                                                    <option>Space maintainers (for children)</option>
-                                                    <option>Retainers (post-braces)</option>
-                                                    <option>Interceptive orthodontics (for early correction)</option>
-                                                </optgroup>
-                                                <optgroup label="Cosmetic Dentistry">
-                                                    <option>Teeth whitening (in-office or take-home)</option>
-                                                    <option>Veneers (porcelain or composite)</option>
-                                                    <option>Smile makeovers</option>
-                                                    <option>Gum contouring (reshaping gum line)</option>
-                                                    <option>Composite bonding for aesthetic improvement</option>
-                                                </optgroup>
-                                                <optgroup label="Prosthodontics / Full Mouth Rehabilitation">
-                                                    <option>Full-mouth reconstructions</option>
-                                                    <option>Implant-supported dentures or bridges</option>
-                                                    <option>Occlusal adjustments and bite rehabilitation</option>
-                                                </optgroup>
-                                                <optgroup label="Emergency Dental Care">
-                                                    <option>Treatment for dental trauma (fractured or knocked-out teeth)
-                                                    </option>
-                                                    <option>Pain management (infections, abscesses)</option>
-                                                    <option>Temporary restorations</option>
-                                                    <option>Draining oral infections or abscesses</option>
-                                                </optgroup>
-                                            </select>
+                                            <input type="text" class="form-control" id="procedure" name="procedure"
+                                                required list="procedureDatalist"
+                                                placeholder="Type or select a procedure">
+                                            <datalist id="procedureDatalist">
+                                                <!-- Surgical Procedures -->
+                                                <option value="Frenectomy (lip or tongue tie release)"></option>
+                                                <option value="Biopsy of oral lesions"></option>
+                                                <option value="Cyst or tumor removal"></option>
+                                                <option value="Corrective jaw surgery (orthognathic surgery)"></option>
+
+                                                <!-- Orthodontic Procedures -->
+                                                <option value="Braces (metal, ceramic, lingual)"></option>
+                                                <option value="Clear aligners (e.g., Invisalign)"></option>
+                                                <option value="Space maintainers (for children)"></option>
+                                                <option value="Retainers (post-braces)"></option>
+                                                <option value="Interceptive orthodontics (for early correction)">
+                                                </option>
+
+                                                <!-- Cosmetic Dentistry -->
+                                                <option value="Teeth whitening (in-office or take-home)"></option>
+                                                <option value="Veneers (porcelain or composite)"></option>
+                                                <option value="Smile makeovers"></option>
+                                                <option value="Gum contouring (reshaping gum line)"></option>
+                                                <option value="Composite bonding for aesthetic improvement"></option>
+
+                                                <!-- Prosthodontics / Full Mouth Rehabilitation -->
+                                                <option value="Full-mouth reconstructions"></option>
+                                                <option value="Implant-supported dentures or bridges"></option>
+                                                <option value="Occlusal adjustments and bite rehabilitation"></option>
+
+                                                <!-- Emergency Dental Care -->
+                                                <option
+                                                    value="Treatment for dental trauma (fractured or knocked-out teeth)">
+                                                </option>
+                                                <option value="Pain management (infections, abscesses)"></option>
+                                                <option value="Temporary restorations"></option>
+                                                <option value="Draining oral infections or abscesses"></option>
+                                            </datalist>
                                         </div>
                                         <div class="mb-2">
                                             <label for="doctor" class="form-label">Doctor</label>
@@ -454,7 +493,15 @@
 
                                             <div class="col-12">
                                                 <div class="form-group">
-                                                    <label for="procedureAmount">Amount</label>
+                                                    <label for="totalBill">Total Bill</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text" id="peso-addon"><i
+                                                                class="fa fa-peso-sign"></i></span>
+                                                        <input type="number" class="form-control" id="totalBill"
+                                                            required placeholder="Enter total bill" min="1"
+                                                            aria-describedby="peso-addon">
+                                                    </div>
+                                                    <label for="procedureAmount">Amount Paid</label>
                                                     <div class="input-group">
                                                         <span class="input-group-text" id="peso-addon"><i
                                                                 class="fa fa-peso-sign"></i></span>
@@ -462,20 +509,20 @@
                                                             required placeholder="Enter amount" min="1"
                                                             aria-describedby="peso-addon">
                                                     </div>
-                                                    <label for="procedureBalance">Balance</label>
+                                                    <label for="procedureBalance">Balance Amount</label>
                                                     <div class="input-group">
                                                         <span class="input-group-text" id="peso-addon"><i
                                                                 class="fa fa-peso-sign"></i></span>
                                                         <input type="number" class="form-control" id="procedureBalance"
                                                             placeholder="Enter balance" min="0"
-                                                            aria-describedby="peso-addon">
+                                                            aria-describedby="peso-addon" disabled>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-12">
                                                 <button type="submit" id="addProcedureSubmitBtn"
-                                                    class="btn btn-modern btn-sm view-procedure-btn btn-gold-gradient">Add
-                                                    Procedure</button>
+                                                    class="btn btn-modern btn-sm view-procedure-btn btn-gold-gradient">Save
+                                                    & Print</button>
                                             </div>
 
                                             <!-- Teeth Summary Section -->
@@ -540,11 +587,11 @@
                             <div style="width: 100%; display: flex; justify-content: center;">
 
                                 <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-                                    <div
-                                        style="font-size: 15px; font-weight: bold; margin-top: 18px; margin-bottom: 2px; letter-spacing: 1px;">
+                                    <div class="legend-title"
+                                        style="font-size: 15px; font-weight: bold; margin-top: 18px; margin-bottom: 2px; letter-spacing: 1px; color: var(--theme-text, #222);">
                                         LEGEND:</div>
-                                    <div
-                                        style="display: flex; flex-direction: row; justify-content: center; gap: 40px; font-size: 13px; color: #222; margin-bottom: 10px;">
+                                    <div class="legend-content"
+                                        style="display: flex; flex-direction: row; justify-content: center; gap: 40px; font-size: 13px; color: var(--theme-text, #222); margin-bottom: 10px;">
                                         <div style="min-width: 210px; line-height: 1.7;">
                                             C – Caries<br>
                                             Am – Amalgam Filling<br>
@@ -576,15 +623,14 @@
             <div class="section-card">
                 <div class="section-header">
                     <div class="section-icon">
-                        <i class="fas fa-procedures"></i>
+                        <i class="fas fa-history"></i>
                     </div>
                     <h2 class="section-title">Procedures History</h2>
                     <div class="ms-auto">
-                        <div class="input-group" style="max-width: 800px;">
-                            <div
-                                style="display: flex; gap: 10px; align-items: center; width: 100%; background: linear-gradient(90deg, #fff 0%, #ffd700 80%, #1e293b 100%); border-radius: 16px; padding: 10px 18px; box-shadow: 0 2px 8px rgba(30,41,59,0.07);">
-                                <select class="form-select" id="dateFilterSelect"
-                                    style="max-width:170px; border-radius: 10px; border: 1px solid #ffd700; background: #fff; color: #1e293b; font-weight: 500;">
+                        <div class="input-group" style="max-width: 900px;">
+                            <div class="filter-container">
+                                <select class="form-select filter-select" id="dateFilterSelect">
+                                    <option value="all">All</option>
                                     <option value="today">Today</option>
                                     <option value="thisWeek">This Week</option>
                                     <option value="prevWeek">Previous Week</option>
@@ -593,17 +639,13 @@
                                     <option value="thisYear">This Year</option>
                                     <option value="custom">Custom Range</option>
                                 </select>
-                                <input type="date" class="form-control d-none" id="customStartDate"
-                                    style="max-width:150px; border-radius: 10px; border: 1px solid #ffd700; background: #fff; color: #1e293b; font-weight: 500;">
-                                <span class="input-group-text d-none" id="toLabel"
-                                    style="background: transparent; color: #1e293b; font-weight: 600; border: none;">to</span>
-                                <input type="date" class="form-control d-none" id="customEndDate"
-                                    style="max-width:150px; border-radius: 10px; border: 1px solid #ffd700; background: #fff; color: #1e293b; font-weight: 500;">
-                                <button type="button" class="btn btn-gold-gradient" id="filterDateBtn"
-                                    style="border-radius: 10px; font-weight: 600; min-width: 90px; box-shadow: 0 2px 8px #ffd70044; color: #1e293b; border: none;">Filter</button>
-                                <button id="printProcedureHistoryBtn" class="btn btn-gold-gradient"
-                                    style="border-radius: 10px; font-weight: 600; min-width: 90px; box-shadow: 0 2px 8px #ffd70044; color: #1e293b; border: none;">
-                                    <i class="fa fa-print me-2"></i> Print
+                                <input type="date" class="form-control filter-input d-none" id="customStartDate">
+                                <span class="input-group-text filter-label d-none" id="toLabel">to</span>
+                                <input type="date" class="form-control filter-input d-none" id="customEndDate">
+                                <button type="button" class="btn btn-gold-gradient" id="filterDateBtn">Filter</button>
+                                <button id="printProcedureHistoryBtn" style="width: 100px;"
+                                    class="btn btn-gold-gradient">
+                                    <i class="fa fa-print me-2"></i> Save
                                 </button>
                             </div>
                         </div>
@@ -620,6 +662,9 @@
                                         <th>Procedure Name</th>
                                         <th>Doctor Name</th>
                                         <th>Date</th>
+                                        <th>Total Bill</th>
+                                        <th>Amount Paid</th>
+                                        <th>Balance Amount</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -634,6 +679,67 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Billing Section -->
+            <!-- <div class="billing-section">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                    </div>
+                    <h2 class="section-title">Billing Information</h2>
+                    <div class="ms-auto">
+                        <div class="input-group" style="max-width: 800px;">
+                            <div
+                                style="display: flex; gap: 10px; align-items: center; width: 100%; background: linear-gradient(90deg, #fff 0%, #ffd700 80%, #1e293b 100%); border-radius: 16px; padding: 10px 18px; box-shadow: 0 2px 8px rgba(30,41,59,0.07);">
+                                <select class="form-select" id="billingPeriodSelect"
+                                    style="max-width:170px; border-radius: 10px; border: 1px solid #ffd700; background: #fff; color: #1e293b; font-weight: 500;">
+                                    <option value="today">Today</option>
+                                    <option value="thisWeek">This Week</option>
+                                    <option value="prevWeek">Previous Week</option>
+                                    <option value="thisMonth">This Month</option>
+                                    <option value="prevMonth">Previous Month</option>
+                                    <option value="thisYear">This Year</option>
+                                    <option value="custom">Custom Range</option>
+                                </select>
+                                <input type="date" class="form-control d-none" id="billingCustomStartDate"
+                                    style="max-width:150px; border-radius: 10px; border: 1px solid #ffd700; background: #fff; color: #1e293b; font-weight: 500;">
+                                <span class="input-group-text d-none" id="billingToLabel"
+                                    style="background: transparent; color: #1e293b; font-weight: 600; border: none;">to</span>
+                                <input type="date" class="form-control d-none" id="billingCustomEndDate"
+                                    style="max-width:150px; border-radius: 10px; border: 1px solid #ffd700; background: #fff; color: #1e293b; font-weight: 500;">
+                                <button type="button" class="btn btn-gold-gradient" id="billingFilterDateBtn"
+                                    style="border-radius: 10px; font-weight: 600; min-width: 90px; box-shadow: 0 2px 8px #ffd70044; color: #1e293b; border: none;">Generate</button>
+                                <button id="printBillingHistoryBtn" class="btn btn-gold-gradient"
+                                    style="border-radius: 10px; font-weight: 600; min-width: 90px; box-shadow: 0 2px 8px #ffd70044; color: #1e293b; border: none;">
+                                    <i class="fa fa-print me-2"></i> Print
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-body p-0">
+                    <div class="billing-table">
+                        <div class="table-responsive">
+                            <table class="table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Procedure Name</th>
+                                        <th>Tooth No./S</th>
+                                        <th>Date</th>
+                                        <th>Amount</th>
+                                        <th>Balance</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="billingHistory">
+                                     Billing rows will be rendered here by JS 
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div> -->
         </div>
     </div>
     </div>
@@ -729,41 +835,457 @@
 
     <script src="/app.js" defer></script>
     <script src="profile.js" defer></script>
+    <!-- dom-to-image for chart screenshot (CDN for reliability) -->
+    <script src="https://cdn.jsdelivr.net/npm/dom-to-image@2.6.0/dist/dom-to-image.min.js"></script>
+    <script src="procedure.js"></script>
+    <!-- <script src="billingWithTooth.js" defer></script> -->
     <script>
+        // Function to get date range based on selected period
+        function getDateRange(period) {
+            const now = new Date();
+            let start, end;
+
+            switch (period) {
+                case "all":
+                    return { start: new Date(0), end: new Date() }; // From epoch to now
+                case "today": {
+                    start = new Date(now);
+                    end = new Date(now);
+                    break;
+                }
+                case "thisWeek": {
+                    const day = now.getDay();
+                    const diff = now.getDate() - day + (day === 0 ? -6 : 1); // Monday
+                    start = new Date(now.setDate(diff));
+                    end = new Date(start);
+                    end.setDate(start.getDate() + 6); // Sunday
+                    break;
+                }
+                case "prevWeek": {
+                    const day = now.getDay();
+                    const diff = now.getDate() - day + (day === 0 ? -6 : 1); // Monday of this week
+                    start = new Date(now.setDate(diff - 7)); // Previous Monday
+                    end = new Date(start);
+                    end.setDate(start.getDate() + 6); // Previous Sunday
+                    break;
+                }
+                case "thisMonth": {
+                    start = new Date(now.getFullYear(), now.getMonth(), 1);
+                    end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+                    break;
+                }
+                case "prevMonth": {
+                    start = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+                    end = new Date(now.getFullYear(), now.getMonth(), 0);
+                    break;
+                }
+                case "thisYear": {
+                    start = new Date(now.getFullYear(), 0, 1);
+                    end = new Date(now.getFullYear(), 11, 31);
+                    break;
+                }
+                case "custom": {
+                    const customStartDate = document.getElementById('customStartDate');
+                    const customEndDate = document.getElementById('customEndDate');
+                    const startValue = customStartDate ? customStartDate.value : '';
+                    const endValue = customEndDate ? customEndDate.value : '';
+                    if (!startValue || !endValue) {
+                        showWarning("Please select both start and end dates for custom range.");
+                        return null;
+                    }
+                    start = new Date(startValue);
+                    end = new Date(endValue);
+                    break;
+                }
+                default:
+                    return null;
+            }
+
+            // Set time to start/end of day
+            start.setHours(0, 0, 0, 0);
+            end.setHours(23, 59, 59, 999);
+            return { start, end };
+        }
+
+        // Global pagination state for "All" filter
+        window._allFilterPagination = {
+            currentPage: 1,
+            totalPages: 1,
+            pageSize: 20,
+            allProcedures: []
+        };
+
+        // Render all procedures with pagination (for "All" filter)
+        function renderAllProceduresWithPagination(page = 1) {
+            const procedureHistory = document.getElementById("procedureHistory");
+            if (!procedureHistory) return;
+
+            procedureHistory.innerHTML = '<tr><td colspan="4">Loading...</td></tr>';
+
+            // Get patient ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const patientId = urlParams.get("id");
+
+            if (!patientId) {
+                procedureHistory.innerHTML = '<tr><td colspan="4">Patient ID not found.</td></tr>';
+                return;
+            }
+
+            if (!window.proceduresCollection) {
+                procedureHistory.innerHTML = '<tr><td colspan="4">Database connection not available.</td></tr>';
+                return;
+            }
+
+            window.proceduresCollection
+                .where("patientId", "==", patientId)
+                .orderBy("date", "desc")
+                .get()
+                .then(snapshot => {
+                    if (snapshot.empty) {
+                        procedureHistory.innerHTML = '<tr><td colspan="4">No procedures found.</td></tr>';
+                        document.getElementById('procedurePagination').innerHTML = '';
+                        return;
+                    }
+
+                    // Collect all procedures
+                    let allProcedures = [];
+                    snapshot.forEach(doc => {
+                        allProcedures.push({
+                            id: doc.id,
+                            ...doc.data()
+                        });
+                    });
+
+                    // Sort by date descending
+                    allProcedures.sort((a, b) => {
+                        let da = new Date(a.date);
+                        let db = new Date(b.date);
+                        return db - da;
+                    });
+
+                    // Store all procedures for pagination
+                    window._allFilterPagination.allProcedures = allProcedures;
+                    const pageSize = window._allFilterPagination.pageSize;
+                    const totalPages = Math.ceil(allProcedures.length / pageSize);
+                    window._allFilterPagination.totalPages = totalPages;
+                    window._allFilterPagination.currentPage = page;
+
+                    // Get procedures for current page
+                    const startIndex = (page - 1) * pageSize;
+                    const endIndex = startIndex + pageSize;
+                    const currentPageProcedures = allProcedures.slice(startIndex, endIndex);
+
+                    // Render current page procedures
+                    let rows = '';
+                    currentPageProcedures.forEach(p => {
+                        const totalBill = p.totalBill !== undefined && p.totalBill !== null && p.totalBill !== ''
+                            ? parseFloat(p.totalBill).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                            : 'Update the procedure';
+                        const amount = p.amount !== undefined && p.amount !== null && p.amount !== ''
+                            ? parseFloat(p.amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                            : 'Update the procedure';
+                        const balance = p.balance !== undefined && p.balance !== null && p.balance !== ''
+                            ? parseFloat(p.balance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                            : 'Update the procedure';
+
+                        rows += `<tr>
+                            <td>${p.procedure || ''}</td>
+                            <td>${p.doctor || ''}</td>
+                            <td>${p.date || ''}</td>
+                            <td>${totalBill}</td>
+                            <td>${amount}</td>
+                            <td>${balance}</td>
+                            <td><button class="btn btn-modern btn-sm view-procedure-btn btn-gold-gradient" data-id="${p.id}">
+                                <i class="fas fa-eye me-1"></i>View
+                            </button></td>
+                        </tr>`;
+                    });
+
+                    procedureHistory.innerHTML = rows;
+
+                    // Render pagination controls
+                    renderAllFilterPagination();
+                })
+                .catch(error => {
+                    procedureHistory.innerHTML = `<tr><td colspan='4'>Error loading procedures: ${error.message}</td></tr>`;
+                    document.getElementById('procedurePagination').innerHTML = '';
+                });
+        }
+
+        // Render pagination controls for "All" filter
+        function renderAllFilterPagination() {
+            const paginationContainer = document.getElementById('procedurePagination');
+            const { currentPage, totalPages, allProcedures, pageSize } = window._allFilterPagination;
+
+            if (!paginationContainer || totalPages <= 1) {
+                paginationContainer.innerHTML = `<div class="text-center mt-3 text-muted">
+                    Showing ${allProcedures.length} procedure(s)
+                </div>`;
+                return;
+            }
+
+            let paginationHtml = `
+                <nav aria-label="Procedure History pagination" class="mt-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="text-muted">
+                            Showing ${((currentPage - 1) * pageSize) + 1} to ${Math.min(currentPage * pageSize, allProcedures.length)} of ${allProcedures.length} procedures
+                        </div>
+                        <ul class="pagination justify-content-center mb-0" style="gap: 8px;">
+                            <li class="page-item">
+                                <button class="btn btn-modern btn-sm view-procedure-btn btn-gold-gradient" 
+                                        onclick="navigateToPage(${currentPage - 1})" 
+                                        ${currentPage === 1 ? 'disabled' : ''}>
+                                    <i class="fas fa-chevron-left me-1"></i>Prev
+                                </button>
+                            </li>`;
+
+            // Show page numbers (with ellipsis for large page counts)
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                paginationHtml += `
+                    <li class="page-item">
+                        <button class="btn btn-modern btn-sm view-procedure-btn ${i === currentPage ? 'btn-gold-gradient' : 'btn-outline-secondary'}" 
+                                onclick="navigateToPage(${i})" 
+                                ${i === currentPage ? 'style="font-weight: bold;"' : ''}>
+                            ${i}
+                        </button>
+                    </li>`;
+            }
+
+            paginationHtml += `
+                            <li class="page-item">
+                                <button class="btn btn-modern btn-sm view-procedure-btn btn-gold-gradient" 
+                                        onclick="navigateToPage(${currentPage + 1})" 
+                                        ${currentPage === totalPages ? 'disabled' : ''}>
+                                    Next<i class="fas fa-chevron-right ms-1"></i>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>`;
+
+            paginationContainer.innerHTML = paginationHtml;
+        }
+
+        // Navigate to specific page for "All" filter
+        function navigateToPage(page) {
+            if (page >= 1 && page <= window._allFilterPagination.totalPages) {
+                renderAllProceduresWithPagination(page);
+            }
+        }
+
+        // Render filtered procedure history based on date range
+        function renderFilteredProcedureHistory(period) {
+            // If "all" period is selected, use pagination
+            if (period === 'all') {
+                renderAllProceduresWithPagination(1);
+                return;
+            }
+
+            const procedureHistory = document.getElementById("procedureHistory");
+            if (!procedureHistory) return;
+
+            const dateRange = getDateRange(period);
+            if (!dateRange) {
+                return;
+            }
+
+            procedureHistory.innerHTML = '<tr><td colspan="4">Loading...</td></tr>';
+
+            // Get patient ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const patientId = urlParams.get("id");
+
+            if (!patientId) {
+                procedureHistory.innerHTML = '<tr><td colspan="4">Patient ID not found.</td></tr>';
+                return;
+            }
+
+            if (!window.proceduresCollection) {
+                procedureHistory.innerHTML = '<tr><td colspan="4">Database connection not available.</td></tr>';
+                return;
+            }
+
+            window.proceduresCollection
+                .where("patientId", "==", patientId)
+                .orderBy("date", "desc")
+                .get()
+                .then(snapshot => {
+                    if (snapshot.empty) {
+                        procedureHistory.innerHTML = '<tr><td colspan="4">No procedures found.</td></tr>';
+                        document.getElementById('procedurePagination').innerHTML = '';
+                        return;
+                    }
+
+                    // Filter procedures by date range
+                    let filteredProcedures = [];
+                    snapshot.forEach(doc => {
+                        const procedure = doc.data();
+                        let procDate = procedure.date;
+
+                        // Parse procedure date
+                        if (typeof procDate === "string") {
+                            procDate = new Date(procDate);
+                        } else if (procDate && procDate.toDate) {
+                            procDate = procedure.date.toDate();
+                        }
+
+                        // Check if procedure falls within date range
+                        if (procDate >= dateRange.start && procDate <= dateRange.end) {
+                            filteredProcedures.push({
+                                id: doc.id,
+                                ...procedure
+                            });
+                        }
+                    });
+
+                    if (filteredProcedures.length === 0) {
+                        procedureHistory.innerHTML = '<tr><td colspan="4">No procedures found for the selected date range.</td></tr>';
+                        document.getElementById('procedurePagination').innerHTML = '';
+                        return;
+                    }
+
+                    // Sort by date descending
+                    filteredProcedures.sort((a, b) => {
+                        let da = new Date(a.date);
+                        let db = new Date(b.date);
+                        return db - da;
+                    });
+
+                    // Render filtered results (no pagination for other filters)
+                    let rows = '';
+                    filteredProcedures.forEach(p => {
+                        const totalBill = p.totalBill !== undefined && p.totalBill !== null && p.totalBill !== ''
+                            ? parseFloat(p.totalBill).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                            : 'Update the procedure';
+                        const amount = p.amount !== undefined && p.amount !== null && p.amount !== ''
+                            ? parseFloat(p.amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                            : 'Update the procedure';
+                        const balance = p.balance !== undefined && p.balance !== null && p.balance !== ''
+                            ? parseFloat(p.balance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                            : 'Update the procedure';
+
+                        rows += `<tr>
+                            <td>${p.procedure || ''}</td>
+                            <td>${p.doctor || ''}</td>
+                            <td>${p.date || ''}</td>
+                            <td>${totalBill}</td>
+                            <td>${amount}</td>
+                            <td>${balance}</td>
+                            <td><button class="btn btn-modern btn-sm view-procedure-btn btn-gold-gradient" data-id="${p.id}">
+                                <i class="fas fa-eye me-1"></i>View
+                            </button></td>
+                        </tr>`;
+                    });
+
+                    procedureHistory.innerHTML = rows;
+
+                    // Show count for filtered view (no pagination)
+                    document.getElementById('procedurePagination').innerHTML =
+                        `<div class="text-center mt-3 text-muted">
+                            Showing ${filteredProcedures.length} procedure(s) for selected period
+                        </div>`;
+                })
+                .catch(error => {
+                    procedureHistory.innerHTML = `<tr><td colspan='4'>Error loading procedures: ${error.message}</td></tr>`;
+                    document.getElementById('procedurePagination').innerHTML = '';
+                });
+        }
+
+        // Make navigateToPage globally accessible
+        window.navigateToPage = navigateToPage;
+
         document.addEventListener('DOMContentLoaded', function () {
             var dateFilterSelect = document.getElementById('dateFilterSelect');
             var customStartDate = document.getElementById('customStartDate');
             var toLabel = document.getElementById('toLabel');
             var customEndDate = document.getElementById('customEndDate');
+            var filterDateBtn = document.getElementById('filterDateBtn');
+
             function updateCustomRangeVisibility() {
                 var isCustom = dateFilterSelect.value === 'custom';
                 if (customStartDate) customStartDate.classList.toggle('d-none', !isCustom);
                 if (toLabel) toLabel.classList.toggle('d-none', !isCustom);
                 if (customEndDate) customEndDate.classList.toggle('d-none', !isCustom);
             }
+
             if (dateFilterSelect) {
                 dateFilterSelect.addEventListener('change', updateCustomRangeVisibility);
                 updateCustomRangeVisibility();
             }
+
+            // Add event listener for filter button
+            if (filterDateBtn) {
+                filterDateBtn.addEventListener('click', function () {
+                    const selectedPeriod = dateFilterSelect.value;
+                    renderFilteredProcedureHistory(selectedPeriod);
+                });
+            }
+
+            // Auto-filter on page load with default "all"
+            setTimeout(() => {
+                if (dateFilterSelect && dateFilterSelect.value === 'all') {
+                    renderFilteredProcedureHistory('all');
+                }
+            }, 1000);
         });
     </script>
     <script>
-        // Show procedureBody only when Add Procedure is clicked
+        // Procedure toggle functionality has been moved to procedure.js
+    </script>
+    <script>
+        // Auto-calculate balance amount function
+        function calculateBalance() {
+            const totalBillElement = document.getElementById('totalBill');
+            const amountPaidElement = document.getElementById('procedureAmount');
+            const balanceElement = document.getElementById('procedureBalance');
+
+            if (totalBillElement && amountPaidElement && balanceElement) {
+                const totalBill = parseFloat(totalBillElement.value) || 0;
+                const amountPaid = parseFloat(amountPaidElement.value) || 0;
+
+                // Calculate balance (Total Bill - Amount Paid)
+                const balance = totalBill - amountPaid;
+
+                // Ensure balance is not negative
+                const finalBalance = Math.max(0, balance);
+
+                // Update balance field
+                balanceElement.value = finalBalance.toFixed(2);
+
+                // Optional: Add visual feedback for overpayment
+                if (balance < 0) {
+                    balanceElement.style.backgroundColor = '#ffebee'; // Light red background
+                    balanceElement.title = `Overpayment: ₱${Math.abs(balance).toFixed(2)}`;
+                } else {
+                    balanceElement.style.backgroundColor = ''; // Reset background
+                    balanceElement.title = '';
+                }
+            }
+        }
+
+        // Add event listeners when document is ready
         document.addEventListener('DOMContentLoaded', function () {
-            var addProcedureBtn = document.getElementById('addProcedureBtn');
-            var procedureBody = document.getElementById('procedureBody');
-            if (addProcedureBtn && procedureBody) {
-                addProcedureBtn.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    var isVisible = (procedureBody.style.display === 'block');
-                    if (!isVisible) {
-                        procedureBody.style.display = 'block';
-                        addProcedureBtn.innerHTML = '<i class="fas fa-minus me-2"></i>Cancel Procedure';
-                    } else {
-                        procedureBody.style.display = 'none';
-                        addProcedureBtn.innerHTML = '<i class="fas fa-plus me-2"></i>Add Procedure';
-                    }
-                });
+            const totalBillElement = document.getElementById('totalBill');
+            const amountPaidElement = document.getElementById('procedureAmount');
+
+            if (totalBillElement && amountPaidElement) {
+                // Add event listeners for real-time calculation
+                totalBillElement.addEventListener('input', calculateBalance);
+                totalBillElement.addEventListener('change', calculateBalance);
+
+                amountPaidElement.addEventListener('input', calculateBalance);
+                amountPaidElement.addEventListener('change', calculateBalance);
+
+                // Initial calculation on page load
+                calculateBalance();
             }
         });
     </script>
@@ -785,14 +1307,16 @@
                     updateSaveButtonVisibility();
                 });
             }
-            if (window.addMedicalRecordBtn) {
-                window.addMedicalRecordBtn.addEventListener('click', function () {
+            const addMedicalRecordBtn = document.getElementById('addMedicalRecordBtn');
+            if (addMedicalRecordBtn) {
+                addMedicalRecordBtn.addEventListener('click', function () {
                     window.isEditMode = true;
                     updateSaveButtonVisibility();
                 });
             }
-            if (window.saveMedicalRecordBtn) {
-                window.saveMedicalRecordBtn.addEventListener('click', function () {
+            const saveMedicalRecordBtn = document.getElementById('saveMedicalRecordBtn');
+            if (saveMedicalRecordBtn) {
+                saveMedicalRecordBtn.addEventListener('click', function () {
                     window.isEditMode = false;
                     updateSaveButtonVisibility();
                 });
@@ -823,6 +1347,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <!-- jsPDF AutoTable -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <!-- html2canvas for screenshots -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -847,29 +1373,82 @@
                 } catch (e) { console.error('Error parsing patient info:', e); }
                 const fullName = [patientInfo.firstName, patientInfo.middleName, patientInfo.lastName].filter(Boolean).join(' ');
 
-                // Gather procedure history table data (exclude 'Action' column)
-                const tableRows = Array.from(document.querySelectorAll('#procedureHistory tr'));
-                const tableData = tableRows.map(row => {
-                    const cells = Array.from(row.querySelectorAll('td'));
-                    // Only take the first 3 columns: Procedure Name, Doctor Name, Date
-                    return cells.slice(0, 3).map(cell => cell.textContent.trim());
-                }).filter(row => row.length === 3); // Only data rows
+                // Get current filter to determine data source
+                const dateFilterSelect = document.getElementById('dateFilterSelect');
+                const currentFilter = dateFilterSelect ? dateFilterSelect.value : 'all';
+                const urlParams = new URLSearchParams(window.location.search);
+                const patientId = urlParams.get('id');
 
-                // Fetch medical record (if any) and then generate PDF
-                if (window.patientRecordsCollection && window.location.search.includes('id=')) {
-                    const urlParams = new URLSearchParams(window.location.search);
-                    const patientId = urlParams.get('id');
-                    window.patientRecordsCollection.where('patientId', '==', patientId).limit(1).get().then(function (querySnapshot) {
-                        let medRecord = null;
-                        if (!querySnapshot.empty) {
-                            medRecord = querySnapshot.docs[0].data();
-                        }
-                        generatePDF(patientInfo, fullName, tableData, medRecord);
-                    }).catch(function () {
-                        generatePDF(patientInfo, fullName, tableData, null);
+                // Function to process procedure data for PDF
+                function processProcedureData(procedures) {
+                    return procedures.map((p, index) => {
+                        const totalBill = p.totalBill !== undefined && p.totalBill !== null && p.totalBill !== ''
+                            ? parseFloat(p.totalBill).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                            : 'Update the procedure';
+                        const amount = p.amount !== undefined && p.amount !== null && p.amount !== ''
+                            ? parseFloat(p.amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                            : 'Update the procedure';
+                        const balance = p.balance !== undefined && p.balance !== null && p.balance !== ''
+                            ? parseFloat(p.balance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                            : 'Update the procedure';
+
+                        return [
+                            (index + 1).toString(), // Row number
+                            p.procedure || '',
+                            p.doctor || '',
+                            p.date || '',
+                            totalBill,
+                            amount,
+                            balance
+                        ];
                     });
+                }
+
+                // Check if "All" filter is selected and we have access to all procedures data
+                if (currentFilter === 'all' && window._allFilterPagination && window._allFilterPagination.allProcedures.length > 0) {
+                    // Use all procedures from pagination data
+                    const allProcedures = window._allFilterPagination.allProcedures;
+                    const tableData = processProcedureData(allProcedures);
+
+                    // Fetch medical record and generate PDF
+                    if (window.patientRecordsCollection && patientId) {
+                        window.patientRecordsCollection.where('patientId', '==', patientId).limit(1).get().then(function (querySnapshot) {
+                            let medRecord = null;
+                            if (!querySnapshot.empty) {
+                                medRecord = querySnapshot.docs[0].data();
+                            }
+                            generatePDF(patientInfo, fullName, tableData, medRecord);
+                        }).catch(function () {
+                            generatePDF(patientInfo, fullName, tableData, null);
+                        });
+                    } else {
+                        generatePDF(patientInfo, fullName, tableData, null);
+                    }
                 } else {
-                    generatePDF(patientInfo, fullName, tableData, null);
+                    // Fallback to visible table data for other filters or if all data not available
+                    const tableRows = Array.from(document.querySelectorAll('#procedureHistory tr'));
+                    const tableData = tableRows.map((row, index) => {
+                        const cells = Array.from(row.querySelectorAll('td'));
+                        // Take the first 6 columns: Procedure Name, Doctor Name, Date, Total Bill, Amount Paid, Balance Amount (exclude Action column)
+                        const rowData = cells.slice(0, 6).map(cell => cell.textContent.trim());
+                        // Add row number at the beginning
+                        return rowData.length === 6 ? [(index + 1).toString(), ...rowData] : [];
+                    }).filter(row => row.length === 7); // Only complete data rows with row number
+
+                    // Fetch medical record and generate PDF
+                    if (window.patientRecordsCollection && patientId) {
+                        window.patientRecordsCollection.where('patientId', '==', patientId).limit(1).get().then(function (querySnapshot) {
+                            let medRecord = null;
+                            if (!querySnapshot.empty) {
+                                medRecord = querySnapshot.docs[0].data();
+                            }
+                            generatePDF(patientInfo, fullName, tableData, medRecord);
+                        }).catch(function () {
+                            generatePDF(patientInfo, fullName, tableData, null);
+                        });
+                    } else {
+                        generatePDF(patientInfo, fullName, tableData, null);
+                    }
                 }
 
                 function generatePDF(patientInfo, fullName, tableData, medRecord) {
@@ -933,20 +1512,117 @@
                         // Find the max y for next section
                         let yEnd = Math.max(y1, y2) + 10;
 
+                        // Get current filter period for date range display
+                        const dateFilterSelect = document.getElementById('dateFilterSelect');
+                        const customStartDate = document.getElementById('customStartDate');
+                        const customEndDate = document.getElementById('customEndDate');
+                        const currentPeriod = dateFilterSelect ? dateFilterSelect.value : 'today';
+
+                        // Generate date range text
+                        let dateRangeText = '';
+                        const now = new Date();
+
+                        switch (currentPeriod) {
+                            case 'all':
+                                const totalRecords = tableData.length;
+                                dateRangeText = `All Records (${totalRecords} procedure${totalRecords !== 1 ? 's' : ''})`;
+                                break;
+                            case 'today':
+                                dateRangeText = `Today (${now.toLocaleDateString()})`;
+                                break;
+                            case 'thisWeek':
+                                const startOfWeek = new Date(now);
+                                const day = now.getDay();
+                                const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+                                startOfWeek.setDate(diff);
+                                const endOfWeek = new Date(startOfWeek);
+                                endOfWeek.setDate(startOfWeek.getDate() + 6);
+                                dateRangeText = `This Week (${startOfWeek.toLocaleDateString()} - ${endOfWeek.toLocaleDateString()})`;
+                                break;
+                            case 'prevWeek':
+                                const prevWeekStart = new Date(now);
+                                const dayPrev = now.getDay();
+                                const diffPrev = now.getDate() - dayPrev + (dayPrev === 0 ? -6 : 1) - 7;
+                                prevWeekStart.setDate(diffPrev);
+                                const prevWeekEnd = new Date(prevWeekStart);
+                                prevWeekEnd.setDate(prevWeekStart.getDate() + 6);
+                                dateRangeText = `Previous Week (${prevWeekStart.toLocaleDateString()} - ${prevWeekEnd.toLocaleDateString()})`;
+                                break;
+                            case 'thisMonth':
+                                const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+                                const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+                                dateRangeText = `This Month (${monthStart.toLocaleDateString()} - ${monthEnd.toLocaleDateString()})`;
+                                break;
+                            case 'prevMonth':
+                                const prevMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+                                const prevMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
+                                dateRangeText = `Previous Month (${prevMonthStart.toLocaleDateString()} - ${prevMonthEnd.toLocaleDateString()})`;
+                                break;
+                            case 'thisYear':
+                                dateRangeText = `This Year (${now.getFullYear()})`;
+                                break;
+                            case 'custom':
+                                if (customStartDate && customEndDate && customStartDate.value && customEndDate.value) {
+                                    const startDate = new Date(customStartDate.value);
+                                    const endDate = new Date(customEndDate.value);
+                                    dateRangeText = `Custom Range (${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()})`;
+                                } else {
+                                    dateRangeText = 'Custom Range (All Records)';
+                                }
+                                break;
+                            default:
+                                dateRangeText = 'All Records';
+                        }
+
+                        // Add procedure history section header with date info
+                        pdf.setFontSize(12);
+                        pdf.setFont(undefined, 'bold');
+                        pdf.text('Procedure History', 40, yEnd);
+
+                        // Add date range and generation info
+                        pdf.setFontSize(9);
+                        pdf.setFont(undefined, 'normal');
+                        pdf.text(`Date Range: ${dateRangeText}`, 40, yEnd + 15);
+                        pdf.text(`Generated on: ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}`, 40, yEnd + 28);
+
                         // Procedure history table
                         const headers = [[
+                            'No.',
                             'Procedure Name',
                             'Doctor Name',
-                            'Date'
+                            'Date',
+                            'Total Bill',
+                            'Amount Paid',
+                            'Balance Amount'
                         ]];
                         pdf.autoTable({
                             head: headers,
                             body: tableData,
-                            startY: yEnd,
-                            styles: { fontSize: 10, cellPadding: 4 },
-                            headStyles: { fillColor: [244, 246, 248], textColor: 51 },
+                            startY: yEnd + 40,
+                            styles: {
+                                fontSize: 9,
+                                cellPadding: 3,
+                                overflow: 'linebreak',
+                                cellWidth: 'wrap'
+                            },
+                            headStyles: {
+                                fillColor: [255, 215, 0],
+                                textColor: [30, 41, 59],
+                                fontStyle: 'bold',
+                                fontSize: 9
+                            },
+                            columnStyles: {
+                                0: { cellWidth: 30, halign: 'center' }, // No. (Row Number)
+                                1: { cellWidth: 'auto', minCellWidth: 70 }, // Procedure Name
+                                2: { cellWidth: 'auto', minCellWidth: 55 }, // Doctor Name  
+                                3: { cellWidth: 'auto', minCellWidth: 35 }, // Date
+                                4: { cellWidth: 'auto', minCellWidth: 45, halign: 'right' }, // Total Bill
+                                5: { cellWidth: 'auto', minCellWidth: 45, halign: 'right' }, // Amount Paid
+                                6: { cellWidth: 'auto', minCellWidth: 45, halign: 'right' }  // Balance Amount
+                            },
                             margin: { left: 40, right: 40 },
                             theme: 'grid',
+                            tableWidth: 'auto'
                         });
 
                         // Save PDF and open in new tab
@@ -1007,19 +1683,117 @@
                             });
                             y += 10;
                         }
+
+                        // Get current filter period for date range display
+                        const dateFilterSelect = document.getElementById('dateFilterSelect');
+                        const customStartDate = document.getElementById('customStartDate');
+                        const customEndDate = document.getElementById('customEndDate');
+                        const currentPeriod = dateFilterSelect ? dateFilterSelect.value : 'today';
+
+                        // Generate date range text
+                        let dateRangeText = '';
+                        const now = new Date();
+
+                        switch (currentPeriod) {
+                            case 'all':
+                                const totalRecords = tableData.length;
+                                dateRangeText = `All Records (${totalRecords} procedure${totalRecords !== 1 ? 's' : ''})`;
+                                break;
+                            case 'today':
+                                dateRangeText = `Today (${now.toLocaleDateString()})`;
+                                break;
+                            case 'thisWeek':
+                                const startOfWeek = new Date(now);
+                                const day = now.getDay();
+                                const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+                                startOfWeek.setDate(diff);
+                                const endOfWeek = new Date(startOfWeek);
+                                endOfWeek.setDate(startOfWeek.getDate() + 6);
+                                dateRangeText = `This Week (${startOfWeek.toLocaleDateString()} - ${endOfWeek.toLocaleDateString()})`;
+                                break;
+                            case 'prevWeek':
+                                const prevWeekStart = new Date(now);
+                                const dayPrev = now.getDay();
+                                const diffPrev = now.getDate() - dayPrev + (dayPrev === 0 ? -6 : 1) - 7;
+                                prevWeekStart.setDate(diffPrev);
+                                const prevWeekEnd = new Date(prevWeekStart);
+                                prevWeekEnd.setDate(prevWeekStart.getDate() + 6);
+                                dateRangeText = `Previous Week (${prevWeekStart.toLocaleDateString()} - ${prevWeekEnd.toLocaleDateString()})`;
+                                break;
+                            case 'thisMonth':
+                                const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+                                const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+                                dateRangeText = `This Month (${monthStart.toLocaleDateString()} - ${monthEnd.toLocaleDateString()})`;
+                                break;
+                            case 'prevMonth':
+                                const prevMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+                                const prevMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
+                                dateRangeText = `Previous Month (${prevMonthStart.toLocaleDateString()} - ${prevMonthEnd.toLocaleDateString()})`;
+                                break;
+                            case 'thisYear':
+                                dateRangeText = `This Year (${now.getFullYear()})`;
+                                break;
+                            case 'custom':
+                                if (customStartDate && customEndDate && customStartDate.value && customEndDate.value) {
+                                    const startDate = new Date(customStartDate.value);
+                                    const endDate = new Date(customEndDate.value);
+                                    dateRangeText = `Custom Range (${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()})`;
+                                } else {
+                                    dateRangeText = 'Custom Range (All Records)';
+                                }
+                                break;
+                            default:
+                                dateRangeText = 'All Records';
+                        }
+
+                        // Add procedure history section header with date info
+                        pdf.setFontSize(12);
+                        pdf.setFont(undefined, 'bold');
+                        pdf.text('Procedure History', 40, y);
+
+                        // Add date range and generation info
+                        pdf.setFontSize(9);
+                        pdf.setFont(undefined, 'normal');
+                        pdf.text(`Date Range: ${dateRangeText}`, 40, y + 15);
+                        pdf.text(`Generated on: ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}`, 40, y + 28);
+
                         const headers = [[
+                            'No.',
                             'Procedure Name',
                             'Doctor Name',
-                            'Date'
+                            'Date',
+                            'Total Bill',
+                            'Amount Paid',
+                            'Balance Amount'
                         ]];
                         pdf.autoTable({
                             head: headers,
                             body: tableData,
-                            startY: y,
-                            styles: { fontSize: 10, cellPadding: 4 },
-                            headStyles: { fillColor: [244, 246, 248], textColor: 51 },
+                            startY: y + 40,
+                            styles: {
+                                fontSize: 9,
+                                cellPadding: 3,
+                                overflow: 'linebreak',
+                                cellWidth: 'wrap'
+                            },
+                            headStyles: {
+                                fillColor: [255, 215, 0],
+                                textColor: [30, 41, 59],
+                                fontStyle: 'bold',
+                                fontSize: 9
+                            },
+                            columnStyles: {
+                                0: { cellWidth: 30, halign: 'center' }, // No. (Row Number)
+                                1: { cellWidth: 'auto', minCellWidth: 70 }, // Procedure Name
+                                2: { cellWidth: 'auto', minCellWidth: 55 }, // Doctor Name  
+                                3: { cellWidth: 'auto', minCellWidth: 35 }, // Date
+                                4: { cellWidth: 'auto', minCellWidth: 45, halign: 'right' }, // Total Bill
+                                5: { cellWidth: 'auto', minCellWidth: 45, halign: 'right' }, // Amount Paid
+                                6: { cellWidth: 'auto', minCellWidth: 45, halign: 'right' }  // Balance Amount
+                            },
                             margin: { left: 40, right: 40 },
                             theme: 'grid',
+                            tableWidth: 'auto'
                         });
                         const fileName = fullName ? `patient-profile-${fullName.replace(/\s+/g, '_')}.pdf` : 'patient-profile.pdf';
                         const pdfBlob = pdf.output('blob');
@@ -1206,14 +1980,14 @@
                     if (window.patientRecordsCollection && currentRecordDocId) {
                         window.patientRecordsCollection.doc(currentRecordDocId).update(data)
                             .then(() => {
-                                alert("Medical record updated successfully!");
+                                showSuccess("Medical record updated successfully!");
                                 isEditMode = false;
                                 updateMedicalRecordStatus(true);
                                 updateButtonVisibility();
                                 location.reload();
                             })
                             .catch((error) => {
-                                alert("Error updating medical record: " + error.message);
+                                showError("Error updating medical record: " + error.message);
                             });
                     }
                 });
@@ -1394,6 +2168,7 @@
                         document.getElementById('procedurePagination').innerHTML = '';
                     });
             }
+
             // Teeth grid rendering for modal
             function renderTeethGrid(treatedTeeth = []) {
                 const teethNumbers = [
@@ -1514,19 +2289,19 @@
                         // Update existing record
                         window.patientRecordsCollection.doc(currentRecordDocId).update(data)
                             .then(() => {
-                                alert("Medical record updated successfully!");
+                                showSuccess("Medical record updated successfully!");
                                 isEditMode = false;
                                 updateMedicalRecordStatus(true);
                                 updateButtonVisibility();
                             })
                             .catch((error) => {
-                                alert("Error updating medical record: " + error.message);
+                                showError("Error updating medical record: " + error.message);
                             });
                     } else {
                         // Add new record
                         window.patientRecordsCollection.add(data)
                             .then((docRef) => {
-                                alert("Medical record submitted successfully!");
+                                showSuccess("Medical record submitted successfully!");
                                 currentRecordDocId = docRef.id;
                                 medicalRecordForm.reset();
                                 isEditMode = false;
@@ -1534,7 +2309,7 @@
                                 updateButtonVisibility();
                             })
                             .catch((error) => {
-                                alert("Error submitting medical record: " + error.message);
+                                showError("Error submitting medical record: " + error.message);
                             });
                     }
                 });
@@ -1560,349 +2335,12 @@
         });
     </script>
     <script>
-        // Set max date for procedure date input to today
-        document.addEventListener('DOMContentLoaded', function () {
-            const editBtn = document.getElementById('editProcedureBtn');
-            const updateBtn = document.getElementById('updateProcedureBtn');
-            const closeBtn = document.getElementById('closeProcedureBtn');
+        // Procedure event listeners have been moved to procedure.js
 
-            if (editBtn) {
-                editBtn.addEventListener('click', enableEditMode);
-            }
-
-            if (updateBtn) {
-                updateBtn.addEventListener('click', updateProcedure);
-            }
-
-            if (closeBtn) {
-                closeBtn.addEventListener('click', closeProcedureView);
-            }
-        });
-
-        // View procedure function
-        async function viewProcedure(procedureId) {
-            try {
-                // Get procedure data from Firebase
-                const procedureDoc = await db.collection('procedures').doc(procedureId).get();
-                if (!procedureDoc.exists) {
-                    alert('Procedure not found');
-                    return;
-                }
-
-                currentProcedureData = procedureDoc.data();
-                currentProcedureData.id = procedureId;
-
-                // Show procedure form and populate data
-                showProcedureForm();
-                populateProcedureForm(currentProcedureData);
-                setViewMode(true);
-
-            } catch (error) {
-                console.error('Error fetching procedure:', error);
-                alert('Error loading procedure data');
-            }
-        }
-
-        // Show procedure form
-        function showProcedureForm() {
-            const procedureBody = document.getElementById('procedureBody');
-            if (procedureBody) {
-                procedureBody.style.display = 'block';
-            }
-        }
-
-        // Populate form with procedure data
-        function populateProcedureForm(data) {
-            // Populate basic form fields
-            const fields = {
-                'procedure': data.procedure || '',
-                'doctor': data.doctor || '',
-                'date': data.date || '',
-                'condition': data.condition || '',
-                'treatment': data.treatment || '',
-                'assistantName': data.assistantName || '',
-                'anesthesia': data.anesthesia || '',
-                'remarks': data.remarks || '',
-                'medicine': data.medicine || '',
-                'medicineDetails': data.medicineDetails || ''
-            };
-
-            Object.keys(fields).forEach(fieldId => {
-                const field = document.getElementById(fieldId);
-                if (field) {
-                    if (field.type === 'radio') {
-                        const radioGroup = document.querySelectorAll(`input[name="${fieldId}"]`);
-                        radioGroup.forEach(radio => {
-                            if (radio.value === fields[fieldId]) {
-                                radio.checked = true;
-                            }
-                        });
-                    } else {
-                        field.value = fields[fieldId];
-                    }
-                }
-            });
-
-            // Handle teeth chart data if available (check both treatedTeeth and teethChart properties)
-            const teethData = data.treatedTeeth || data.teethChart || [];
-            if (teethData && teethData.length > 0) {
-                // Reset chart first
-                resetTeethChart();
-
-                // Populate teeth selections
-                teethData.forEach(tooth => {
-                    const toothElement = document.querySelector(`[data-tooth="${tooth.toothNumber}"]`);
-                    if (toothElement) {
-                        // Handle activeSections (the correct property name)
-                        if (tooth.activeSections && tooth.activeSections.length > 0) {
-                            tooth.activeSections.forEach(section => {
-                                const sectionElement = toothElement.querySelector(`[data-section="${section}"]`);
-                                if (sectionElement) {
-                                    sectionElement.classList.add('selected');
-                                }
-                            });
-                        }
-
-                        // Set tooth condition and treatment data attributes for proper restoration
-                        if (tooth.existingCondition) {
-                            toothElement.setAttribute('data-condition', tooth.existingCondition);
-                        }
-                        if (tooth.treatmentDone) {
-                            toothElement.setAttribute('data-treatment', tooth.treatmentDone);
-                        }
-                    }
-                });
-
-                // Update teeth summary to show the restored selections
-                updateTeethSummary();
-            }
-        }
-
-        // Set view mode
-        function setViewMode(viewMode) {
-            isViewMode = viewMode;
-            const form = document.getElementById('addProcedureForm');
-            const addBtn = document.getElementById('addProcedureBtn');
-            const editBtn = document.getElementById('editProcedureBtn');
-            const updateBtn = document.getElementById('updateProcedureBtn');
-            const closeBtn = document.getElementById('closeProcedureBtn');
-            const submitBtn = document.getElementById('addProcedureSubmitBtn');
-
-            if (viewMode) {
-                // View mode - disable all form fields
-                disableFormFields(form);
-                addBtn.style.display = 'none';
-                editBtn.style.display = 'inline-block';
-                closeBtn.style.display = 'inline-block';
-                updateBtn.style.display = 'none';
-                submitBtn.style.display = 'none';
-
-                // Update section title
-                const sectionTitle = document.querySelector('.section-title');
-                if (sectionTitle && sectionTitle.textContent === 'New Procedures') {
-                    sectionTitle.textContent = 'View Procedure';
-                }
-            } else {
-                // Normal mode - enable all form fields
-                enableFormFields(form);
-                addBtn.style.display = 'inline-block';
-                editBtn.style.display = 'none';
-                closeBtn.style.display = 'none';
-                updateBtn.style.display = 'none';
-                submitBtn.style.display = 'inline-block';
-
-                // Reset section title
-                const sectionTitle = document.querySelector('.section-title');
-                if (sectionTitle) {
-                    sectionTitle.textContent = 'New Procedures';
-                }
-            }
-        }
-
-        // Enable edit mode
-        function enableEditMode() {
-            const form = document.getElementById('addProcedureForm');
-            const editBtn = document.getElementById('editProcedureBtn');
-            const updateBtn = document.getElementById('updateProcedureBtn');
-            const submitBtn = document.getElementById('addProcedureSubmitBtn');
-
-            enableFormFields(form);
-            editBtn.style.display = 'none';
-            updateBtn.style.display = 'inline-block';
-            submitBtn.style.display = 'none';
-
-            // Update section title
-            const sectionTitle = document.querySelector('.section-title');
-            if (sectionTitle) {
-                sectionTitle.textContent = 'Edit Procedure';
-            }
-        }
-
-        // Update procedure
-        async function updateProcedure() {
-            try {
-                const form = document.getElementById('addProcedureForm');
-                const formData = new FormData(form);
-
-                // Collect teeth chart data using the HTML structure
-                const teethData = collectTeethChartDataHTML();
-
-                // Prepare update data
-                const updateData = {
-                    procedure: formData.get('procedure') || '',
-                    doctor: formData.get('doctor') || '',
-                    date: formData.get('date') || '',
-                    condition: formData.get('condition') || '',
-                    treatment: formData.get('treatment') || '',
-                    assistantName: formData.get('assistantName') || '',
-                    anesthesia: formData.get('anesthesia') || '',
-                    remarks: formData.get('remarks') || '',
-                    medicine: formData.get('medicine') || '',
-                    medicineDetails: formData.get('medicineDetails') || '',
-                    treatedTeeth: teethData, // Use same property name as original save
-                    updatedAt: new Date().toISOString()
-                };
-
-                // Update in Firebase
-                await db.collection('procedures').doc(currentProcedureData.id).update(updateData);
-
-                alert('Procedure updated successfully!');
-
-                // Return to view mode
-                setViewMode(true);
-
-                // Refresh procedure history
-                if (typeof renderProcedureHistory === 'function') {
-                    renderProcedureHistory();
-                }
-
-            } catch (error) {
-                console.error('Error updating procedure:', error);
-                alert('Error updating procedure');
-            }
-        }
-
-        // Collect teeth chart data compatible with HTML structure
-        function collectTeethChartDataHTML() {
-            const teethData = [];
-
-            // Get all teeth elements with selections
-            const allTeethElements = document.querySelectorAll('[data-tooth]');
-
-            allTeethElements.forEach(toothElement => {
-                const toothNumber = parseInt(toothElement.getAttribute('data-tooth'));
-                const selectedSections = toothElement.querySelectorAll('.tooth-section.selected');
-
-                if (selectedSections.length > 0) {
-                    const activeSections = [];
-                    selectedSections.forEach(section => {
-                        const sectionName = section.getAttribute('data-section');
-                        if (sectionName) {
-                            activeSections.push(sectionName);
-                        }
-                    });
-
-                    // Get condition and treatment if stored as attributes
-                    const existingCondition = toothElement.getAttribute('data-condition') || '';
-                    const treatmentDone = toothElement.getAttribute('data-treatment') || '';
-
-                    if (activeSections.length > 0 || existingCondition || treatmentDone) {
-                        teethData.push({
-                            toothNumber: toothNumber,
-                            treatmentDone: treatmentDone,
-                            existingCondition: existingCondition,
-                            activeSections: activeSections
-                        });
-                    }
-                }
-            });
-
-            return teethData;
-        }
-
-        // Close procedure view
-        function closeProcedureView() {
-            const procedureBody = document.getElementById('procedureBody');
-            const form = document.getElementById('addProcedureForm');
-
-            // Hide procedure form
-            if (procedureBody) {
-                procedureBody.style.display = 'none';
-            }
-
-            // Reset form
-            if (form) {
-                form.reset();
-            }
-
-            // Reset teeth chart
-            resetTeethChart();
-
-            // Reset mode
-            setViewMode(false);
-            currentProcedureData = null;
-            isViewMode = false;
-        }
-
-        // Disable form fields
-        function disableFormFields(form) {
-            if (!form) return;
-
-            const inputs = form.querySelectorAll('input, select, textarea');
-            inputs.forEach(input => {
-                input.disabled = true;
-            });
-
-            // Disable teeth chart interactions
-            const teethChart = document.getElementById('teethChartContainer');
-            if (teethChart) {
-                teethChart.style.pointerEvents = 'none';
-                teethChart.style.opacity = '0.7';
-            }
-        }
-
-        // Enable form fields
-        function enableFormFields(form) {
-            if (!form) return;
-
-            const inputs = form.querySelectorAll('input, select, textarea');
-            inputs.forEach(input => {
-                input.disabled = false;
-            });
-
-            // Enable teeth chart interactions
-            const teethChart = document.getElementById('teethChartContainer');
-            if (teethChart) {
-                teethChart.style.pointerEvents = 'auto';
-                teethChart.style.opacity = '1';
-            }
-        }        // Reset teeth chart
-        function resetTeethChart() {
-            const selectedSections = document.querySelectorAll('.tooth-section.selected');
-            selectedSections.forEach(section => {
-                section.classList.remove('selected');
-            });
-
-            // Hide teeth summary
-            const teethSummary = document.getElementById('teethSummary');
-            if (teethSummary) {
-                teethSummary.style.display = 'none';
-            }
-        }
+        // Procedure-related functions have been moved to procedure.js
     </script>
     <script>
-        // Set max date for procedure date input to today
-        document.addEventListener('DOMContentLoaded', function () {
-            var dateInput = document.getElementById('date');
-            if (dateInput) {
-                var today = new Date();
-                var yyyy = today.getFullYear();
-                var mm = String(today.getMonth() + 1).padStart(2, '0');
-                var dd = String(today.getDate()).padStart(2, '0');
-                var maxDate = yyyy + '-' + mm + '-' + dd;
-                dateInput.setAttribute('max', maxDate);
-            }
-        });
+        // Procedure date validation has been moved to procedure.js
     </script>
 </body>
 

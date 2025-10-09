@@ -1,0 +1,68 @@
+/* Immediate Theme Application CSS */
+/* This CSS applies saved theme immediately on page load to prevent flash */
+
+:root {
+  --theme-primary: #ffd700;
+  --theme-secondary: #fff;
+  --theme-background: linear-gradient(135deg, #fff 0%, #ffd700 50%, #fff 100%);
+  --theme-text: #000;
+  --theme-card-bg: #fff;
+  --theme-sidebar-bg: linear-gradient(180deg, #fff 0%, #ffd700 50%, #fff 100%);
+  --theme-navbar-bg: linear-gradient(
+    135deg,
+    #ffd700 0%,
+    #fff 50%,
+    #ffd700 100%
+  );
+}
+
+/* Apply theme-aware styles immediately with high specificity */
+html {
+  background: var(--theme-background) !important;
+}
+
+body {
+  background: var(--theme-background) !important;
+  color: var(--theme-text) !important;
+  transition: background-color 0.15s ease, color 0.15s ease !important;
+  min-height: 100vh !important;
+}
+
+.navbar-dark.bg-primary {
+  background: var(--theme-navbar-bg) !important;
+  border-bottom: 2px solid var(--theme-primary) !important;
+}
+
+.sidebar {
+  background: var(--theme-sidebar-bg) !important;
+  border-right: 2px solid var(--theme-primary) !important;
+}
+
+.card,
+.modal-content,
+.container {
+  background: var(--theme-card-bg) !important;
+  color: var(--theme-text) !important;
+}
+
+.btn-primary {
+  background: linear-gradient(
+    135deg,
+    var(--theme-primary) 0%,
+    var(--theme-secondary) 50%,
+    var(--theme-primary) 100%
+  ) !important;
+  border-color: var(--theme-primary) !important;
+}
+
+.table {
+  background: var(--theme-card-bg) !important;
+  color: var(--theme-text) !important;
+}
+
+.form-control,
+.form-select {
+  background: var(--theme-card-bg) !important;
+  color: var(--theme-text) !important;
+  border-color: var(--theme-primary) !important;
+}

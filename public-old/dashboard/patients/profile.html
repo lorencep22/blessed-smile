@@ -1,0 +1,2318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Profile - Blessed Smile Dental Clinic</title>
+    <link rel="icon" href="/site-logo.png" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="profile.css">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="../../toast.js" defer></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+</head>
+
+<body id="patients-profile">
+    <div class="container-fluid" style="background: black; min-height: 100vh;">
+        <div class="main-container">
+            <!-- Header Section -->
+            <div class="header-section"
+                style="background: linear-gradient(135deg, #fff 0%, #ffd700 60%, #1e293b 100%); border-radius: 0 0 24px 24px; box-shadow: 0 4px 24px rgba(30,41,59,0.07); padding: 2.5rem 2rem 2rem 2rem; margin-bottom: 2.5rem;">
+                <div class="d-flex align-items-center">
+                    <img src="/site-logo.png" alt="Clinic Logo" class="clinic-logo me-3"
+                        style="border-radius: 16px; box-shadow: 0 4px 16px #fff, 0 2px 8px #ffd700; background: #fff;">
+                    <div>
+                        <h1 class="page-title"
+                            style="color: #1e293b; font-weight: 700; font-size: 2.5rem; letter-spacing: 1px;">Patient
+                            Profile</h1>
+                        <p class="mb-0" style="color: black; font-weight: 500;">Complete patient information and
+                            medical history</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Section -->
+            <div class="content-section">
+                <!-- Patient Information & Medical Record Section -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <h2 class="section-title">Patient Information & Medical History</h2>
+                        <div class="ms-auto">
+                            <button class="btn btn-secondary-modern me-2" id="editMedicalRecordBtn"
+                                style="display: none;">
+                                <i class="fas fa-edit me-2"></i>Edit Medical Record
+                            </button>
+
+                            <button id="saveMedicalRecordBtn"
+                                class="btn btn-modern btn-sm view-procedure-btn btn-gold-gradient"
+                                style="display: none;">
+                                <i class="fas fa-save me-2"></i>Save Changes
+                            </button>
+                            <button class="btn btn-modern" id="addMedicalRecordBtn" style="display: none;">
+                                <i class="fas fa-plus me-2"></i>Add Medical Record
+                            </button>
+                        </div>
+                    </div>
+                    <div class="section-body">
+                        <div class="row g-4">
+                            <!-- Patient Information Column -->
+                            <div class="col-lg-5">
+                                <div class="patient-info-section">
+                                    <h4 class="mb-3" style="color: #ffd700; font-weight: 700;">
+                                        <i class="fas fa-user me-2"></i><span style="color: black;"> Patient
+                                            Information</span>
+                                    </h4>
+                                    <div id="patientDetails">
+                                        <!-- Patient details will be rendered here by JS -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Medical Record Column -->
+                            <div class="col-lg-7">
+                                <div class="medical-record-section">
+                                    <h4 class="mb-3" style="color: #ffd700; font-weight: 700;">
+                                        <i class="fas fa-file-medical me-2"></i><span
+                                            style="color: black;">Medical-Dental History</span>
+                                    </h4>
+                                    <div id="medicalRecordStatus" class="mb-3"></div>
+                                    <form id="medicalRecordForm" class="medical-record-form">
+                                        <div class="row g-4">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="form-label">1. Are you presently under physician's
+                                                        care?</label>
+                                                    <div class="radio-group">
+                                                        <label class="form-check">
+                                                            <input class="form-check-input" type="radio"
+                                                                name="physicianCare" id="physicianYes" value="Yes">
+                                                            <span class="form-check-label">YES</span>
+                                                        </label>
+                                                        <label class="form-check">
+                                                            <input class="form-check-input" type="radio"
+                                                                name="physicianCare" id="physicianNo" value="No">
+                                                            <span class="form-check-label">NO</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="form-label">2. Are you pregnant?</label>
+                                                    <div class="radio-group">
+                                                        <label class="form-check">
+                                                            <input class="form-check-input" type="radio" name="pregnant"
+                                                                id="pregnantYes" value="Yes">
+                                                            <span class="form-check-label">YES</span>
+                                                        </label>
+                                                        <label class="form-check">
+                                                            <input class="form-check-input" type="radio" name="pregnant"
+                                                                id="pregnantNo" value="No">
+                                                            <span class="form-check-label">NO</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="form-label">3. Are you taking any medicine at
+                                                        present?</label>
+                                                    <div class="radio-group">
+                                                        <label class="form-check">
+                                                            <input class="form-check-input" type="radio" name="medicine"
+                                                                id="medicineYes" value="Yes">
+                                                            <span class="form-check-label">YES</span>
+                                                        </label>
+                                                        <label class="form-check">
+                                                            <input class="form-check-input" type="radio" name="medicine"
+                                                                id="medicineNo" value="No">
+                                                            <span class="form-check-label">NO</span>
+                                                        </label>
+                                                    </div>
+                                                    <div id="medicineDetailsField" class="mt-3" style="display:none;">
+                                                        <label for="medicineDetails" class="form-label">Please specify
+                                                            the
+                                                            medicine:</label>
+                                                        <input type="text" class="form-control" id="medicineDetails"
+                                                            name="medicineDetails" placeholder="Enter medicine name(s)">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">4. Have you ever had?</label>
+                                                    <div class="checkbox-grid">
+                                                        <label class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="history[]" id="highBP"
+                                                                value="High Blood Pressure">
+                                                            <span class="form-check-label">High Blood Pressure</span>
+                                                        </label>
+                                                        <label class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="history[]" id="lowBP" value="Low Blood Pressure">
+                                                            <span class="form-check-label">Low Blood Pressure</span>
+                                                        </label>
+                                                        <label class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="history[]" id="asthma" value="Asthma">
+                                                            <span class="form-check-label">Asthma</span>
+                                                        </label>
+                                                        <label class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="history[]" id="lungDisease" value="Lung Disease">
+                                                            <span class="form-check-label">Lung Disease</span>
+                                                        </label>
+                                                        <label class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="history[]" id="tuberculosis" value="Tuberculosis">
+                                                            <span class="form-check-label">Tuberculosis</span>
+                                                        </label>
+                                                        <label class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="history[]" id="thyroid" value="Thyroid Problem">
+                                                            <span class="form-check-label">Thyroid Problem</span>
+                                                        </label>
+                                                        <label class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="history[]" id="heartDisease"
+                                                                value="Heart Disease">
+                                                            <span class="form-check-label">Heart Disease</span>
+                                                        </label>
+                                                        <label class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="history[]" id="diabetes" value="Diabetes">
+                                                            <span class="form-check-label">Diabetes</span>
+                                                        </label>
+                                                        <label class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="history[]" id="bleeding"
+                                                                value="Bleeding Problems">
+                                                            <span class="form-check-label">Bleeding Problems</span>
+                                                        </label>
+                                                        <label class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="history[]" id="aids"
+                                                                value="AIDS or HIV Infection">
+                                                            <span class="form-check-label" for="aids">AIDS or HIV
+                                                                Infection</span>
+                                                        </label>
+                                                        <label class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="history[]" id="hepatitis" value="Hepatitis">
+                                                            <span class="form-check-label"
+                                                                for="hepatitis">Hepatitis</span>
+                                                        </label>
+                                                        <label class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="history[]" id="others" value="Others">
+                                                            <span class="form-check-label" for="others">Others:</span>
+                                                            <input type="text" class="form-control mt-2"
+                                                                name="otherHistory" id="otherHistoryInput"
+                                                                placeholder="Specify" disabled>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label class="form-label">5. Have you ever had allergic reaction
+                                                    to?</label>
+                                                <div class="row g-4">
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">a. Local Anesthesia</label>
+                                                        <div class="radio-group">
+                                                            <label class="form-check">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="allergyAnesthesia" id="anesthesiaYes"
+                                                                    value="Yes">
+                                                                <span class="form-check-label"
+                                                                    for="anesthesiaYes">YES</span>
+                                                            </label>
+                                                            <label class="form-check">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="allergyAnesthesia" id="anesthesiaNo"
+                                                                    value="No">
+                                                                <span class="form-check-label"
+                                                                    for="anesthesiaNo">NO</span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">b. Antibiotics</label>
+                                                        <div class="radio-group">
+                                                            <label class="form-check">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="allergyAntibiotics" id="antibioticsYes"
+                                                                    value="Yes">
+                                                                <span class="form-check-label"
+                                                                    for="antibioticsYes">YES</span>
+                                                            </label>
+                                                            <label class="form-check">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="allergyAntibiotics" id="antibioticsNo"
+                                                                    value="No">
+                                                                <span class="form-check-label"
+                                                                    for="antibioticsNo">NO</span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">c. Pain Killer</label>
+                                                        <div class="radio-group">
+                                                            <label class="form-check">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="allergyPainKiller" id="painKillerYes"
+                                                                    value="Yes">
+                                                                <span class="form-check-label"
+                                                                    for="painKillerYes">YES</span>
+                                                            </label>
+                                                            <label class="form-check">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="allergyPainKiller" id="painKillerNo"
+                                                                    value="No">
+                                                                <span class="form-check-label"
+                                                                    for="painKillerNo">NO</span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">d. Others</label>
+                                                        <div class="radio-group">
+                                                            <label class="form-check">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="allergyOthers" id="allergyOthersYes"
+                                                                    value="Yes">
+                                                                <span class="form-check-label"
+                                                                    for="allergyOthersYes">YES</span>
+                                                            </label>
+                                                            <label class="form-check">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="allergyOthers" id="allergyOthersNo"
+                                                                    value="No">
+                                                                <span class="form-check-label"
+                                                                    for="allergyOthersNo">NO</span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row g-4">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="form-label">6. Have you been hospitalized?</label>
+                                                    <div class="radio-group">
+                                                        <label class="form-check">
+                                                            <input class="form-check-input" type="radio"
+                                                                name="hospitalized" id="hospitalizedYes" value="Yes">
+                                                            <span class="form-check-label"
+                                                                for="hospitalizedYes">YES</span>
+                                                        </label>
+                                                        <label class="form-check">
+                                                            <input class="form-check-input" type="radio"
+                                                                name="hospitalized" id="hospitalizedNo" value="No">
+                                                            <span class="form-check-label"
+                                                                for="hospitalizedNo">NO</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="form-label">7. Have you worn any type of
+                                                        denture?</label>
+                                                    <div class="radio-group">
+                                                        <label class="form-check">
+                                                            <input class="form-check-input" type="radio" name="denture"
+                                                                id="dentureYes" value="Yes">
+                                                            <span class="form-check-label" for="dentureYes">YES</span>
+                                                        </label>
+                                                        <label class="form-check">
+                                                            <input class="form-check-input" type="radio" name="denture"
+                                                                id="dentureNo" value="No">
+                                                            <span class="form-check-label" for="dentureNo">NO</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                </div>
+                                <div class="text-end mt-4" id="saveMedicalRecordContainer" style="display: none;">
+                                    <button type="submit" id="saveMedicalRecordBtn"
+                                        class="btn btn-modern btn-sm view-procedure-btn btn-gold-gradient">
+                                        <i class="fas fa-save me-2"></i>Save Medical Record
+                                    </button>
+                                </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Procedures Section -->
+            <div class="section-card">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="fas fa-notes-medical"></i>
+                    </div>
+                    <h2 class="section-title">New Procedures</h2>
+                    <div class="ms-auto">
+                        <button class="btn btn-modern btn-sm view-procedure-btn btn-gold-gradient" id="addProcedureBtn">
+                            <i class="fas fa-plus me-2"></i>Add Procedure
+                        </button>
+                        <button class="btn btn-modern btn-sm view-procedure-btn btn-gold-gradient" id="editProcedureBtn"
+                            style="display: none;">
+                            <i class="fas fa-edit me-2"></i>Edit
+                        </button>
+                        <button class="btn btn-modern btn-sm view-procedure-btn btn-gold-gradient"
+                            id="updateProcedureBtn" style="display: none;">
+                            <i class="fas fa-save me-2"></i>Update & Print
+                        </button>
+                        <button class="btn btn-modern btn-sm btn-secondary" id="closeProcedureBtn"
+                            style="display: none;">
+                            <i class="fas fa-times me-2"></i>Close
+                        </button>
+
+                    </div>
+                </div>
+                <div id="procedureBody" class="section-body" style="display: none;">
+                    <div class="container my-4"
+                        style="display: flex; flex-direction: row; gap: 10px; align-items: flex-start; flex-wrap: wrap;">
+                        <div id="procedureFormContainer" style="flex: 1 1 320px; min-width: 320px; max-width: 380px;">
+                            <h1 class="mb-4">Patient Procedure</h1>
+                            <form id="addProcedureForm">
+                                <div style="display: flex; gap: 24px; align-items: flex-start;">
+                                    <div style="flex: 1; min-width: 0;">
+
+                                        <div class="mb-2">
+                                            <label for="procedure" class="form-label">Procedure</label>
+                                            <input type="text" class="form-control" id="procedure" name="procedure"
+                                                required list="procedureDatalist"
+                                                placeholder="Type or select a procedure">
+                                            <datalist id="procedureDatalist">
+                                                <!-- Surgical Procedures -->
+                                                <option value="Frenectomy (lip or tongue tie release)"></option>
+                                                <option value="Biopsy of oral lesions"></option>
+                                                <option value="Cyst or tumor removal"></option>
+                                                <option value="Corrective jaw surgery (orthognathic surgery)"></option>
+
+                                                <!-- Orthodontic Procedures -->
+                                                <option value="Braces (metal, ceramic, lingual)"></option>
+                                                <option value="Clear aligners (e.g., Invisalign)"></option>
+                                                <option value="Space maintainers (for children)"></option>
+                                                <option value="Retainers (post-braces)"></option>
+                                                <option value="Interceptive orthodontics (for early correction)">
+                                                </option>
+
+                                                <!-- Cosmetic Dentistry -->
+                                                <option value="Teeth whitening (in-office or take-home)"></option>
+                                                <option value="Veneers (porcelain or composite)"></option>
+                                                <option value="Smile makeovers"></option>
+                                                <option value="Gum contouring (reshaping gum line)"></option>
+                                                <option value="Composite bonding for aesthetic improvement"></option>
+
+                                                <!-- Prosthodontics / Full Mouth Rehabilitation -->
+                                                <option value="Full-mouth reconstructions"></option>
+                                                <option value="Implant-supported dentures or bridges"></option>
+                                                <option value="Occlusal adjustments and bite rehabilitation"></option>
+
+                                                <!-- Emergency Dental Care -->
+                                                <option
+                                                    value="Treatment for dental trauma (fractured or knocked-out teeth)">
+                                                </option>
+                                                <option value="Pain management (infections, abscesses)"></option>
+                                                <option value="Temporary restorations"></option>
+                                                <option value="Draining oral infections or abscesses"></option>
+                                            </datalist>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label for="doctor" class="form-label">Doctor</label>
+                                            <input itemid="doctorList" type="text" class="form-control" id="doctor"
+                                                name="doctor" required list="doctorNamesDatalist">
+                                        </div>
+                                        <div class="mb-2">
+                                            <label for="date" class="form-label">Date</label>
+                                            <input type="date" class="form-control" id="date" name="date" required
+                                                max="">
+
+                                        </div>
+                                        <div class="mb-2">
+                                            <label for="remarks" class="form-label">Remarks</label>
+                                            <textarea class="form-control" id="remarks" name="remarks" rows="3"
+                                                required></textarea>
+                                        </div>
+                                        <div class="mb-2">
+
+
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <label for="totalBill">Total Bill</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text" id="peso-addon"><i
+                                                                class="fa fa-peso-sign"></i></span>
+                                                        <input type="number" class="form-control" id="totalBill"
+                                                            required placeholder="Enter total bill" min="1"
+                                                            aria-describedby="peso-addon">
+                                                    </div>
+                                                    <label for="procedureAmount">Amount Paid</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text" id="peso-addon"><i
+                                                                class="fa fa-peso-sign"></i></span>
+                                                        <input type="number" class="form-control" id="procedureAmount"
+                                                            required placeholder="Enter amount" min="1"
+                                                            aria-describedby="peso-addon">
+                                                    </div>
+                                                    <label for="procedureBalance">Balance Amount</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text" id="peso-addon"><i
+                                                                class="fa fa-peso-sign"></i></span>
+                                                        <input type="number" class="form-control" id="procedureBalance"
+                                                            placeholder="Enter balance" min="0"
+                                                            aria-describedby="peso-addon" disabled>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <button type="submit" id="addProcedureSubmitBtn"
+                                                    class="btn btn-modern btn-sm view-procedure-btn btn-gold-gradient">Save
+                                                    & Print</button>
+                                            </div>
+
+                                            <!-- Teeth Summary Section -->
+                                            <div class="col-12 mt-3">
+                                                <div id="teethSummary" class="alert alert-light" style="display: none;">
+                                                    <strong>Affected Teeth:</strong>
+                                                    <div id="teethSummaryContent" class="mt-2"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div id="teethChartContainer" style="flex: 2 1 650px; min-width: 650px; max-width: 100%;">
+                            <div class="chart-wrapper">
+                                <div
+                                    style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 20px;">
+                                    <h2 style="margin: 0;">INTRAORAL EXAMINATION</h2>
+                                    <button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#instructionsModal"
+                                        style="border-radius: 50%; width: 30px; height: 30px; padding: 0; display: flex; align-items: center; justify-content: center;">
+                                        <i class="fas fa-question" style="font-size: 12px;"></i>
+                                    </button>
+                                </div>
+
+                                <!-- Top Primary -->
+                                <div class="chart-row">
+                                    <div class="left-label">TEMPORARY<br>TEETH</div>
+                                    <div class="left-label">STATUS<br>RIGHT</div>
+                                    <div id="row-topPrimary"></div>
+                                    <div class="left-label">STATUS<br>LEFT</div>
+                                </div>
+
+                                <!-- Top Permanent -->
+                                <div class="chart-row">
+                                    <div class="left-label">PERMANENT<br>TEETH</div>
+                                    <div class="left-label">STATUS<br>RIGHT</div>
+                                    <div id="row-topPermanent"></div>
+                                    <div class="left-label">STATUS<br>LEFT</div>
+                                </div>
+
+                                <!-- Bottom Permanent -->
+                                <div class="chart-row">
+                                    <div class="left-label">PERMANENT<br>TEETH</div>
+                                    <div class="left-label">STATUS<br>RIGHT</div>
+                                    <div id="row-bottomPermanent"></div>
+                                    <div class="left-label">STATUS<br>LEFT</div>
+                                </div>
+
+                                <!-- Bottom Primary -->
+                                <div class="chart-row">
+                                    <div class="left-label">TEMPORARY<br>TEETH</div>
+                                    <div class="left-label">STATUS<br>RIGHT</div>
+                                    <div id="row-bottomPrimary"></div>
+                                    <div class="left-label">STATUS<br>LEFT</div>
+                                </div>
+                            </div>
+
+                            <!-- Legend Here -->
+                            <div style="width: 100%; display: flex; justify-content: center;">
+
+                                <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+                                    <div
+                                        style="font-size: 15px; font-weight: bold; margin-top: 18px; margin-bottom: 2px; letter-spacing: 1px;">
+                                        LEGEND:</div>
+                                    <div
+                                        style="display: flex; flex-direction: row; justify-content: center; gap: 40px; font-size: 13px; color: #222; margin-bottom: 10px;">
+                                        <div style="min-width: 210px; line-height: 1.7;">
+                                            C – Caries<br>
+                                            Am – Amalgam Filling<br>
+                                            G – Gold filling<br>
+                                            Im – Impacted Tooth<br>
+                                            PFS – Pit &amp; Fissure Sealant
+                                        </div>
+                                        <div style="min-width: 270px; line-height: 1.7;">
+                                            JC – Jacket Crown (P-Porcelain, M-Metal, G-Gold, A-Acrylic, C-Ceramic)<br>
+                                            Co – Composite<br>
+                                            In – Inlay/On-Inlay (G: Gold; M: Metal; C: Ceramic)<br>
+                                            Frac – Fractured (Co, AM, Tooth)<br>
+                                            TF – Temporary Filling
+                                        </div>
+                                        <div style="min-width: 170px; line-height: 1.7;">
+                                            X – Extraction due to Caries<br>
+                                            Sp – Supernumerary
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Procedures History Section -->
+            <div class="section-card">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <h2 class="section-title">Procedures History</h2>
+                    <div class="ms-auto">
+                        <div class="input-group" style="max-width: 800px;">
+                            <div
+                                style="display: flex; gap: 10px; align-items: center; width: 100%; background: linear-gradient(90deg, #fff 0%, #ffd700 80%, #1e293b 100%); border-radius: 16px; padding: 10px 18px; box-shadow: 0 2px 8px rgba(30,41,59,0.07);">
+                                <select class="form-select" id="dateFilterSelect"
+                                    style="max-width:170px; border-radius: 10px; border: 1px solid #ffd700; background: #fff; color: #1e293b; font-weight: 500;">
+                                    <option value="all">All</option>
+                                    <option value="today">Today</option>
+                                    <option value="thisWeek">This Week</option>
+                                    <option value="prevWeek">Previous Week</option>
+                                    <option value="thisMonth">This Month</option>
+                                    <option value="prevMonth">Previous Month</option>
+                                    <option value="thisYear">This Year</option>
+                                    <option value="custom">Custom Range</option>
+                                </select>
+                                <input type="date" class="form-control d-none" id="customStartDate"
+                                    style="max-width:150px; border-radius: 10px; border: 1px solid #ffd700; background: #fff; color: #1e293b; font-weight: 500;">
+                                <span class="input-group-text d-none" id="toLabel"
+                                    style="background: transparent; color: #1e293b; font-weight: 600; border: none;">to</span>
+                                <input type="date" class="form-control d-none" id="customEndDate"
+                                    style="max-width:150px; border-radius: 10px; border: 1px solid #ffd700; background: #fff; color: #1e293b; font-weight: 500;">
+                                <button type="button" class="btn btn-gold-gradient" id="filterDateBtn"
+                                    style="border-radius: 10px; font-weight: 600; min-width: 90px; box-shadow: 0 2px 8px #ffd70044; color: #1e293b; border: none;">Filter</button>
+                                <button id="printProcedureHistoryBtn" class="btn btn-gold-gradient"
+                                    style="border-radius: 10px; font-weight: 600; min-width: 90px; box-shadow: 0 2px 8px #ffd70044; color: #1e293b; border: none;">
+                                    <i class="fa fa-print me-2"></i> Print
+                                </button>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+                <div class="section-body p-0">
+                    <div class="procedures-table">
+                        <div class="table-responsive">
+                            <table class="table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Procedure Name</th>
+                                        <th>Doctor Name</th>
+                                        <th>Date</th>
+                                        <th>Total Bill</th>
+                                        <th>Amount Paid</th>
+                                        <th>Balance Amount</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="procedureHistory">
+                                    <!-- Procedure rows will be rendered here by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="procedurePagination" class="p-3">
+                            <!-- Pagination controls will be rendered here by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Billing Section -->
+            <!-- <div class="billing-section">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                    </div>
+                    <h2 class="section-title">Billing Information</h2>
+                    <div class="ms-auto">
+                        <div class="input-group" style="max-width: 800px;">
+                            <div
+                                style="display: flex; gap: 10px; align-items: center; width: 100%; background: linear-gradient(90deg, #fff 0%, #ffd700 80%, #1e293b 100%); border-radius: 16px; padding: 10px 18px; box-shadow: 0 2px 8px rgba(30,41,59,0.07);">
+                                <select class="form-select" id="billingPeriodSelect"
+                                    style="max-width:170px; border-radius: 10px; border: 1px solid #ffd700; background: #fff; color: #1e293b; font-weight: 500;">
+                                    <option value="today">Today</option>
+                                    <option value="thisWeek">This Week</option>
+                                    <option value="prevWeek">Previous Week</option>
+                                    <option value="thisMonth">This Month</option>
+                                    <option value="prevMonth">Previous Month</option>
+                                    <option value="thisYear">This Year</option>
+                                    <option value="custom">Custom Range</option>
+                                </select>
+                                <input type="date" class="form-control d-none" id="billingCustomStartDate"
+                                    style="max-width:150px; border-radius: 10px; border: 1px solid #ffd700; background: #fff; color: #1e293b; font-weight: 500;">
+                                <span class="input-group-text d-none" id="billingToLabel"
+                                    style="background: transparent; color: #1e293b; font-weight: 600; border: none;">to</span>
+                                <input type="date" class="form-control d-none" id="billingCustomEndDate"
+                                    style="max-width:150px; border-radius: 10px; border: 1px solid #ffd700; background: #fff; color: #1e293b; font-weight: 500;">
+                                <button type="button" class="btn btn-gold-gradient" id="billingFilterDateBtn"
+                                    style="border-radius: 10px; font-weight: 600; min-width: 90px; box-shadow: 0 2px 8px #ffd70044; color: #1e293b; border: none;">Generate</button>
+                                <button id="printBillingHistoryBtn" class="btn btn-gold-gradient"
+                                    style="border-radius: 10px; font-weight: 600; min-width: 90px; box-shadow: 0 2px 8px #ffd70044; color: #1e293b; border: none;">
+                                    <i class="fa fa-print me-2"></i> Print
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-body p-0">
+                    <div class="billing-table">
+                        <div class="table-responsive">
+                            <table class="table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Procedure Name</th>
+                                        <th>Tooth No./S</th>
+                                        <th>Date</th>
+                                        <th>Amount</th>
+                                        <th>Balance</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="billingHistory">
+                                     Billing rows will be rendered here by JS 
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div> -->
+        </div>
+    </div>
+    </div>
+
+    <!-- Instructions Modal -->
+    <div class="modal fade" id="instructionsModal" tabindex="-1" aria-labelledby="instructionsModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 16px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);">
+                <div class="modal-header"
+                    style="background: linear-gradient(135deg, #17a2b8 0%, #138496 100%); color: #fff; border-radius: 16px 16px 0 0;">
+                    <h5 class="modal-title" id="instructionsModalLabel">
+                        <i class="fas fa-info-circle me-2"></i>How to Use the Teeth Chart
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="instructions-content">
+                        <h6 class="mb-2" style="color: #17a2b8; font-weight: 600;">
+                            <i class="fas fa-clipboard-list me-2"></i>Step-by-Step Instructions:
+                        </h6>
+                        <div class="instruction-item mb-2">
+                            <div class="d-flex align-items-start">
+                                <span class="badge bg-warning text-dark me-3" style="margin-top: 2px;">1</span>
+                                <div>
+                                    <strong>Treatment Boxes:</strong> Fill in the
+                                    <span
+                                        style="background: #fff3cd; padding: 2px 8px; border-radius: 4px; font-weight: 600;">yellow
+                                        boxes</span>
+                                    with treatment codes (e.g., C, Am, G, JC, Co)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="instruction-item mb-2">
+                            <div class="d-flex align-items-start">
+                                <span class="badge bg-info me-3" style="margin-top: 2px;">2</span>
+                                <div>
+                                    <strong>Condition Boxes:</strong> Fill in the
+                                    <span
+                                        style="background: #e7f3ff; padding: 2px 8px; border-radius: 4px; font-weight: 600;">blue
+                                        boxes</span>
+                                    with existing conditions
+                                </div>
+                            </div>
+                        </div>
+                        <div class="instruction-item mb-2">
+                            <div class="d-flex align-items-start">
+                                <span class="badge bg-success me-3" style="margin-top: 2px;">3</span>
+                                <div>
+                                    <strong>Tooth Sections:</strong> Click on individual tooth sections
+                                    <span style="font-style: italic;">(center, top, right, bottom, left)</span>
+                                    to highlight affected areas
+                                </div>
+                            </div>
+                        </div>
+                        <div class="instruction-item mb-2">
+                            <div class="d-flex align-items-start">
+                                <span class="badge bg-danger me-3" style="margin-top: 2px;">4</span>
+                                <div>
+                                    <strong>Active Sections:</strong> Selected sections will turn
+                                    <span
+                                        style="color: red; font-weight: bold; background: #ffe6e6; padding: 2px 6px; border-radius: 4px;">red</span>
+                                    to indicate affected areas
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-light border-start border-4 border-primary"
+                            style="background: #f8f9fa;">
+                            <h6 class="mb-2" style="color: #495057;">
+                                <i class="fas fa-lightbulb me-2 text-warning"></i>Tips:
+                            </h6>
+                            <ul class="mb-0" style="font-size: 0.9rem; color: #6c757d;">
+                                <li>Use the legend below the chart for reference codes</li>
+                                <li>Modified teeth will show a green indicator dot</li>
+                                <li>Selected teeth appear in the summary below the form</li>
+                                <li>All changes are automatically saved with the procedure</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer"
+                    style="border-top: 1px solid #dee2e6; background: #f8f9fa; border-radius: 0 0 16px 16px;">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                        <i class="fas fa-check me-2"></i>Got it!
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="/app.js" defer></script>
+    <script src="profile.js" defer></script>
+    <!-- dom-to-image for chart screenshot (CDN for reliability) -->
+    <script src="https://cdn.jsdelivr.net/npm/dom-to-image@2.6.0/dist/dom-to-image.min.js"></script>
+    <script src="procedure.js"></script>
+    <!-- <script src="billingWithTooth.js" defer></script> -->
+    <script>
+        // Function to get date range based on selected period
+        function getDateRange(period) {
+            const now = new Date();
+            let start, end;
+
+            switch (period) {
+                case "all":
+                    return { start: new Date(0), end: new Date() }; // From epoch to now
+                case "today": {
+                    start = new Date(now);
+                    end = new Date(now);
+                    break;
+                }
+                case "thisWeek": {
+                    const day = now.getDay();
+                    const diff = now.getDate() - day + (day === 0 ? -6 : 1); // Monday
+                    start = new Date(now.setDate(diff));
+                    end = new Date(start);
+                    end.setDate(start.getDate() + 6); // Sunday
+                    break;
+                }
+                case "prevWeek": {
+                    const day = now.getDay();
+                    const diff = now.getDate() - day + (day === 0 ? -6 : 1); // Monday of this week
+                    start = new Date(now.setDate(diff - 7)); // Previous Monday
+                    end = new Date(start);
+                    end.setDate(start.getDate() + 6); // Previous Sunday
+                    break;
+                }
+                case "thisMonth": {
+                    start = new Date(now.getFullYear(), now.getMonth(), 1);
+                    end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+                    break;
+                }
+                case "prevMonth": {
+                    start = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+                    end = new Date(now.getFullYear(), now.getMonth(), 0);
+                    break;
+                }
+                case "thisYear": {
+                    start = new Date(now.getFullYear(), 0, 1);
+                    end = new Date(now.getFullYear(), 11, 31);
+                    break;
+                }
+                case "custom": {
+                    const customStartDate = document.getElementById('customStartDate');
+                    const customEndDate = document.getElementById('customEndDate');
+                    const startValue = customStartDate ? customStartDate.value : '';
+                    const endValue = customEndDate ? customEndDate.value : '';
+                    if (!startValue || !endValue) {
+                        showWarning("Please select both start and end dates for custom range.");
+                        return null;
+                    }
+                    start = new Date(startValue);
+                    end = new Date(endValue);
+                    break;
+                }
+                default:
+                    return null;
+            }
+
+            // Set time to start/end of day
+            start.setHours(0, 0, 0, 0);
+            end.setHours(23, 59, 59, 999);
+            return { start, end };
+        }
+
+        // Global pagination state for "All" filter
+        window._allFilterPagination = {
+            currentPage: 1,
+            totalPages: 1,
+            pageSize: 20,
+            allProcedures: []
+        };
+
+        // Render all procedures with pagination (for "All" filter)
+        function renderAllProceduresWithPagination(page = 1) {
+            const procedureHistory = document.getElementById("procedureHistory");
+            if (!procedureHistory) return;
+
+            procedureHistory.innerHTML = '<tr><td colspan="4">Loading...</td></tr>';
+
+            // Get patient ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const patientId = urlParams.get("id");
+
+            if (!patientId) {
+                procedureHistory.innerHTML = '<tr><td colspan="4">Patient ID not found.</td></tr>';
+                return;
+            }
+
+            if (!window.proceduresCollection) {
+                procedureHistory.innerHTML = '<tr><td colspan="4">Database connection not available.</td></tr>';
+                return;
+            }
+
+            window.proceduresCollection
+                .where("patientId", "==", patientId)
+                .orderBy("date", "desc")
+                .get()
+                .then(snapshot => {
+                    if (snapshot.empty) {
+                        procedureHistory.innerHTML = '<tr><td colspan="4">No procedures found.</td></tr>';
+                        document.getElementById('procedurePagination').innerHTML = '';
+                        return;
+                    }
+
+                    // Collect all procedures
+                    let allProcedures = [];
+                    snapshot.forEach(doc => {
+                        allProcedures.push({
+                            id: doc.id,
+                            ...doc.data()
+                        });
+                    });
+
+                    // Sort by date descending
+                    allProcedures.sort((a, b) => {
+                        let da = new Date(a.date);
+                        let db = new Date(b.date);
+                        return db - da;
+                    });
+
+                    // Store all procedures for pagination
+                    window._allFilterPagination.allProcedures = allProcedures;
+                    const pageSize = window._allFilterPagination.pageSize;
+                    const totalPages = Math.ceil(allProcedures.length / pageSize);
+                    window._allFilterPagination.totalPages = totalPages;
+                    window._allFilterPagination.currentPage = page;
+
+                    // Get procedures for current page
+                    const startIndex = (page - 1) * pageSize;
+                    const endIndex = startIndex + pageSize;
+                    const currentPageProcedures = allProcedures.slice(startIndex, endIndex);
+
+                    // Render current page procedures
+                    let rows = '';
+                    currentPageProcedures.forEach(p => {
+                        const totalBill = p.totalBill !== undefined && p.totalBill !== null && p.totalBill !== ''
+                            ? parseFloat(p.totalBill).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                            : 'Update the procedure';
+                        const amount = p.amount !== undefined && p.amount !== null && p.amount !== ''
+                            ? parseFloat(p.amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                            : 'Update the procedure';
+                        const balance = p.balance !== undefined && p.balance !== null && p.balance !== ''
+                            ? parseFloat(p.balance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                            : 'Update the procedure';
+
+                        rows += `<tr>
+                            <td>${p.procedure || ''}</td>
+                            <td>${p.doctor || ''}</td>
+                            <td>${p.date || ''}</td>
+                            <td>${totalBill}</td>
+                            <td>${amount}</td>
+                            <td>${balance}</td>
+                            <td><button class="btn btn-modern btn-sm view-procedure-btn btn-gold-gradient" data-id="${p.id}">
+                                <i class="fas fa-eye me-1"></i>View
+                            </button></td>
+                        </tr>`;
+                    });
+
+                    procedureHistory.innerHTML = rows;
+
+                    // Render pagination controls
+                    renderAllFilterPagination();
+                })
+                .catch(error => {
+                    procedureHistory.innerHTML = `<tr><td colspan='4'>Error loading procedures: ${error.message}</td></tr>`;
+                    document.getElementById('procedurePagination').innerHTML = '';
+                });
+        }
+
+        // Render pagination controls for "All" filter
+        function renderAllFilterPagination() {
+            const paginationContainer = document.getElementById('procedurePagination');
+            const { currentPage, totalPages, allProcedures, pageSize } = window._allFilterPagination;
+
+            if (!paginationContainer || totalPages <= 1) {
+                paginationContainer.innerHTML = `<div class="text-center mt-3 text-muted">
+                    Showing ${allProcedures.length} procedure(s)
+                </div>`;
+                return;
+            }
+
+            let paginationHtml = `
+                <nav aria-label="Procedure History pagination" class="mt-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="text-muted">
+                            Showing ${((currentPage - 1) * pageSize) + 1} to ${Math.min(currentPage * pageSize, allProcedures.length)} of ${allProcedures.length} procedures
+                        </div>
+                        <ul class="pagination justify-content-center mb-0" style="gap: 8px;">
+                            <li class="page-item">
+                                <button class="btn btn-modern btn-sm view-procedure-btn btn-gold-gradient" 
+                                        onclick="navigateToPage(${currentPage - 1})" 
+                                        ${currentPage === 1 ? 'disabled' : ''}>
+                                    <i class="fas fa-chevron-left me-1"></i>Prev
+                                </button>
+                            </li>`;
+
+            // Show page numbers (with ellipsis for large page counts)
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                paginationHtml += `
+                    <li class="page-item">
+                        <button class="btn btn-modern btn-sm view-procedure-btn ${i === currentPage ? 'btn-gold-gradient' : 'btn-outline-secondary'}" 
+                                onclick="navigateToPage(${i})" 
+                                ${i === currentPage ? 'style="font-weight: bold;"' : ''}>
+                            ${i}
+                        </button>
+                    </li>`;
+            }
+
+            paginationHtml += `
+                            <li class="page-item">
+                                <button class="btn btn-modern btn-sm view-procedure-btn btn-gold-gradient" 
+                                        onclick="navigateToPage(${currentPage + 1})" 
+                                        ${currentPage === totalPages ? 'disabled' : ''}>
+                                    Next<i class="fas fa-chevron-right ms-1"></i>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>`;
+
+            paginationContainer.innerHTML = paginationHtml;
+        }
+
+        // Navigate to specific page for "All" filter
+        function navigateToPage(page) {
+            if (page >= 1 && page <= window._allFilterPagination.totalPages) {
+                renderAllProceduresWithPagination(page);
+            }
+        }
+
+        // Render filtered procedure history based on date range
+        function renderFilteredProcedureHistory(period) {
+            // If "all" period is selected, use pagination
+            if (period === 'all') {
+                renderAllProceduresWithPagination(1);
+                return;
+            }
+
+            const procedureHistory = document.getElementById("procedureHistory");
+            if (!procedureHistory) return;
+
+            const dateRange = getDateRange(period);
+            if (!dateRange) {
+                return;
+            }
+
+            procedureHistory.innerHTML = '<tr><td colspan="4">Loading...</td></tr>';
+
+            // Get patient ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const patientId = urlParams.get("id");
+
+            if (!patientId) {
+                procedureHistory.innerHTML = '<tr><td colspan="4">Patient ID not found.</td></tr>';
+                return;
+            }
+
+            if (!window.proceduresCollection) {
+                procedureHistory.innerHTML = '<tr><td colspan="4">Database connection not available.</td></tr>';
+                return;
+            }
+
+            window.proceduresCollection
+                .where("patientId", "==", patientId)
+                .orderBy("date", "desc")
+                .get()
+                .then(snapshot => {
+                    if (snapshot.empty) {
+                        procedureHistory.innerHTML = '<tr><td colspan="4">No procedures found.</td></tr>';
+                        document.getElementById('procedurePagination').innerHTML = '';
+                        return;
+                    }
+
+                    // Filter procedures by date range
+                    let filteredProcedures = [];
+                    snapshot.forEach(doc => {
+                        const procedure = doc.data();
+                        let procDate = procedure.date;
+
+                        // Parse procedure date
+                        if (typeof procDate === "string") {
+                            procDate = new Date(procDate);
+                        } else if (procDate && procDate.toDate) {
+                            procDate = procedure.date.toDate();
+                        }
+
+                        // Check if procedure falls within date range
+                        if (procDate >= dateRange.start && procDate <= dateRange.end) {
+                            filteredProcedures.push({
+                                id: doc.id,
+                                ...procedure
+                            });
+                        }
+                    });
+
+                    if (filteredProcedures.length === 0) {
+                        procedureHistory.innerHTML = '<tr><td colspan="4">No procedures found for the selected date range.</td></tr>';
+                        document.getElementById('procedurePagination').innerHTML = '';
+                        return;
+                    }
+
+                    // Sort by date descending
+                    filteredProcedures.sort((a, b) => {
+                        let da = new Date(a.date);
+                        let db = new Date(b.date);
+                        return db - da;
+                    });
+
+                    // Render filtered results (no pagination for other filters)
+                    let rows = '';
+                    filteredProcedures.forEach(p => {
+                        const totalBill = p.totalBill !== undefined && p.totalBill !== null && p.totalBill !== ''
+                            ? parseFloat(p.totalBill).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                            : 'Update the procedure';
+                        const amount = p.amount !== undefined && p.amount !== null && p.amount !== ''
+                            ? parseFloat(p.amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                            : 'Update the procedure';
+                        const balance = p.balance !== undefined && p.balance !== null && p.balance !== ''
+                            ? parseFloat(p.balance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                            : 'Update the procedure';
+
+                        rows += `<tr>
+                            <td>${p.procedure || ''}</td>
+                            <td>${p.doctor || ''}</td>
+                            <td>${p.date || ''}</td>
+                            <td>${totalBill}</td>
+                            <td>${amount}</td>
+                            <td>${balance}</td>
+                            <td><button class="btn btn-modern btn-sm view-procedure-btn btn-gold-gradient" data-id="${p.id}">
+                                <i class="fas fa-eye me-1"></i>View
+                            </button></td>
+                        </tr>`;
+                    });
+
+                    procedureHistory.innerHTML = rows;
+
+                    // Show count for filtered view (no pagination)
+                    document.getElementById('procedurePagination').innerHTML =
+                        `<div class="text-center mt-3 text-muted">
+                            Showing ${filteredProcedures.length} procedure(s) for selected period
+                        </div>`;
+                })
+                .catch(error => {
+                    procedureHistory.innerHTML = `<tr><td colspan='4'>Error loading procedures: ${error.message}</td></tr>`;
+                    document.getElementById('procedurePagination').innerHTML = '';
+                });
+        }
+
+        // Make navigateToPage globally accessible
+        window.navigateToPage = navigateToPage;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var dateFilterSelect = document.getElementById('dateFilterSelect');
+            var customStartDate = document.getElementById('customStartDate');
+            var toLabel = document.getElementById('toLabel');
+            var customEndDate = document.getElementById('customEndDate');
+            var filterDateBtn = document.getElementById('filterDateBtn');
+
+            function updateCustomRangeVisibility() {
+                var isCustom = dateFilterSelect.value === 'custom';
+                if (customStartDate) customStartDate.classList.toggle('d-none', !isCustom);
+                if (toLabel) toLabel.classList.toggle('d-none', !isCustom);
+                if (customEndDate) customEndDate.classList.toggle('d-none', !isCustom);
+            }
+
+            if (dateFilterSelect) {
+                dateFilterSelect.addEventListener('change', updateCustomRangeVisibility);
+                updateCustomRangeVisibility();
+            }
+
+            // Add event listener for filter button
+            if (filterDateBtn) {
+                filterDateBtn.addEventListener('click', function () {
+                    const selectedPeriod = dateFilterSelect.value;
+                    renderFilteredProcedureHistory(selectedPeriod);
+                });
+            }
+
+            // Auto-filter on page load with default "all"
+            setTimeout(() => {
+                if (dateFilterSelect && dateFilterSelect.value === 'all') {
+                    renderFilteredProcedureHistory('all');
+                }
+            }, 1000);
+        });
+    </script>
+    <script>
+        // Procedure toggle functionality has been moved to procedure.js
+    </script>
+    <script>
+        // Auto-calculate balance amount function
+        function calculateBalance() {
+            const totalBillElement = document.getElementById('totalBill');
+            const amountPaidElement = document.getElementById('procedureAmount');
+            const balanceElement = document.getElementById('procedureBalance');
+
+            if (totalBillElement && amountPaidElement && balanceElement) {
+                const totalBill = parseFloat(totalBillElement.value) || 0;
+                const amountPaid = parseFloat(amountPaidElement.value) || 0;
+
+                // Calculate balance (Total Bill - Amount Paid)
+                const balance = totalBill - amountPaid;
+
+                // Ensure balance is not negative
+                const finalBalance = Math.max(0, balance);
+
+                // Update balance field
+                balanceElement.value = finalBalance.toFixed(2);
+
+                // Optional: Add visual feedback for overpayment
+                if (balance < 0) {
+                    balanceElement.style.backgroundColor = '#ffebee'; // Light red background
+                    balanceElement.title = `Overpayment: ₱${Math.abs(balance).toFixed(2)}`;
+                } else {
+                    balanceElement.style.backgroundColor = ''; // Reset background
+                    balanceElement.title = '';
+                }
+            }
+        }
+
+        // Add event listeners when document is ready
+        document.addEventListener('DOMContentLoaded', function () {
+            const totalBillElement = document.getElementById('totalBill');
+            const amountPaidElement = document.getElementById('procedureAmount');
+
+            if (totalBillElement && amountPaidElement) {
+                // Add event listeners for real-time calculation
+                totalBillElement.addEventListener('input', calculateBalance);
+                totalBillElement.addEventListener('change', calculateBalance);
+
+                amountPaidElement.addEventListener('input', calculateBalance);
+                amountPaidElement.addEventListener('change', calculateBalance);
+
+                // Initial calculation on page load
+                calculateBalance();
+            }
+        });
+    </script>
+    <script>
+        // Show/hide Save Medical Record button only when editing
+        document.addEventListener('DOMContentLoaded', function () {
+            var saveMedicalRecordContainer = document.getElementById('saveMedicalRecordContainer');
+            // Use the global isEditMode variable if available, otherwise fallback to a local variable
+            function updateSaveButtonVisibility() {
+                var isEditMode = window.isEditMode;
+                if (saveMedicalRecordContainer) {
+                    saveMedicalRecordContainer.style.display = isEditMode ? 'block' : 'none';
+                }
+            }
+            // Try to hook into the global edit/add/save button logic if possible
+            if (window.editMedicalRecordBtn) {
+                window.editMedicalRecordBtn.addEventListener('click', function () {
+                    window.isEditMode = true;
+                    updateSaveButtonVisibility();
+                });
+            }
+            const addMedicalRecordBtn = document.getElementById('addMedicalRecordBtn');
+            if (addMedicalRecordBtn) {
+                addMedicalRecordBtn.addEventListener('click', function () {
+                    window.isEditMode = true;
+                    updateSaveButtonVisibility();
+                });
+            }
+            const saveMedicalRecordBtn = document.getElementById('saveMedicalRecordBtn');
+            if (saveMedicalRecordBtn) {
+                saveMedicalRecordBtn.addEventListener('click', function () {
+                    window.isEditMode = false;
+                    updateSaveButtonVisibility();
+                });
+            }
+            // Also update on page load
+            updateSaveButtonVisibility();
+        });
+    </script>
+    <script>
+        // Enable/disable 'otherHistory' input based on 'Others' checkbox
+        document.addEventListener('DOMContentLoaded', function () {
+            var othersCheckbox = document.getElementById('others');
+            var otherHistoryInput = document.getElementById('otherHistoryInput');
+            if (othersCheckbox && otherHistoryInput) {
+                function toggleOtherHistory() {
+                    otherHistoryInput.disabled = !othersCheckbox.checked;
+                    if (!othersCheckbox.checked) {
+                        otherHistoryInput.value = '';
+                    }
+                }
+                othersCheckbox.addEventListener('change', toggleOtherHistory);
+                // Initial state
+                toggleOtherHistory();
+            }
+        });
+    </script>
+    <!-- jsPDF and html2canvas for PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- jsPDF AutoTable -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <!-- html2canvas for screenshots -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Print procedure history table as PDF (with medical record)
+            document.getElementById('printProcedureHistoryBtn').addEventListener('click', function () {
+                // Gather patient info from new layout
+                const patientInfo = {};
+                try {
+                    const infoItems = document.querySelectorAll('#patientDetails .info-item');
+                    if (infoItems.length >= 10) {
+                        patientInfo.firstName = infoItems[0]?.querySelector('.info-value')?.textContent?.trim() || '';
+                        patientInfo.middleName = infoItems[1]?.querySelector('.info-value')?.textContent?.trim() || '';
+                        patientInfo.lastName = infoItems[2]?.querySelector('.info-value')?.textContent?.trim() || '';
+                        patientInfo.gender = infoItems[3]?.querySelector('.info-value')?.textContent?.trim() || '';
+                        patientInfo.contactNo = infoItems[4]?.querySelector('.info-value')?.textContent?.trim() || '';
+                        patientInfo.email = infoItems[5]?.querySelector('.info-value')?.textContent?.trim() || '';
+                        patientInfo.address = infoItems[6]?.querySelector('.info-value')?.textContent?.trim() || '';
+                        patientInfo.birthday = infoItems[7]?.querySelector('.info-value')?.textContent?.trim() || '';
+                        patientInfo.occupation = infoItems[8]?.querySelector('.info-value')?.textContent?.trim() || '';
+                        patientInfo.civilStatus = infoItems[9]?.querySelector('.info-value')?.textContent?.trim() || '';
+                    }
+                } catch (e) { console.error('Error parsing patient info:', e); }
+                const fullName = [patientInfo.firstName, patientInfo.middleName, patientInfo.lastName].filter(Boolean).join(' ');
+
+                // Get current filter to determine data source
+                const dateFilterSelect = document.getElementById('dateFilterSelect');
+                const currentFilter = dateFilterSelect ? dateFilterSelect.value : 'all';
+                const urlParams = new URLSearchParams(window.location.search);
+                const patientId = urlParams.get('id');
+
+                // Function to process procedure data for PDF
+                function processProcedureData(procedures) {
+                    return procedures.map((p, index) => {
+                        const totalBill = p.totalBill !== undefined && p.totalBill !== null && p.totalBill !== ''
+                            ? parseFloat(p.totalBill).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                            : 'Update the procedure';
+                        const amount = p.amount !== undefined && p.amount !== null && p.amount !== ''
+                            ? parseFloat(p.amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                            : 'Update the procedure';
+                        const balance = p.balance !== undefined && p.balance !== null && p.balance !== ''
+                            ? parseFloat(p.balance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                            : 'Update the procedure';
+
+                        return [
+                            (index + 1).toString(), // Row number
+                            p.procedure || '',
+                            p.doctor || '',
+                            p.date || '',
+                            totalBill,
+                            amount,
+                            balance
+                        ];
+                    });
+                }
+
+                // Check if "All" filter is selected and we have access to all procedures data
+                if (currentFilter === 'all' && window._allFilterPagination && window._allFilterPagination.allProcedures.length > 0) {
+                    // Use all procedures from pagination data
+                    const allProcedures = window._allFilterPagination.allProcedures;
+                    const tableData = processProcedureData(allProcedures);
+
+                    // Fetch medical record and generate PDF
+                    if (window.patientRecordsCollection && patientId) {
+                        window.patientRecordsCollection.where('patientId', '==', patientId).limit(1).get().then(function (querySnapshot) {
+                            let medRecord = null;
+                            if (!querySnapshot.empty) {
+                                medRecord = querySnapshot.docs[0].data();
+                            }
+                            generatePDF(patientInfo, fullName, tableData, medRecord);
+                        }).catch(function () {
+                            generatePDF(patientInfo, fullName, tableData, null);
+                        });
+                    } else {
+                        generatePDF(patientInfo, fullName, tableData, null);
+                    }
+                } else {
+                    // Fallback to visible table data for other filters or if all data not available
+                    const tableRows = Array.from(document.querySelectorAll('#procedureHistory tr'));
+                    const tableData = tableRows.map((row, index) => {
+                        const cells = Array.from(row.querySelectorAll('td'));
+                        // Take the first 6 columns: Procedure Name, Doctor Name, Date, Total Bill, Amount Paid, Balance Amount (exclude Action column)
+                        const rowData = cells.slice(0, 6).map(cell => cell.textContent.trim());
+                        // Add row number at the beginning
+                        return rowData.length === 6 ? [(index + 1).toString(), ...rowData] : [];
+                    }).filter(row => row.length === 7); // Only complete data rows with row number
+
+                    // Fetch medical record and generate PDF
+                    if (window.patientRecordsCollection && patientId) {
+                        window.patientRecordsCollection.where('patientId', '==', patientId).limit(1).get().then(function (querySnapshot) {
+                            let medRecord = null;
+                            if (!querySnapshot.empty) {
+                                medRecord = querySnapshot.docs[0].data();
+                            }
+                            generatePDF(patientInfo, fullName, tableData, medRecord);
+                        }).catch(function () {
+                            generatePDF(patientInfo, fullName, tableData, null);
+                        });
+                    } else {
+                        generatePDF(patientInfo, fullName, tableData, null);
+                    }
+                }
+
+                function generatePDF(patientInfo, fullName, tableData, medRecord) {
+                    const pdf = new jspdf.jsPDF({ orientation: 'vertical', unit: 'pt', format: 'a4' });
+                    const logoImg = new Image();
+                    logoImg.src = '/site-logo.png';
+                    logoImg.onload = function () {
+                        const logoHeight = 32;
+                        const logoWidth = logoImg.width * (logoHeight / logoImg.height);
+                        pdf.addImage(logoImg, 'PNG', 40, 20, logoWidth, logoHeight);
+                        pdf.setFontSize(18);
+                        pdf.text('Blessed Smile Dental Clinic', 40 + logoWidth + 10, 40);
+                        // Two-column layout for profile and medical record
+                        pdf.setFontSize(12);
+                        let y = 65;
+                        let col1x = 40;
+                        let col2x = 380;
+                        let colWidth = 320;
+                        let lineHeight = 16;
+                        let yStart = y;
+                        // Patient Profile (left column)
+                        pdf.setFontSize(12);
+                        pdf.text('Patient Profile', col1x, y);
+                        pdf.setFontSize(10);
+                        let y1 = y + 18;
+                        let y2 = y + 18;
+                        pdf.text(`Name: ${fullName}`, col1x, y1); y1 += lineHeight;
+                        pdf.text(`Gender: ${patientInfo.gender || ''}`, col1x, y1); y1 += lineHeight;
+                        pdf.text(`Birthday: ${patientInfo.birthday || ''}`, col1x, y1); y1 += lineHeight;
+                        pdf.text(`Contact No.: ${patientInfo.contactNo || ''}`, col1x, y1); y1 += lineHeight;
+                        pdf.text(`Email: ${patientInfo.email || ''}`, col1x, y1); y1 += lineHeight;
+                        pdf.text(`Address: ${patientInfo.address || ''}`, col1x, y1); y1 += lineHeight;
+                        pdf.text(`Occupation: ${patientInfo.occupation || ''}`, col1x, y1); y1 += lineHeight;
+                        pdf.text(`Civil Status: ${patientInfo.civilStatus || ''}`, col1x, y1); y1 += lineHeight;
+
+                        // Medical-Dental History (right column)
+                        if (medRecord) {
+                            pdf.setFontSize(12);
+                            pdf.text('Medical-Dental History', col2x, y);
+                            pdf.setFontSize(10);
+                            const medFields = [
+                                { label: "Under Physician's Care", value: medRecord.physicianCare },
+                                { label: "Pregnant", value: medRecord.pregnant },
+                                { label: "Taking Medicine", value: medRecord.medicine },
+                                { label: "Medicine Details", value: medRecord.medicineDetails },
+                                { label: "History", value: Array.isArray(medRecord.history) ? medRecord.history.join(', ') : '' },
+                                { label: "Other History", value: medRecord.otherHistory },
+                                { label: "Allergy to Local Anesthesia", value: medRecord.allergyAnesthesia },
+                                { label: "Allergy to Antibiotics", value: medRecord.allergyAntibiotics },
+                                { label: "Allergy to Pain Killer", value: medRecord.allergyPainKiller },
+                                { label: "Allergy to Others", value: medRecord.allergyOthers },
+                                { label: "Hospitalized", value: medRecord.hospitalized },
+                                { label: "Worn Denture", value: medRecord.denture }
+                            ];
+                            medFields.forEach(f => {
+                                if (f.value) {
+                                    pdf.text(`${f.label}: ${f.value}`, col2x, y2); y2 += lineHeight;
+                                }
+                            });
+                        }
+                        // Find the max y for next section
+                        let yEnd = Math.max(y1, y2) + 10;
+
+                        // Get current filter period for date range display
+                        const dateFilterSelect = document.getElementById('dateFilterSelect');
+                        const customStartDate = document.getElementById('customStartDate');
+                        const customEndDate = document.getElementById('customEndDate');
+                        const currentPeriod = dateFilterSelect ? dateFilterSelect.value : 'today';
+
+                        // Generate date range text
+                        let dateRangeText = '';
+                        const now = new Date();
+
+                        switch (currentPeriod) {
+                            case 'all':
+                                const totalRecords = tableData.length;
+                                dateRangeText = `All Records (${totalRecords} procedure${totalRecords !== 1 ? 's' : ''})`;
+                                break;
+                            case 'today':
+                                dateRangeText = `Today (${now.toLocaleDateString()})`;
+                                break;
+                            case 'thisWeek':
+                                const startOfWeek = new Date(now);
+                                const day = now.getDay();
+                                const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+                                startOfWeek.setDate(diff);
+                                const endOfWeek = new Date(startOfWeek);
+                                endOfWeek.setDate(startOfWeek.getDate() + 6);
+                                dateRangeText = `This Week (${startOfWeek.toLocaleDateString()} - ${endOfWeek.toLocaleDateString()})`;
+                                break;
+                            case 'prevWeek':
+                                const prevWeekStart = new Date(now);
+                                const dayPrev = now.getDay();
+                                const diffPrev = now.getDate() - dayPrev + (dayPrev === 0 ? -6 : 1) - 7;
+                                prevWeekStart.setDate(diffPrev);
+                                const prevWeekEnd = new Date(prevWeekStart);
+                                prevWeekEnd.setDate(prevWeekStart.getDate() + 6);
+                                dateRangeText = `Previous Week (${prevWeekStart.toLocaleDateString()} - ${prevWeekEnd.toLocaleDateString()})`;
+                                break;
+                            case 'thisMonth':
+                                const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+                                const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+                                dateRangeText = `This Month (${monthStart.toLocaleDateString()} - ${monthEnd.toLocaleDateString()})`;
+                                break;
+                            case 'prevMonth':
+                                const prevMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+                                const prevMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
+                                dateRangeText = `Previous Month (${prevMonthStart.toLocaleDateString()} - ${prevMonthEnd.toLocaleDateString()})`;
+                                break;
+                            case 'thisYear':
+                                dateRangeText = `This Year (${now.getFullYear()})`;
+                                break;
+                            case 'custom':
+                                if (customStartDate && customEndDate && customStartDate.value && customEndDate.value) {
+                                    const startDate = new Date(customStartDate.value);
+                                    const endDate = new Date(customEndDate.value);
+                                    dateRangeText = `Custom Range (${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()})`;
+                                } else {
+                                    dateRangeText = 'Custom Range (All Records)';
+                                }
+                                break;
+                            default:
+                                dateRangeText = 'All Records';
+                        }
+
+                        // Add procedure history section header with date info
+                        pdf.setFontSize(12);
+                        pdf.setFont(undefined, 'bold');
+                        pdf.text('Procedure History', 40, yEnd);
+
+                        // Add date range and generation info
+                        pdf.setFontSize(9);
+                        pdf.setFont(undefined, 'normal');
+                        pdf.text(`Date Range: ${dateRangeText}`, 40, yEnd + 15);
+                        pdf.text(`Generated on: ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}`, 40, yEnd + 28);
+
+                        // Procedure history table
+                        const headers = [[
+                            'No.',
+                            'Procedure Name',
+                            'Doctor Name',
+                            'Date',
+                            'Total Bill',
+                            'Amount Paid',
+                            'Balance Amount'
+                        ]];
+                        pdf.autoTable({
+                            head: headers,
+                            body: tableData,
+                            startY: yEnd + 40,
+                            styles: {
+                                fontSize: 9,
+                                cellPadding: 3,
+                                overflow: 'linebreak',
+                                cellWidth: 'wrap'
+                            },
+                            headStyles: {
+                                fillColor: [255, 215, 0],
+                                textColor: [30, 41, 59],
+                                fontStyle: 'bold',
+                                fontSize: 9
+                            },
+                            columnStyles: {
+                                0: { cellWidth: 30, halign: 'center' }, // No. (Row Number)
+                                1: { cellWidth: 'auto', minCellWidth: 70 }, // Procedure Name
+                                2: { cellWidth: 'auto', minCellWidth: 55 }, // Doctor Name  
+                                3: { cellWidth: 'auto', minCellWidth: 35 }, // Date
+                                4: { cellWidth: 'auto', minCellWidth: 45, halign: 'right' }, // Total Bill
+                                5: { cellWidth: 'auto', minCellWidth: 45, halign: 'right' }, // Amount Paid
+                                6: { cellWidth: 'auto', minCellWidth: 45, halign: 'right' }  // Balance Amount
+                            },
+                            margin: { left: 40, right: 40 },
+                            theme: 'grid',
+                            tableWidth: 'auto'
+                        });
+
+                        // Save PDF and open in new tab
+                        const fileName = fullName ? `patient-profile-${fullName.replace(/\s+/g, '_')}.pdf` : 'patient-profile.pdf';
+                        const pdfBlob = pdf.output('blob');
+                        if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+                            window.navigator.msSaveOrOpenBlob(pdfBlob, fileName);
+                        } else {
+                            const blobUrl = URL.createObjectURL(pdfBlob);
+                            const a = document.createElement('a');
+                            a.href = blobUrl;
+                            a.download = fileName;
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                            window.open(blobUrl, '_blank');
+                            setTimeout(() => URL.revokeObjectURL(blobUrl), 5000);
+                        }
+                    };
+                    logoImg.onerror = function () {
+                        pdf.setFontSize(18);
+                        pdf.text('Blessed Smile Dental Clinic', 40, 40);
+                        pdf.setFontSize(12);
+                        let y = 65;
+                        pdf.text('Patient Profile', 40, y);
+                        y += 20;
+                        pdf.setFontSize(10);
+                        pdf.text(`Name: ${fullName}`, 40, y); y += 16;
+                        pdf.text(`Gender: ${patientInfo.gender || ''}`, 40, y); y += 16;
+                        pdf.text(`Birthday: ${patientInfo.birthday || ''}`, 40, y); y += 16;
+                        pdf.text(`Contact No.: ${patientInfo.contactNo || ''}`, 40, y); y += 16;
+                        pdf.text(`Email: ${patientInfo.email || ''}`, 40, y); y += 16;
+                        pdf.text(`Address: ${patientInfo.address || ''}`, 40, y); y += 16;
+                        pdf.text(`Occupation: ${patientInfo.occupation || ''}`, 40, y); y += 16;
+                        pdf.text(`Civil Status: ${patientInfo.civilStatus || ''}`, 40, y); y += 24;
+                        if (medRecord) {
+                            pdf.setFontSize(12);
+                            pdf.text('Medical-Dental History', 40, y); y += 18;
+                            pdf.setFontSize(10);
+                            const medFields = [
+                                { label: "Under Physician's Care", value: medRecord.physicianCare },
+                                { label: "Pregnant", value: medRecord.pregnant },
+                                { label: "Taking Medicine", value: medRecord.medicine },
+                                { label: "Medicine Details", value: medRecord.medicineDetails },
+                                { label: "History", value: Array.isArray(medRecord.history) ? medRecord.history.join(', ') : '' },
+                                { label: "Other History", value: medRecord.otherHistory },
+                                { label: "Allergy to Local Anesthesia", value: medRecord.allergyAnesthesia },
+                                { label: "Allergy to Antibiotics", value: medRecord.allergyAntibiotics },
+                                { label: "Allergy to Pain Killer", value: medRecord.allergyPainKiller },
+                                { label: "Allergy to Others", value: medRecord.allergyOthers },
+                                { label: "Hospitalized", value: medRecord.hospitalized },
+                                { label: "Worn Denture", value: medRecord.denture }
+                            ];
+                            medFields.forEach(f => {
+                                if (f.value) {
+                                    pdf.text(`${f.label}: ${f.value}`, 40, y); y += 14;
+                                }
+                            });
+                            y += 10;
+                        }
+
+                        // Get current filter period for date range display
+                        const dateFilterSelect = document.getElementById('dateFilterSelect');
+                        const customStartDate = document.getElementById('customStartDate');
+                        const customEndDate = document.getElementById('customEndDate');
+                        const currentPeriod = dateFilterSelect ? dateFilterSelect.value : 'today';
+
+                        // Generate date range text
+                        let dateRangeText = '';
+                        const now = new Date();
+
+                        switch (currentPeriod) {
+                            case 'all':
+                                const totalRecords = tableData.length;
+                                dateRangeText = `All Records (${totalRecords} procedure${totalRecords !== 1 ? 's' : ''})`;
+                                break;
+                            case 'today':
+                                dateRangeText = `Today (${now.toLocaleDateString()})`;
+                                break;
+                            case 'thisWeek':
+                                const startOfWeek = new Date(now);
+                                const day = now.getDay();
+                                const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+                                startOfWeek.setDate(diff);
+                                const endOfWeek = new Date(startOfWeek);
+                                endOfWeek.setDate(startOfWeek.getDate() + 6);
+                                dateRangeText = `This Week (${startOfWeek.toLocaleDateString()} - ${endOfWeek.toLocaleDateString()})`;
+                                break;
+                            case 'prevWeek':
+                                const prevWeekStart = new Date(now);
+                                const dayPrev = now.getDay();
+                                const diffPrev = now.getDate() - dayPrev + (dayPrev === 0 ? -6 : 1) - 7;
+                                prevWeekStart.setDate(diffPrev);
+                                const prevWeekEnd = new Date(prevWeekStart);
+                                prevWeekEnd.setDate(prevWeekStart.getDate() + 6);
+                                dateRangeText = `Previous Week (${prevWeekStart.toLocaleDateString()} - ${prevWeekEnd.toLocaleDateString()})`;
+                                break;
+                            case 'thisMonth':
+                                const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+                                const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+                                dateRangeText = `This Month (${monthStart.toLocaleDateString()} - ${monthEnd.toLocaleDateString()})`;
+                                break;
+                            case 'prevMonth':
+                                const prevMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+                                const prevMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
+                                dateRangeText = `Previous Month (${prevMonthStart.toLocaleDateString()} - ${prevMonthEnd.toLocaleDateString()})`;
+                                break;
+                            case 'thisYear':
+                                dateRangeText = `This Year (${now.getFullYear()})`;
+                                break;
+                            case 'custom':
+                                if (customStartDate && customEndDate && customStartDate.value && customEndDate.value) {
+                                    const startDate = new Date(customStartDate.value);
+                                    const endDate = new Date(customEndDate.value);
+                                    dateRangeText = `Custom Range (${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()})`;
+                                } else {
+                                    dateRangeText = 'Custom Range (All Records)';
+                                }
+                                break;
+                            default:
+                                dateRangeText = 'All Records';
+                        }
+
+                        // Add procedure history section header with date info
+                        pdf.setFontSize(12);
+                        pdf.setFont(undefined, 'bold');
+                        pdf.text('Procedure History', 40, y);
+
+                        // Add date range and generation info
+                        pdf.setFontSize(9);
+                        pdf.setFont(undefined, 'normal');
+                        pdf.text(`Date Range: ${dateRangeText}`, 40, y + 15);
+                        pdf.text(`Generated on: ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}`, 40, y + 28);
+
+                        const headers = [[
+                            'No.',
+                            'Procedure Name',
+                            'Doctor Name',
+                            'Date',
+                            'Total Bill',
+                            'Amount Paid',
+                            'Balance Amount'
+                        ]];
+                        pdf.autoTable({
+                            head: headers,
+                            body: tableData,
+                            startY: y + 40,
+                            styles: {
+                                fontSize: 9,
+                                cellPadding: 3,
+                                overflow: 'linebreak',
+                                cellWidth: 'wrap'
+                            },
+                            headStyles: {
+                                fillColor: [255, 215, 0],
+                                textColor: [30, 41, 59],
+                                fontStyle: 'bold',
+                                fontSize: 9
+                            },
+                            columnStyles: {
+                                0: { cellWidth: 30, halign: 'center' }, // No. (Row Number)
+                                1: { cellWidth: 'auto', minCellWidth: 70 }, // Procedure Name
+                                2: { cellWidth: 'auto', minCellWidth: 55 }, // Doctor Name  
+                                3: { cellWidth: 'auto', minCellWidth: 35 }, // Date
+                                4: { cellWidth: 'auto', minCellWidth: 45, halign: 'right' }, // Total Bill
+                                5: { cellWidth: 'auto', minCellWidth: 45, halign: 'right' }, // Amount Paid
+                                6: { cellWidth: 'auto', minCellWidth: 45, halign: 'right' }  // Balance Amount
+                            },
+                            margin: { left: 40, right: 40 },
+                            theme: 'grid',
+                            tableWidth: 'auto'
+                        });
+                        const fileName = fullName ? `patient-profile-${fullName.replace(/\s+/g, '_')}.pdf` : 'patient-profile.pdf';
+                        const pdfBlob = pdf.output('blob');
+                        if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+                            window.navigator.msSaveOrOpenBlob(pdfBlob, fileName);
+                        } else {
+                            const blobUrl = URL.createObjectURL(pdfBlob);
+                            const a = document.createElement('a');
+                            a.href = blobUrl;
+                            a.download = fileName;
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                            window.open(blobUrl, '_blank');
+                            setTimeout(() => URL.revokeObjectURL(blobUrl), 5000);
+                        }
+                    };
+                }
+            });
+            const patientDetails = document.getElementById("patientDetails");
+            const editMedicalRecordBtn = document.getElementById("editMedicalRecordBtn");
+            const saveMedicalRecordBtn = document.getElementById("saveMedicalRecordBtn");
+            const addMedicalRecordBtn = document.getElementById("addMedicalRecordBtn");
+            const medicalRecordStatus = document.getElementById("medicalRecordStatus");
+            const urlParams = new URLSearchParams(window.location.search);
+            const patientId = urlParams.get("id");
+            let currentRecordDocId = null;
+            let isEditMode = false;
+
+            function setFormDisabled(disabled) {
+                const medicalRecordForm = document.getElementById("medicalRecordForm");
+                if (!medicalRecordForm) return;
+                Array.from(medicalRecordForm.elements).forEach(el => {
+                    if (el.tagName !== "BUTTON") el.disabled = disabled;
+                });
+
+                // Show/hide buttons based on edit mode and record existence
+                console.log('Button visibility check:', {
+                    disabled,
+                    currentRecordDocId,
+                    isEditMode,
+                    hasRecord: !!currentRecordDocId
+                });
+
+                // Edit Medical Record Button - Show when record exists and not in edit mode
+                if (editMedicalRecordBtn) {
+                    const showEdit = !disabled && currentRecordDocId && !isEditMode;
+                    editMedicalRecordBtn.style.display = showEdit ? "inline-block" : "none";
+                    console.log('Edit button visible:', showEdit);
+                }
+
+                // Save Changes Button - Show when in edit mode and record exists
+                if (saveMedicalRecordBtn) {
+                    const showSave = !disabled && isEditMode && currentRecordDocId;
+                    saveMedicalRecordBtn.style.display = showSave ? "inline-block" : "none";
+                    console.log('Save button visible:', showSave);
+                }
+
+                // Add Medical Record Button - Show when no record exists and not in edit mode
+                if (addMedicalRecordBtn) {
+                    const showAdd = !currentRecordDocId && !isEditMode;
+                    addMedicalRecordBtn.style.display = showAdd ? "inline-block" : "none";
+                    console.log('Add button visible:', showAdd);
+                }
+
+                // Submit Button - Show when no record exists and not in edit mode
+                const submitBtn = medicalRecordForm.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    const showSubmit = !currentRecordDocId && !isEditMode;
+                    submitBtn.style.display = showSubmit ? "inline-block" : "none";
+                    console.log('Submit button visible:', showSubmit);
+                }
+            }
+
+            function updateMedicalRecordStatus(hasRecord) {
+                if (!medicalRecordStatus) return;
+                // if (hasRecord) {
+                //     medicalRecordStatus.innerHTML = `
+                //         <div class="medical-record-status status-has-record">
+                //             <i class="fas fa-check-circle me-2"></i>Medical record exists. You can edit it below.
+                //         </div>
+                //     `;
+                // }
+                if (hasRecord) {
+                    medicalRecordStatus.innerHTML = `                  
+                        `;
+                } else {
+                    medicalRecordStatus.innerHTML = `
+                            <div class="medical-record-status status-no-record">
+                                <i class="fas fa-exclamation-triangle me-2"></i>No medical record found. Click "Add Medical Record" to create one.
+                            </div>
+                        `;
+                }
+            }
+
+            function updateButtonVisibility() {
+                console.log('Updating button visibility...', {
+                    currentRecordDocId,
+                    isEditMode,
+                    hasRecord: !!currentRecordDocId
+                });
+
+                // Force update button visibility
+                setFormDisabled(true);
+
+                // Also manually set button visibility to ensure they show
+                if (addMedicalRecordBtn) {
+                    const showAdd = !currentRecordDocId && !isEditMode;
+                    addMedicalRecordBtn.style.display = showAdd ? "inline-block" : "none";
+                    console.log('Manually setting Add button visible:', showAdd);
+                }
+
+                if (editMedicalRecordBtn) {
+                    const showEdit = currentRecordDocId && !isEditMode;
+                    editMedicalRecordBtn.style.display = showEdit ? "inline-block" : "none";
+                    console.log('Manually setting Edit button visible:', showEdit);
+                }
+            }
+            function populateMedicalRecordForm(data) {
+                const form = document.getElementById("medicalRecordForm");
+                if (!form) return;
+                form.physicianCare && (form.physicianCare.value = data.physicianCare || "");
+                form.pregnant && (form.pregnant.value = data.pregnant || "");
+                form.medicine && (form.medicine.value = data.medicine || "");
+                // Show/hide and populate medicineDetails field
+                const medicineDetailsField = document.getElementById('medicineDetailsField');
+                const medicineDetailsInput = document.getElementById('medicineDetails');
+                if (data.medicine === 'Yes') {
+                    if (medicineDetailsField) medicineDetailsField.style.display = '';
+                    if (medicineDetailsInput) medicineDetailsInput.value = data.medicineDetails || '';
+                } else {
+                    if (medicineDetailsField) medicineDetailsField.style.display = 'none';
+                    if (medicineDetailsInput) medicineDetailsInput.value = '';
+                }
+                if (Array.isArray(data.history)) {
+                    Array.from(form.querySelectorAll('input[name="history[]"]')).forEach(cb => {
+                        cb.checked = data.history.includes(cb.value);
+                    });
+                }
+                form.otherHistory && (form.otherHistory.value = data.otherHistory || "");
+                form.allergyAnesthesia && (form.allergyAnesthesia.value = data.allergyAnesthesia || "");
+                form.allergyAntibiotics && (form.allergyAntibiotics.value = data.allergyAntibiotics || "");
+                form.allergyPainKiller && (form.allergyPainKiller.value = data.allergyPainKiller || "");
+                form.allergyOthers && (form.allergyOthers.value = data.allergyOthers || "");
+                form.hospitalized && (form.hospitalized.value = data.hospitalized || "");
+                form.denture && (form.denture.value = data.denture || "");
+            }
+            // Edit button handler
+            if (editMedicalRecordBtn) {
+                editMedicalRecordBtn.addEventListener('click', function () {
+                    isEditMode = true;
+                    setFormDisabled(false);
+                });
+            }
+
+            // Add Medical Record button handler
+            if (addMedicalRecordBtn) {
+                addMedicalRecordBtn.addEventListener('click', function () {
+                    isEditMode = false;
+                    setFormDisabled(false);
+                });
+            }
+
+            // Save button handler
+            if (saveMedicalRecordBtn) {
+                saveMedicalRecordBtn.addEventListener('click', function () {
+                    const form = document.getElementById("medicalRecordForm");
+                    const formData = new FormData(form);
+                    const data = {
+                        patientId: patientId || null,
+                        physicianCare: formData.get("physicianCare"),
+                        pregnant: formData.get("pregnant"),
+                        medicine: formData.get("medicine"),
+                        history: formData.getAll("history[]"),
+                        otherHistory: formData.get("otherHistory"),
+                        medicineDetails: formData.get("medicineDetails"),
+                        allergyAnesthesia: formData.get("allergyAnesthesia"),
+                        allergyAntibiotics: formData.get("allergyAntibiotics"),
+                        allergyPainKiller: formData.get("allergyPainKiller"),
+                        allergyOthers: formData.get("allergyOthers"),
+                        hospitalized: formData.get("hospitalized"),
+                        denture: formData.get("denture")
+                    };
+                    if (window.patientRecordsCollection && currentRecordDocId) {
+                        window.patientRecordsCollection.doc(currentRecordDocId).update(data)
+                            .then(() => {
+                                showSuccess("Medical record updated successfully!");
+                                isEditMode = false;
+                                updateMedicalRecordStatus(true);
+                                updateButtonVisibility();
+                                location.reload();
+                            })
+                            .catch((error) => {
+                                showError("Error updating medical record: " + error.message);
+                            });
+                    }
+                });
+            }
+            if (document.getElementById("patientIdBadge")) {
+                document.getElementById("patientIdBadge").textContent = patientId || "N/A";
+            }
+            if (window.patientDetailsCollection) {
+                window.patientDetailsCollection
+                    .doc(patientId)
+                    .get()
+                    .then((doc) => {
+                        if (doc.exists) {
+                            const patient = doc.data();
+                            patientDetails.innerHTML = `
+                                    <div class="patient-info-grid">
+                                        <div class="info-item">
+                                            <div class="info-label">First Name</div>
+                                            <div class="info-value">${patient.firstName || ''}</div>
+                                        </div>
+                                        <div class="info-item">
+                                            <div class="info-label">Middle Name</div>
+                                            <div class="info-value">${patient.middleName || ''}</div>
+                                        </div>
+                                        <div class="info-item">
+                                            <div class="info-label">Last Name</div>
+                                            <div class="info-value">${patient.lastName || ''}</div>
+                                        </div>
+                                        <div class="info-item">
+                                            <div class="info-label">Gender</div>
+                                            <div class="info-value">${patient.sex || ''}</div>
+                                        </div>
+                                        <div class="info-item">
+                                            <div class="info-label">Contact No.</div>
+                                            <div class="info-value">${patient.contactNo || ''}</div>
+                                        </div>
+                                        <div class="info-item">
+                                            <div class="info-label">Email</div>
+                                            <div class="info-value">${patient.email || ''}</div>
+                                        </div>
+                                        <div class="info-item">
+                                            <div class="info-label">Address</div>
+                                            <div class="info-value">${patient.address || ''}</div>
+                                        </div>
+                                        <div class="info-item">
+                                            <div class="info-label">Birthday</div>
+                                            <div class="info-value">${patient.birthday || ''}</div>
+                                        </div>
+                                        <div class="info-item">
+                                            <div class="info-label">Occupation</div>
+                                            <div class="info-value">${patient.occupation || ''}</div>
+                                        </div>
+                                        <div class="info-item">
+                                            <div class="info-label">Civil Status</div>
+                                            <div class="info-value">${patient.civilStatus || ''}</div>
+                                        </div>
+                                    </div>
+                                `;
+                        } else {
+                            patientDetails.innerHTML = "<div class='alert alert-warning alert-modern'>Patient not found.</div>";
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error fetching patient details:", error);
+                        patientDetails.innerHTML = "<div class='alert alert-danger'>Error fetching patient details.</div>";
+                    });
+            } else {
+                patientDetails.innerHTML = "<div class='alert alert-danger'>Firestore not initialized.</div>";
+            }
+
+            // Render procedure history for this patient
+            function renderProcedureHistory(pageSize = 15, startAfterDoc = null) {
+                const procedureHistory = document.getElementById("procedureHistory");
+                if (!procedureHistory) return;
+                procedureHistory.innerHTML = '<tr><td colspan="5">Loading...</td></tr>';
+                let query = window.proceduresCollection
+                    .where("patientId", "==", patientId)
+                    .orderBy("date", "desc")
+                    .limit(pageSize + 1); // Fetch one extra to check if next page exists
+                if (startAfterDoc) {
+                    query = query.startAfter(startAfterDoc);
+                }
+                query.get()
+                    .then(snapshot => {
+                        if (snapshot.empty) {
+                            procedureHistory.innerHTML = '<tr><td colspan="5">No procedures found.</td></tr>';
+                            document.getElementById('procedurePagination').innerHTML = '';
+                            return;
+                        }
+                        // Collect docs and sort by date descending (in case Firestore string dates)
+                        let docs = [];
+                        snapshot.forEach(doc => {
+                            docs.push({ id: doc.id, ...doc.data() });
+                        });
+                        docs.sort((a, b) => {
+                            if (a.date && b.date) {
+                                let da = new Date(a.date);
+                                let db = new Date(b.date);
+                                if (!isNaN(da) && !isNaN(db)) {
+                                    return db - da;
+                                }
+                                return b.date.localeCompare(a.date);
+                            }
+                            return 0;
+                        });
+                        let rows = '';
+                        let lastVisible = null;
+                        let count = 0;
+                        let hasNextPage = docs.length > pageSize;
+                        // Only display up to pageSize
+                        docs.slice(0, pageSize).forEach((p, idx) => {
+                            rows += `<tr>
+                                    <td>${p.procedure || ''}</td>
+                                    <td>${p.doctor || ''}</td>
+                                    <td>${p.date || ''}</td>
+                                    <td><button class="btn btn-modern btn-sm view-procedure-btn btn-gold-gradient" data-id="${p.id}">
+                                        <i class="fas fa-eye me-1"></i>View
+                                    </button></td>
+                                </tr>`;
+                            if (idx === pageSize - 1) lastVisible = snapshot.docs[idx];
+                            count++;
+                        });
+                        procedureHistory.innerHTML = rows;
+                        // Pagination controls (pill-style, with page info)
+                        let paginationHtml = '';
+                        // Calculate current page and total pages
+                        let currentPage = 1;
+                        let totalPages = 1;
+                        if (window._procedurePagination) {
+                            currentPage = window._procedurePagination.currentPage;
+                            totalPages = window._procedurePagination.totalPages;
+                        } else {
+                            // Estimate page from startAfterDoc and docs
+                            currentPage = startAfterDoc ? (window._procedurePagination ? window._procedurePagination.currentPage : 2) : 1;
+                            totalPages = Math.ceil((window._procedurePagination ? window._procedurePagination.totalDocs : (count + (hasNextPage ? 1 : 0))) / pageSize);
+                        }
+                        // Store pagination state globally for prev/next
+                        window._procedurePagination = window._procedurePagination || {};
+                        window._procedurePagination.currentPage = currentPage;
+                        window._procedurePagination.totalPages = totalPages;
+                        window._procedurePagination.lastVisible = lastVisible;
+                        window._procedurePagination.startAfterDoc = startAfterDoc;
+                        window._procedurePagination.pageSize = pageSize;
+                        window._procedurePagination.totalDocs = window._procedurePagination.totalDocs || (count + (hasNextPage ? 1 : 0));
+                        paginationHtml += `<nav aria-label="Procedure History pagination" class="mt-3">
+                                                        <ul class="pagination justify-content-center" style="gap: 8px;">`;
+                        paginationHtml += `<li class="page-item">
+                                                        <button class="btn btn-modern btn-sm view-procedure-btn btn-gold-gradient" id="prevPageBtn">Prev</button>
+                                                    </li>`;
+                        paginationHtml += `<li class="page-item disabled">
+                                                        <span class="btn btn-modern btn-sm view-procedure-btn btn-gold-gradient" id="pageInfo">Page ${currentPage} of ${totalPages}</span>
+                                                    </li>`;
+                        paginationHtml += `<li class="page-item">
+                                                        <button class="btn btn-modern btn-sm view-procedure-btn btn-gold-gradient" id="nextPageBtn">Next</button>
+                                                    </li>`;
+                        paginationHtml += `</ul></nav>`;
+                        document.getElementById('procedurePagination').innerHTML = paginationHtml;
+                        // Enable/disable buttons
+                        const prevBtn = document.getElementById('prevPageBtn');
+                        const nextBtn = document.getElementById('nextPageBtn');
+                        prevBtn.disabled = currentPage === 1;
+                        nextBtn.disabled = currentPage === totalPages;
+                        if (hasNextPage && nextBtn) {
+                            nextBtn.onclick = function () {
+                                window._procedurePagination.currentPage = currentPage + 1;
+                                renderProcedureHistory(pageSize, lastVisible);
+                            };
+                        }
+                        if (startAfterDoc && prevBtn) {
+                            prevBtn.onclick = function () {
+                                window._procedurePagination.currentPage = currentPage - 1;
+                                window.location.reload(); // Or implement a stack to track previous pages
+                            };
+                        }
+                    })
+                    .catch(error => {
+                        procedureHistory.innerHTML = `<tr><td colspan='5'>Error loading procedures: ${error.message}</td></tr>`;
+                        document.getElementById('procedurePagination').innerHTML = '';
+                    });
+            }
+
+            // Teeth grid rendering for modal
+            function renderTeethGrid(treatedTeeth = []) {
+                const teethNumbers = [
+                    "18", "17", "16", "15", "14", "13", "12", "11",
+                    "21", "22", "23", "24", "25", "26", "27", "28",
+                    "48", "47", "46", "45", "44", "43", "42", "41",
+                    "31", "32", "33", "34", "35", "36", "37", "38",
+                    "55", "54", "53", "52", "51",
+                    "61", "62", "63", "64", "65",
+                    "85", "84", "83", "82", "81",
+                    "71", "72", "73", "74", "75"
+                ];
+                let html = '<div style="display:flex; flex-wrap:wrap; gap:8px;">';
+                teethNumbers.forEach(num => {
+                    // Assign a color based on the tooth number for variety
+                    const colors = ["#247BA0"];
+                    const color = colors[parseInt(num, 10) % colors.length];
+                    html += `<label style="display:flex; flex-direction:column; align-items:center;">
+                            <i class="fa fa-tooth" style="color:${color}; font-size:20px;"></i>
+                            <span>${num}</span>
+                            <input type="checkbox" value="${num}" disabled ${treatedTeeth.includes(num) ? 'checked' : ''}
+                                style="accent-color:${color}; width:20px; height:20px; border-radius:6px;">
+                        </label>`;
+                });
+                html += '</div>';
+
+                html += '<div class="mb-3">';
+                html += '<label for="remarks" class="form-label">Remarks</label>';
+                html += `<textarea disabled class="form-control" id="remarks" name="remarks" rows="3"
+                        required></textarea>`;
+                html += '</div>';
+
+                return html;
+            }
+
+
+            // Add pagination container below the table
+            const table = document.querySelector('table.table-striped');
+            if (table && !document.getElementById('procedurePagination')) {
+                const paginationDiv = document.createElement('div');
+                paginationDiv.id = 'procedurePagination';
+                paginationDiv.className = 'mt-3';
+                table.parentNode.appendChild(paginationDiv);
+            }
+            renderProcedureHistory();
+
+            // Check if patient has a record in patientRecordsCollection
+            if (window.patientRecordsCollection && patientId) {
+                window.patientRecordsCollection
+                    .where("patientId", "==", patientId)
+                    .limit(1)
+                    .get()
+                    .then((querySnapshot) => {
+                        if (querySnapshot.empty) {
+                            console.log('No medical record found for patient:', patientId);
+                            currentRecordDocId = null;
+                            isEditMode = false;
+                            updateMedicalRecordStatus(false);
+                            updateButtonVisibility();
+                        } else {
+                            console.log('Medical record found for patient:', patientId);
+                            const doc = querySnapshot.docs[0];
+                            currentRecordDocId = doc.id;
+                            populateMedicalRecordForm(doc.data());
+                            isEditMode = false;
+                            updateMedicalRecordStatus(true);
+                            updateButtonVisibility();
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error checking patient record:", error);
+                        currentRecordDocId = null;
+                        isEditMode = false;
+                        updateMedicalRecordStatus(false);
+                        updateButtonVisibility();
+                    });
+            } else {
+                // If no Firestore connection, show add button by default
+                console.log('No Firestore connection, showing add button by default');
+                currentRecordDocId = null;
+                isEditMode = false;
+                updateMedicalRecordStatus(false);
+                updateButtonVisibility();
+            }
+
+            // Fallback: Ensure buttons are visible after a short delay
+            setTimeout(() => {
+                console.log('Fallback button visibility check...');
+                updateButtonVisibility();
+            }, 1000);
+            // Form submission handler
+            const medicalRecordForm = document.getElementById("medicalRecordForm");
+            if (medicalRecordForm && window.patientRecordsCollection) {
+                medicalRecordForm.addEventListener("submit", function (e) {
+                    e.preventDefault();
+                    // Gather form data
+                    const formData = new FormData(medicalRecordForm);
+                    const data = {
+                        patientId: patientId || null,
+                        physicianCare: formData.get("physicianCare"),
+                        pregnant: formData.get("pregnant"),
+                        medicine: formData.get("medicine"),
+                        medicineDetails: formData.get("medicineDetails"),
+                        history: formData.getAll("history[]"),
+                        otherHistory: formData.get("otherHistory"),
+                        allergyAnesthesia: formData.get("allergyAnesthesia"),
+                        allergyAntibiotics: formData.get("allergyAntibiotics"),
+                        allergyPainKiller: formData.get("allergyPainKiller"),
+                        allergyOthers: formData.get("allergyOthers"),
+                        hospitalized: formData.get("hospitalized"),
+                        denture: formData.get("denture")
+                    };
+                    if (currentRecordDocId && !isEditMode) {
+                        // Prevent submit if not in edit mode and record exists
+                        return;
+                    }
+                    if (currentRecordDocId && isEditMode) {
+                        // Update existing record
+                        window.patientRecordsCollection.doc(currentRecordDocId).update(data)
+                            .then(() => {
+                                showSuccess("Medical record updated successfully!");
+                                isEditMode = false;
+                                updateMedicalRecordStatus(true);
+                                updateButtonVisibility();
+                            })
+                            .catch((error) => {
+                                showError("Error updating medical record: " + error.message);
+                            });
+                    } else {
+                        // Add new record
+                        window.patientRecordsCollection.add(data)
+                            .then((docRef) => {
+                                showSuccess("Medical record submitted successfully!");
+                                currentRecordDocId = docRef.id;
+                                medicalRecordForm.reset();
+                                isEditMode = false;
+                                updateMedicalRecordStatus(true);
+                                updateButtonVisibility();
+                            })
+                            .catch((error) => {
+                                showError("Error submitting medical record: " + error.message);
+                            });
+                    }
+                });
+            }
+            // Show/hide medicine details field based on selection
+            const medicineYes = document.getElementById('medicineYes');
+            const medicineNo = document.getElementById('medicineNo');
+            const medicineDetailsField = document.getElementById('medicineDetailsField');
+            function toggleMedicineDetails() {
+                if (medicineYes.checked) {
+                    medicineDetailsField.style.display = '';
+                } else {
+                    medicineDetailsField.style.display = 'none';
+                    document.getElementById('medicineDetails').value = '';
+                }
+            }
+            if (medicineYes && medicineNo && medicineDetailsField) {
+                medicineYes.addEventListener('change', toggleMedicineDetails);
+                medicineNo.addEventListener('change', toggleMedicineDetails);
+                // On page load, check initial state
+                toggleMedicineDetails();
+            }
+        });
+    </script>
+    <script>
+        // Procedure event listeners have been moved to procedure.js
+
+        // Procedure-related functions have been moved to procedure.js
+    </script>
+    <script>
+        // Procedure date validation has been moved to procedure.js
+    </script>
+</body>
+
+</html>

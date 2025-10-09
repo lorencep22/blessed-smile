@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theme Settings - Easy Smile Dental Management System</title>
+    <link rel="icon" href="../../site-logo.png" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="./theme-variables.css" rel="stylesheet">
+    <link href="./theme-immediate.css" rel="stylesheet">
+
+    <!-- Apply theme immediately to prevent flash -->
+    <script src="./theme-immediate.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../../toast.js" defer></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="../../app.js" defer></script>
+    <script src="./theme-manager.js" defer></script>
+
+    <style>
+        body {
+            background: var(--theme-background, linear-gradient(135deg, #fff 0%, #ffd700 50%, #fff 100%));
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .theme-card {
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 3px solid transparent;
+            background: white;
+        }
+
+        .theme-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .theme-card.selected {
+            border-color: #007bff;
+            box-shadow: 0 0 20px rgba(0, 123, 255, 0.3);
+        }
+
+        .theme-preview {
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .theme-preview::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.1;
+        }
+
+        .theme-info {
+            padding: 1rem;
+            background: white;
+        }
+
+        .theme-gold .theme-preview {
+            background: linear-gradient(135deg, #fff 0%, #ffd700 50%, #fff 100%);
+        }
+
+        .theme-blue .theme-preview {
+            background: linear-gradient(135deg, #e3f2fd 0%, #007bff 50%, #e3f2fd 100%);
+        }
+
+        .theme-green .theme-preview {
+            background: linear-gradient(135deg, #e8f5e8 0%, #28a745 50%, #e8f5e8 100%);
+        }
+
+        .theme-purple .theme-preview {
+            background: linear-gradient(135deg, #f3e5f5 0%, #6f42c1 50%, #f3e5f5 100%);
+        }
+
+        .theme-dark .theme-preview {
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 50%, #1a202c 100%);
+            color: white;
+        }
+
+        .theme-dark .theme-info {
+            background: #2d3748;
+            color: white;
+        }
+
+        .theme-midnight .theme-preview {
+            background: linear-gradient(135deg, #0f1419 0%, #1a365d 50%, #0f1419 100%);
+            color: #e2e8f0;
+        }
+
+        .theme-midnight .theme-info {
+            background: #1a365d;
+            color: #e2e8f0;
+        }
+
+        .settings-container {
+            background: var(--theme-card-bg, rgba(255, 255, 255, 0.95));
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px var(--theme-shadow, rgba(0, 0, 0, 0.1));
+            margin-top: 2rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--theme-text, #000);
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .quick-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-light-mode {
+            background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+            color: #495057;
+            border: 2px solid #dee2e6;
+        }
+
+        .btn-dark-mode {
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            color: white;
+            border: 2px solid #4a5568;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid var(--theme-primary, #ffd700);
+            border-radius: 10px;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: var(--theme-text, #000);
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: var(--theme-primary, #ffd700);
+            color: var(--theme-text, #000);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Back to Dashboard Button -->
+    <!-- <a href="../index.html" class="back-btn">
+        <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+    </a> -->
+
+    <div class="container mt-4">
+        <div class="settings-container">
+            <div class="d-flex align-items-center mb-4">
+                <i class="fas fa-palette fa-2x me-3" style="color: var(--theme-primary, #ffd700);"></i>
+                <h1 class="section-title mb-0">Theme Settings</h1>
+            </div>
+
+            <!-- Quick Theme Mode Actions -->
+            <div class="quick-actions">
+                <button class="quick-btn btn-light-mode" onclick="applyLightThemes()">
+                    <i class="fas fa-sun me-2"></i>Light Themes
+                </button>
+                <button class="quick-btn btn-dark-mode" onclick="applyDarkMode()">
+                    <i class="fas fa-moon me-2"></i>Dark Mode
+                </button>
+            </div>
+
+            <!-- Theme Selection Grid -->
+            <div class="row g-4">
+                <div class="col-md-4 col-sm-6">
+                    <div class="theme-card theme-gold" data-theme="gold">
+                        <div class="theme-preview">
+                            <i class="fas fa-crown fa-3x" style="color: #ffd700;"></i>
+                        </div>
+                        <div class="theme-info">
+                            <h5 class="mb-1">Gold & White</h5>
+                            <small class="text-muted">Classic elegant theme</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6">
+                    <div class="theme-card theme-blue" data-theme="blue">
+                        <div class="theme-preview">
+                            <i class="fas fa-water fa-3x" style="color: #007bff;"></i>
+                        </div>
+                        <div class="theme-info">
+                            <h5 class="mb-1">Blue Ocean</h5>
+                            <small class="text-muted">Calm and professional</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6">
+                    <div class="theme-card theme-green" data-theme="green">
+                        <div class="theme-preview">
+                            <i class="fas fa-leaf fa-3x" style="color: #28a745;"></i>
+                        </div>
+                        <div class="theme-info">
+                            <h5 class="mb-1">Nature Green</h5>
+                            <small class="text-muted">Fresh and natural</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6">
+                    <div class="theme-card theme-purple" data-theme="purple">
+                        <div class="theme-preview">
+                            <i class="fas fa-gem fa-3x" style="color: #6f42c1;"></i>
+                        </div>
+                        <div class="theme-info">
+                            <h5 class="mb-1">Royal Purple</h5>
+                            <small class="text-muted">Luxury and sophistication</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6">
+                    <div class="theme-card theme-dark" data-theme="dark">
+                        <div class="theme-preview">
+                            <i class="fas fa-moon fa-3x" style="color: #ffd700;"></i>
+                        </div>
+                        <div class="theme-info">
+                            <h5 class="mb-1">Dark Mode</h5>
+                            <small class="text-muted">Easy on the eyes</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6">
+                    <div class="theme-card theme-midnight" data-theme="midnight">
+                        <div class="theme-preview">
+                            <i class="fas fa-star fa-3x" style="color: #4299e1;"></i>
+                        </div>
+                        <div class="theme-info">
+                            <h5 class="mb-1">Midnight Blue</h5>
+                            <small class="text-muted">Deep and focused</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Current Theme Info -->
+            <div class="mt-4 p-3 rounded" style="background: rgba(0,0,0,0.05);">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h6 class="mb-1">Current Theme</h6>
+                        <span id="currentThemeName" class="text-muted">Gold & White</span>
+                    </div>
+                    <!-- <button class="btn btn-outline-primary" onclick="resetToDefault()">
+                        <i class="fas fa-undo me-2"></i>Reset to Default
+                    </button> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Wait for theme manager to be available
+        document.addEventListener('DOMContentLoaded', function () {
+            waitForThemeManager();
+        });
+
+        function waitForThemeManager() {
+            if (window.themeManager) {
+                initializeThemeSelection();
+            } else {
+                // Check again after a short delay
+                setTimeout(waitForThemeManager, 100);
+            }
+        }
+
+        function loadScript(src) {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+        }
+
+        function initializeThemeSelection() {
+            // Add click handlers to theme cards
+            document.querySelectorAll('.theme-card').forEach(card => {
+                card.addEventListener('click', function () {
+                    const themeId = this.dataset.theme;
+                    selectTheme(themeId);
+                });
+            });
+
+            // Update current theme display immediately
+            updateCurrentThemeDisplay();
+
+            // Highlight current theme
+            const currentTheme = window.themeManager.getCurrentTheme();
+            highlightSelectedTheme(currentTheme);
+        }
+
+        function selectTheme(themeId) {
+            if (window.themeManager) {
+                window.themeManager.changeTheme(themeId);
+                highlightSelectedTheme(themeId);
+                updateCurrentThemeDisplay();
+                // Apply theme to current page immediately
+                applyThemeToCurrentPage(themeId);
+            }
+        }
+
+        function applyThemeToCurrentPage(themeId) {
+            const themes = {
+                gold: { bg: 'linear-gradient(135deg, #fff 0%, #ffd700 50%, #fff 100%)', text: '#000', isDark: false },
+                blue: { bg: 'linear-gradient(135deg, #e3f2fd 0%, #007bff 50%, #e3f2fd 100%)', text: '#1a1a1a', isDark: false },
+                green: { bg: 'linear-gradient(135deg, #e8f5e8 0%, #28a745 50%, #e8f5e8 100%)', text: '#1a1a1a', isDark: false },
+                purple: { bg: 'linear-gradient(135deg, #f3e5f5 0%, #6f42c1 50%, #f3e5f5 100%)', text: '#1a1a1a', isDark: false },
+                dark: { bg: 'linear-gradient(135deg, #1a202c 0%, #2d3748 50%, #1a202c 100%)', text: '#fff', isDark: true },
+                midnight: { bg: 'linear-gradient(135deg, #0f1419 0%, #1a365d 50%, #0f1419 100%)', text: '#e2e8f0', isDark: true }
+            };
+
+            const theme = themes[themeId];
+            if (theme) {
+                document.body.style.background = theme.bg;
+                document.documentElement.style.background = theme.bg;
+                document.documentElement.className = theme.isDark ? 'theme-dark' : 'theme-light';
+
+                // Update CSS variables
+                const root = document.documentElement;
+                root.style.setProperty('--theme-background', theme.bg);
+                root.style.setProperty('--theme-text', theme.text);
+            }
+        }
+
+        function highlightSelectedTheme(themeId) {
+            // Remove previous selection
+            document.querySelectorAll('.theme-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            // Highlight selected theme
+            const selectedCard = document.querySelector(`[data-theme="${themeId}"]`);
+            if (selectedCard) {
+                selectedCard.classList.add('selected');
+            }
+        }
+
+        function updateCurrentThemeDisplay() {
+            const currentThemeNameEl = document.getElementById('currentThemeName');
+            if (window.themeManager && currentThemeNameEl) {
+                const currentTheme = window.themeManager.getCurrentTheme();
+                const themes = window.themeManager.getThemes();
+                currentThemeNameEl.textContent = themes[currentTheme]?.name || 'Unknown';
+            }
+        }
+
+        function applyLightThemes() {
+            // Cycle through light themes
+            const lightThemes = ['gold', 'blue', 'green', 'purple'];
+            const currentTheme = window.themeManager?.getCurrentTheme() || 'gold';
+            const currentIndex = lightThemes.indexOf(currentTheme);
+            const nextTheme = lightThemes[(currentIndex + 1) % lightThemes.length];
+            selectTheme(nextTheme);
+        }
+
+        function applyDarkMode() {
+            selectTheme('dark');
+        }
+
+        function resetToDefault() {
+            selectTheme('gold');
+        }
+
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addListener((e) => {
+            if (confirm('System theme changed. Would you like to apply the matching theme?')) {
+                selectTheme(e.matches ? 'dark' : 'gold');
+            }
+        });
+
+        // Listen for theme changes from localStorage (from other tabs or pages)
+        window.addEventListener('storage', function (e) {
+            if (e.key === 'easysmile-theme' && e.newValue) {
+                const newTheme = e.newValue;
+                highlightSelectedTheme(newTheme);
+                updateCurrentThemeDisplay();
+                applyThemeToCurrentPage(newTheme);
+            }
+        });
+
+        // Also listen for custom theme change events within the same page
+        window.addEventListener('themeChanged', function (e) {
+            if (e.detail && e.detail.theme) {
+                const newTheme = e.detail.theme;
+                highlightSelectedTheme(newTheme);
+                updateCurrentThemeDisplay();
+                applyThemeToCurrentPage(newTheme);
+            }
+        });
+    </script>
+</body>
+
+</html>
