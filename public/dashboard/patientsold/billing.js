@@ -336,10 +336,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Try multiple possible paths for the logo
       const possiblePaths = [
-        "../../../images/favicon.png",
-        "../../images/favicon.png",
-        "../images/favicon.png",
-        "/images/favicon.png",
+        "../../../site-logo.png",
+        "../../site-logo.png",
+        "../site-logo.png",
+        "/site-logo.png",
         "site-logo.png",
       ];
 
@@ -504,7 +504,7 @@ document.addEventListener("DOMContentLoaded", function () {
       doc.setFontSize(16);
       doc.setFont("helvetica", "bold");
       doc.text(
-        "Easy Smile Dental Clinic",
+        "Blessed Smile Dental Clinic",
         doc.internal.pageSize.width / 2,
         30, // Below the logo
         {
@@ -614,8 +614,8 @@ document.addEventListener("DOMContentLoaded", function () {
       const currentDate = new Date().toISOString().split("T")[0];
 
       const fileName = sanitizedPatientName
-        ? `EasySmile_BillingStatement_${sanitizedPatientName}_${currentDate}.pdf`
-        : `EasySmile_BillingStatement_${currentDate}.pdf`;
+        ? `BlessedSmile_BillingStatement_${sanitizedPatientName}_${currentDate}.pdf`
+        : `BlessedSmile_BillingStatement_${currentDate}.pdf`;
 
       // Save PDF and open in new tab
       const pdfBlob = doc.output("blob");

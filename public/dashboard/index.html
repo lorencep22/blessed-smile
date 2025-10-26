@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Easy Smile Dental Management System</title>
+    <title>Dashboard - Blessed Smile Dental Management System</title>
     <link rel="icon" href="/site-logo.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -14,7 +14,7 @@
     <!-- Critical CSS - Apply theme immediately before any rendering -->
     <script>
         (function () {
-            const savedTheme = localStorage.getItem('easysmile-theme');
+            const savedTheme = localStorage.getItem('blessedsmile-theme');
             if (savedTheme) {
                 const themes = {
                     gold: { bg: 'linear-gradient(135deg, #fff 0%, #ffd700 50%, #fff 100%)', text: '#000', isDark: false },
@@ -46,8 +46,25 @@
     <script src="theme/theme-immediate.js"></script>
     <!-- Toast System -->
     <script src="../toast.js" defer></script>
-    <!-- Theme Manager -->
-    <script src="theme/theme-manager.js" defer></script>
+    <!-- Theme Manager - Load after Firebase is ready -->
+    <script>
+        // Wait for Firebase to be initialized before loading theme manager
+        document.addEventListener('DOMContentLoaded', function () {
+            const waitForFirebase = () => {
+                if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0 && window.db && window.themeCollection) {
+                    // Firebase is ready, load theme manager
+                    const script = document.createElement('script');
+                    script.src = 'theme/theme-manager.js';
+                    script.defer = true;
+                    document.head.appendChild(script);
+                } else {
+                    // Firebase not ready yet, check again
+                    setTimeout(waitForFirebase, 50);
+                }
+            };
+            waitForFirebase();
+        });
+    </script>
     <style>
         html,
         body {
@@ -134,13 +151,209 @@
             margin-right: 0;
         }
 
-        @media (max-width: 768px) {
+        /* Mobile Navigation Toggle Button */
+        .mobile-menu-toggle {
+            display: none;
+            background: var(--theme-primary-bg);
+            border: 2px solid var(--theme-accent);
+            color: var(--theme-text);
+            padding: 0.5rem;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-toggle:hover {
+            background: var(--theme-accent);
+            color: var(--theme-text);
+        }
+
+        /* Mobile Sidebar Overlay */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1040;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar-overlay.show {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Mobile Sidebar */
+        .sidebar.mobile-sidebar {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 280px;
+            height: 100vh;
+            z-index: 1050;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .sidebar.mobile-sidebar.show {
+            transform: translateX(0);
+            left: 0;
+        }
+
+        .mobile-sidebar-header {
+            display: none;
+            padding: 1rem;
+            background: var(--theme-primary-bg);
+            border-bottom: 2px solid var(--theme-accent);
+        }
+
+        .mobile-sidebar-close {
+            background: transparent;
+            border: none;
+            color: var(--theme-text);
+            font-size: 1.5rem;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-sidebar-close:hover {
+            background: var(--theme-accent);
+            color: var(--theme-text);
+        }
+
+        /* Tablet Styles (768px to 991px) */
+        @media (max-width: 991px) and (min-width: 769px) {
             .sidebar {
                 display: none !important;
             }
 
             #dashboard-content {
                 width: 100% !important;
+            }
+
+            .mobile-menu-toggle {
+                display: inline-block;
+            }
+
+            /* Adjust navbar for tablet */
+            .navbar-nav {
+                flex-direction: row;
+                gap: 0.5rem;
+            }
+
+            .navbar-nav .nav-item {
+                margin: 0 0.25rem;
+            }
+        }
+
+        /* Mobile Styles (768px and below) */
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none !important;
+            }
+
+            .sidebar.mobile-sidebar {
+                display: block !important;
+            }
+
+            .mobile-sidebar-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            #dashboard-content {
+                width: 100% !important;
+            }
+
+            .mobile-menu-toggle {
+                display: inline-block;
+            }
+
+            /* Responsive navbar for mobile */
+            .navbar {
+                padding: 0.5rem 1rem;
+            }
+
+            .logo {
+                font-size: 1.5rem;
+                gap: 8px;
+            }
+
+            .logo img {
+                height: 36px;
+                width: 36px;
+            }
+
+            /* Stack navbar items on very small screens */
+            .navbar-nav {
+                flex-direction: column;
+                text-align: center;
+                padding-top: 0.5rem;
+            }
+
+            .navbar-nav .nav-item {
+                margin: 0.25rem 0;
+            }
+
+            /* Adjust iframe height for mobile */
+            main iframe {
+                height: calc(100vh - 70px) !important;
+            }
+        }
+
+        /* Extra small devices (phones, 576px and below) */
+        @media (max-width: 576px) {
+            .navbar {
+                padding: 0.5rem 0.75rem;
+            }
+
+            .logo {
+                font-size: 1.25rem;
+                gap: 6px;
+            }
+
+            .logo img {
+                height: 32px;
+                width: 32px;
+            }
+
+            .mobile-menu-toggle {
+                padding: 0.4rem;
+                font-size: 1rem;
+            }
+
+            /* Mobile sidebar adjustments for very small screens */
+            .sidebar.mobile-sidebar {
+                width: 250px;
+            }
+
+            .sidebar.mobile-sidebar .nav-link {
+                padding: 12px 12px;
+                margin: 4px 6px;
+                font-size: 0.95rem;
+            }
+
+            .mobile-sidebar-header {
+                padding: 0.75rem;
+            }
+
+            /* Adjust iframe height for very small screens */
+            main iframe {
+                height: calc(100vh - 65px) !important;
+            }
+        }
+
+        /* Landscape phones */
+        @media (max-height: 500px) and (orientation: landscape) {
+            main iframe {
+                height: calc(100vh - 60px) !important;
             }
         }
 
@@ -299,14 +512,473 @@
             margin-right: 8px;
             margin-left: auto;
         }
+
+        /* Responsive container adjustments */
+        .container-fluid {
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        /* Ensure proper flex layout on all screen sizes */
+        .d-flex {
+            flex-wrap: nowrap;
+        }
+
+        /* Smooth transitions for responsive changes */
+        .sidebar,
+        #dashboard-content,
+        main {
+            transition: all 0.3s ease;
+        }
+
+        /* Prevent horizontal scrolling on mobile */
+        body {
+            overflow-x: hidden;
+        }
+
+        /* Mobile-specific iframe adjustments */
+        @media (max-width: 768px) {
+            main {
+                padding: 0 !important;
+                margin: 0;
+            }
+
+            main iframe {
+                border-radius: 0;
+                box-shadow: none;
+            }
+        }
+
+        /* Tablet-specific adjustments */
+        @media (max-width: 991px) and (min-width: 769px) {
+            .navbar {
+                padding: 0.75rem 1rem;
+            }
+
+            main iframe {
+                height: calc(100vh - 75px) !important;
+            }
+        }
+
+        /* Beautiful Bootstrap navbar toggler design */
+        .navbar-toggler {
+            padding: 0.5rem 0.75rem;
+            font-size: 1.1rem;
+            line-height: 1;
+            background: var(--theme-primary-bg);
+            border: 2px solid var(--theme-accent);
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 12px var(--theme-shadow);
+            min-width: 44px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .navbar-toggler:hover {
+            background: var(--theme-accent);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 20px var(--theme-shadow);
+            border-color: var(--theme-accent);
+        }
+
+        .navbar-toggler:active {
+            transform: translateY(0) scale(0.98);
+            box-shadow: 0 2px 8px var(--theme-shadow);
+        }
+
+        .navbar-toggler:focus {
+            text-decoration: none;
+            outline: 0;
+            box-shadow: 0 0 0 0.25rem var(--theme-focus), 0 4px 12px var(--theme-shadow);
+            background: var(--theme-accent);
+        }
+
+        /* Animated shimmer effect */
+        .navbar-toggler::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .navbar-toggler:hover::before {
+            left: 100%;
+        }
+
+        /* Enhanced hamburger icon design */
+        .navbar-toggler-icon {
+            display: inline-block;
+            width: 1.8em;
+            height: 1.8em;
+            vertical-align: middle;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 85%;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Modern hamburger icon with theme colors */
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='currentColor' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2.5' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+            color: var(--theme-text);
+        }
+
+        /* Hover animation for icon */
+        .navbar-toggler:hover .navbar-toggler-icon {
+            transform: rotate(90deg);
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+        }
+
+        /* Dark theme specific adjustments */
+        .theme-dark .navbar-toggler-icon {
+            color: var(--theme-text);
+            filter: brightness(1.1);
+        }
+
+        /* Mobile specific enhancements */
+        @media (max-width: 768px) {
+            .navbar-toggler {
+                padding: 0.4rem 0.6rem;
+                min-width: 40px;
+                min-height: 40px;
+                border-radius: 10px;
+            }
+
+            .navbar-toggler-icon {
+                width: 1.6em;
+                height: 1.6em;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .navbar-toggler {
+                padding: 0.35rem 0.5rem;
+                min-width: 36px;
+                min-height: 36px;
+                border-radius: 8px;
+            }
+
+            .navbar-toggler-icon {
+                width: 1.4em;
+                height: 1.4em;
+                background-size: 80%;
+            }
+        }
+
+        /* Special gold theme styling for navbar toggler */
+        .navbar-toggler {
+            background: linear-gradient(135deg, var(--theme-surface) 0%, var(--theme-primary-bg) 50%, var(--theme-surface) 100%);
+        }
+
+        .navbar-toggler:hover {
+            background: linear-gradient(135deg, var(--theme-accent) 0%, var(--theme-primary-bg) 50%, var(--theme-accent) 100%);
+        }
+
+        /* Pulse animation on focus */
+        .navbar-toggler:focus {
+            animation: navbar-toggler-pulse 0.6s ease-in-out;
+        }
+
+        @keyframes navbar-toggler-pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Beautiful Navbar Navigation Design */
+        .navbar-nav {
+            gap: 0.75rem;
+        }
+
+        .navbar-nav .nav-item {
+            position: relative;
+        }
+
+        .navbar-nav .nav-link {
+            color: var(--theme-text) !important;
+            font-weight: 600;
+            padding: 0.75rem 1.25rem;
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--theme-surface);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 44px;
+            box-shadow: 0 2px 8px var(--theme-shadow);
+        }
+
+        .navbar-nav .nav-link:hover {
+            background: var(--theme-accent);
+            color: var(--theme-text) !important;
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 20px var(--theme-shadow);
+            border-color: var(--theme-accent);
+        }
+
+        .navbar-nav .nav-link.active {
+            background: var(--theme-primary-bg);
+            color: var(--theme-text) !important;
+            border-color: var(--theme-accent);
+            font-weight: 700;
+            box-shadow: 0 4px 16px var(--theme-shadow);
+        }
+
+        .navbar-nav .nav-link:focus {
+            outline: none;
+            box-shadow: 0 0 0 0.25rem var(--theme-focus), 0 4px 16px var(--theme-shadow);
+        }
+
+        /* Shimmer effect for nav links */
+        .navbar-nav .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+            z-index: 1;
+        }
+
+        .navbar-nav .nav-link:hover::before {
+            left: 100%;
+        }
+
+        .navbar-nav .nav-link span {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Sign Out Button Special Styling */
+        #dashboard-signout {
+            background: linear-gradient(135deg, var(--theme-surface) 0%, var(--theme-primary-bg) 50%, var(--theme-surface) 100%);
+            border: 2px solid var(--theme-accent);
+            color: var(--theme-text);
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #dashboard-signout:hover {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 50%, #ff6b6b 100%);
+            color: #fff !important;
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(238, 90, 82, 0.4);
+            border-color: #ee5a52;
+        }
+
+        #dashboard-signout:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        /* Home Link Special Styling - Same design as Sign Out */
+        .navbar-nav .nav-link[href="/"] {
+            background: linear-gradient(135deg, var(--theme-surface) 0%, var(--theme-primary-bg) 50%, var(--theme-surface) 100%);
+            border: 2px solid var(--theme-accent);
+            color: var(--theme-text) !important;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px var(--theme-shadow);
+        }
+
+        .navbar-nav .nav-link[href="/"]:hover {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 50%, #4CAF50 100%);
+            color: #fff !important;
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+            border-color: #45a049;
+        }
+
+        .navbar-nav .nav-link[href="/"]:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        /* Shimmer effect for home link */
+        .navbar-nav .nav-link[href="/"]::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+            z-index: 1;
+        }
+
+        .navbar-nav .nav-link[href="/"]:hover::before {
+            left: 100%;
+        }
+
+        .navbar-nav .nav-link[href="/"] span {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Responsive adjustments for navbar nav */
+        @media (max-width: 991px) {
+            .navbar-nav {
+                gap: 0.5rem;
+                padding-top: 1rem;
+            }
+
+            .navbar-nav .nav-link {
+                padding: 0.6rem 1rem;
+                font-size: 0.95rem;
+                border-radius: 10px;
+            }
+
+            #dashboard-signout,
+            .navbar-nav .nav-link[href="/"] {
+                padding: 0.6rem 1.2rem;
+                border-radius: 10px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar-nav {
+                gap: 0.5rem;
+                width: 100%;
+            }
+
+            .navbar-nav .nav-item {
+                width: 100%;
+            }
+
+            .navbar-nav .nav-link {
+                padding: 0.75rem;
+                text-align: center;
+                width: 100%;
+                border-radius: 8px;
+                margin: 0.25rem 0;
+            }
+
+            #dashboard-signout,
+            .navbar-nav .nav-link[href="/"] {
+                padding: 0.75rem;
+                width: 100%;
+                border-radius: 8px;
+                margin: 0.25rem 0;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .navbar-nav .nav-link {
+                padding: 0.6rem;
+                font-size: 0.9rem;
+                min-height: 40px;
+            }
+
+            #dashboard-signout,
+            .navbar-nav .nav-link[href="/"] {
+                padding: 0.6rem;
+                font-size: 0.9rem;
+                min-height: 40px;
+            }
+        }
+
+        /* Pulse animation for active states */
+        .navbar-nav .nav-link.active {
+            animation: nav-link-pulse 2s infinite;
+        }
+
+        @keyframes nav-link-pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 4px 16px var(--theme-shadow);
+            }
+
+            50% {
+                box-shadow: 0 6px 20px var(--theme-shadow), 0 0 15px var(--theme-accent);
+            }
+        }
+
+        /* Theme dropdown enhancement (when uncommented) */
+        .dropdown-menu {
+            background: var(--theme-surface);
+            border: 2px solid var(--theme-accent);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px var(--theme-shadow);
+            padding: 0.5rem;
+        }
+
+        .dropdown-item {
+            color: var(--theme-text);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            margin: 0.25rem 0;
+        }
+
+        .dropdown-item:hover {
+            background: var(--theme-accent);
+            color: var(--theme-text);
+            transform: translateX(4px);
+        }
+
+        .dropdown-header {
+            color: var(--theme-text);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.75rem;
+        }
     </style>
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
+            <!-- Mobile Menu Toggle Button -->
+            <button class="mobile-menu-toggle me-3" id="mobileMenuToggle" aria-label="Toggle mobile menu">
+                <i class="fas fa-bars"></i>
+            </button>
+
             <div class="logo"><img src="/site-logo.png" alt="Easy Smile Logo"><a class="nav-link active"
-                    aria-current="page" href="/dashboard" style="color: #000000 !important;">Easy Smile</a></div>
+                    aria-current="page" href="/dashboard" style="color: #000000 !important;">Blessed Smile</a></div>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -351,19 +1023,30 @@
             </div>
         </div>
     </nav>
+    <!-- Mobile Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
     <div class="container-fluid p-0">
         <div class="d-flex">
             <nav class="sidebar py-4" id="sidebar">
+                <!-- Mobile Sidebar Header (visible only on mobile) -->
+                <div class="mobile-sidebar-header">
+                    <h5 class="mb-0" style="color: var(--theme-text);">Menu</h5>
+                    <button class="mobile-sidebar-close" id="mobileSidebarClose" aria-label="Close mobile menu">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
                 <div class="position-sticky">
-                    <!-- Toggle Button -->
-                    <div class="d-flex justify-content-center mb-3">
+                    <!-- Desktop Toggle Button -->
+                    <div class="d-flex justify-content-center mb-3 d-none d-lg-flex">
                         <button class="btn" id="sidebarToggle" title="Toggle Sidebar">
                             <i class="fas fa-chevron-left" id="toggleIcon"></i>
                         </button>
                     </div>
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link d-flex align-items-center" href="#" data-bs-toggle="tooltip"
+                            <a class="nav-link active d-flex align-items-center" href="#" data-bs-toggle="tooltip"
                                 data-bs-placement="right" title="Patients">
                                 <span class="me-2">👥</span>
                                 <span class="nav-link-text">Patients</span>
@@ -371,34 +1054,34 @@
                         </li>
 
                         <!-- <li class="nav-item">
-                            <a class="nav-link active d-flex align-items-center" href="#">
+                            <a class="nav-link d-flex align-items-center" href="#">
                                 <span class="me-2">🏥</span>
                                 <span class="nav-link-text">Procedures</span>
                             </a>
                         </li> -->
                         <li class="nav-item">
-                            <a class="nav-link active d-flex align-items-center" href="#" data-bs-toggle="tooltip"
+                            <a class="nav-link d-flex align-items-center" href="#" data-bs-toggle="tooltip"
                                 data-bs-placement="right" title="Doctors">
                                 <span class="me-2">🩺</span>
                                 <span class="nav-link-text">Doctors</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active d-flex align-items-center" href="#" data-bs-toggle="tooltip"
+                            <a class="nav-link d-flex align-items-center" href="#" data-bs-toggle="tooltip"
                                 data-bs-placement="right" title="Transactions">
                                 <span class="me-2">💰</span>
                                 <span class="nav-link-text">Transactions</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active d-flex align-items-center" href="#" data-bs-toggle="tooltip"
+                            <a class="nav-link d-flex align-items-center" href="#" data-bs-toggle="tooltip"
                                 data-bs-placement="right" title="Documents">
                                 <span class="me-2">📄</span>
                                 <span class="nav-link-text">Documents</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active d-flex align-items-center" href="#" data-bs-toggle="tooltip"
+                            <a class="nav-link d-flex align-items-center" href="#" data-bs-toggle="tooltip"
                                 data-bs-placement="right" title="Users">
                                 <span class="me-2">🧑‍🤝‍🧑</span>
                                 <span class="nav-link-text">Users</span>
@@ -416,7 +1099,7 @@
             </nav>
             <main id="dashboard-content" class="flex-grow-1 " style="height: 100% !important;">
                 <iframe id="patients-iframe" src="/dashboard/patients/index.html"
-                    style="width:100%;height:90dvh;border:none;"></iframe>
+                    style="width:100%;height:90dvh;border:none; display: block; "></iframe>
                 <!-- <iframe id="procedures-iframe" src="/dashboard/procedures/index.html"
                     style="width:100%;height:90dvh;border:none; display: none;"></iframe> -->
                 <iframe id="doctors-iframe" src="/dashboard/doctors/index.html"
@@ -454,7 +1137,7 @@
             // Apply theme to iframes when they load
             function setupIframeTheme(iframe) {
                 iframe.addEventListener('load', function () {
-                    const savedTheme = localStorage.getItem('easysmile-theme') || 'gold';
+                    const savedTheme = localStorage.getItem('blessedsmile-theme') || 'gold';
                     setTimeout(() => {
                         try {
                             iframe.contentWindow.postMessage({
@@ -478,6 +1161,11 @@
             const toggleIcon = document.getElementById('toggleIcon');
             const mainContent = document.getElementById('dashboard-content');
             const sidebarLinks = document.querySelectorAll('.sidebar .nav-link');
+
+            // Mobile menu elements
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            const mobileSidebarClose = document.getElementById('mobileSidebarClose');
 
             // Sidebar toggle functionality
             let sidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
@@ -512,9 +1200,73 @@
             // Initialize sidebar state
             updateSidebarState();
 
-            sidebarToggle.addEventListener('click', function () {
-                sidebarCollapsed = !sidebarCollapsed;
-                updateSidebarState();
+            // Desktop sidebar toggle
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', function () {
+                    sidebarCollapsed = !sidebarCollapsed;
+                    updateSidebarState();
+                });
+            }
+
+            // Mobile menu functionality
+            function openMobileSidebar() {
+                sidebar.classList.add('mobile-sidebar', 'show');
+                sidebarOverlay.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeMobileSidebar() {
+                sidebar.classList.remove('show');
+                sidebarOverlay.classList.remove('show');
+                document.body.style.overflow = '';
+
+                // Remove mobile-sidebar class after animation
+                setTimeout(() => {
+                    if (!sidebar.classList.contains('show')) {
+                        sidebar.classList.remove('mobile-sidebar');
+                    }
+                }, 300);
+            }
+
+            // Mobile menu toggle button
+            if (mobileMenuToggle) {
+                mobileMenuToggle.addEventListener('click', openMobileSidebar);
+            }
+
+            // Close mobile sidebar
+            if (mobileSidebarClose) {
+                mobileSidebarClose.addEventListener('click', closeMobileSidebar);
+            }
+
+            // Close mobile sidebar when clicking overlay
+            if (sidebarOverlay) {
+                sidebarOverlay.addEventListener('click', closeMobileSidebar);
+            }
+
+            // Close mobile sidebar when navigation item is clicked (mobile only)
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function () {
+                    // Only close on mobile/tablet
+                    if (window.innerWidth <= 991) {
+                        setTimeout(closeMobileSidebar, 150);
+                    }
+                });
+            });
+
+            // Handle window resize to manage sidebar states
+            window.addEventListener('resize', function () {
+                if (window.innerWidth > 991) {
+                    // Desktop view - ensure mobile sidebar is closed
+                    closeMobileSidebar();
+                    sidebar.classList.remove('mobile-sidebar');
+                } else {
+                    // Mobile/tablet view - ensure desktop collapsed state is handled
+                    if (sidebar.classList.contains('show')) {
+                        // Do nothing if mobile sidebar is open
+                    } else {
+                        sidebar.classList.remove('collapsed');
+                    }
+                }
             });
 
             // Remove dashboardLastTab from localStorage on logout
@@ -566,24 +1318,62 @@
                 }
             }
 
-            // Restore last opened tab from localStorage
+            // Initial load function - don't reload on first load
+            function initialLoad(tabName) {
+                patientsIframe.style.display = 'none';
+                doctorsIframe.style.display = 'none';
+                transactionsIframe.style.display = 'none';
+                documentsIframe.style.display = 'none';
+                usersIframe.style.display = 'none';
+                themesIframe.style.display = 'none';
+
+                switch (tabName) {
+                    case 'Patients':
+                        patientsIframe.style.display = 'block';
+                        break;
+                    case 'Doctors':
+                        doctorsIframe.style.display = 'block';
+                        break;
+                    case 'Transactions':
+                        transactionsIframe.style.display = 'block';
+                        break;
+                    case 'Documents':
+                        documentsIframe.style.display = 'block';
+                        break;
+                    case 'Users':
+                        usersIframe.style.display = 'block';
+                        break;
+                    case 'Themes':
+                        themesIframe.style.display = 'block';
+                        break;
+                }
+            }
+
+            // Restore last opened tab from localStorage or default to Patients
             let lastTab = localStorage.getItem('dashboardLastTab');
             let foundTab = false;
-            if (lastTab) {
+
+            // Only try to restore if lastTab exists and is not empty
+            if (lastTab && lastTab.trim() !== '') {
                 sidebarLinks.forEach(l => {
                     if (l.textContent.includes(lastTab)) {
                         sidebarLinks.forEach(link => link.classList.remove('active'));
                         l.classList.add('active');
-                        showIframe(lastTab);
+                        initialLoad(lastTab);
                         foundTab = true;
                     }
                 });
             }
-            if (!foundTab) {
-                // Default to Patients
-                sidebarLinks.forEach(link => link.classList.remove('active'));
-                sidebarLinks[0].classList.add('active');
-                showIframe('Patients');
+
+            // If no saved tab found or no tab in localStorage, trigger click on Patients nav link
+            if (!foundTab || !lastTab || lastTab.trim() === '') {
+                // console.log('Loading default Patients tab - no saved tab found, triggering click');
+                // Programmatically click the Patients nav link to trigger all event handlers
+                setTimeout(() => {
+                    if (sidebarLinks[0]) {
+                        sidebarLinks[0].click();
+                    }
+                }, 100); // Small delay to ensure everything is initialized
             }
 
             sidebarLinks.forEach(link => {

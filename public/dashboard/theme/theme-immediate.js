@@ -1,7 +1,7 @@
 // Immediate Theme Application Script
 // This script applies the saved theme immediately to prevent flash of unstyled content
 (function () {
-  const savedTheme = localStorage.getItem("easysmile-theme");
+  const savedTheme = localStorage.getItem("blessedsmile-theme");
   if (savedTheme) {
     const themes = {
       gold: {

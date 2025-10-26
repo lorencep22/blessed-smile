@@ -12,6 +12,8 @@ firebase.initializeApp(firebaseConfig);
 // ...existing code...
 const auth = firebase.auth();
 const db = firebase.firestore();
+// Make db globally accessible for theme manager
+window.db = db;
 // Global Firestore collections
 window.doctorsCollection = db.collection("doctors");
 window.patientDetailsCollection = db.collection("patientDetails");
@@ -19,6 +21,7 @@ window.patientRecordsCollection = db.collection("patientRecords");
 window.proceduresCollection = db.collection("procedures");
 window.prescriptionsCollection = db.collection("prescriptions");
 window.usersCollection = db.collection("users");
+window.themeCollection = db.collection("themes");
 
 const whenSignedIn = document.getElementById("whenSignedIn");
 const whenSignedOut = document.getElementById("whenSignedOut");

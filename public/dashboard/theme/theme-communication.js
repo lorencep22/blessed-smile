@@ -47,7 +47,7 @@
 
   // Apply theme immediately when page loads if theme manager is ready
   function applyStoredTheme() {
-    const savedTheme = localStorage.getItem("easysmile-theme") || "gold";
+    const savedTheme = localStorage.getItem("blessedsmile-theme") || "gold";
     if (window.themeManager && window.themeManager.applyTheme) {
       window.themeManager.applyTheme(savedTheme);
     } else {

@@ -21,7 +21,7 @@
     <!-- Critical CSS - Apply theme immediately before any rendering -->
     <script>
         (function () {
-            const savedTheme = localStorage.getItem('easysmile-theme');
+            const savedTheme = localStorage.getItem('blessedsmile-theme');
             if (savedTheme) {
                 const themes = {
                     gold: { bg: 'linear-gradient(135deg, #fff 0%, #ffd700 50%, #fff 100%)', text: '#000', isDark: false },
@@ -254,6 +254,340 @@
         input[type=number] {
             -moz-appearance: textfield;
         }
+
+        /* Responsive Design Breakpoints */
+
+        /* Mobile First Approach - Base styles for mobile */
+        .header-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: stretch;
+            margin-bottom: 1rem;
+        }
+
+        .header-title {
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-controls {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .search-filter-container {
+            width: 100%;
+            max-width: none;
+        }
+
+        .reload-btn {
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+
+        /* Summary cards responsive */
+        .summary-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .summary-card {
+            padding: 0.75rem;
+            text-align: center;
+        }
+
+        /* Table Responsive Styles */
+        .responsive-table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px var(--theme-shadow);
+        }
+
+        .responsive-table {
+            min-width: 800px;
+        }
+
+        .responsive-th,
+        .responsive-td {
+            white-space: nowrap;
+            padding: 0.75rem 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        /* Hide columns on smaller screens */
+        .hide-on-mobile {
+            display: none;
+        }
+
+        .hide-on-small {
+            display: none;
+        }
+
+        .hide-on-tablet {
+            display: table-cell;
+        }
+
+        /* Container padding adjustments */
+        .container {
+            padding: 1rem;
+            margin: 0.5rem;
+            max-width: calc(100% - 1rem);
+        }
+
+        /* Input group responsive */
+        .responsive-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .responsive-input-group .form-control,
+        .responsive-input-group .form-select,
+        .responsive-input-group .btn {
+            border-radius: 8px !important;
+            font-size: 0.875rem;
+        }
+
+        /* Filter controls responsive */
+        .filter-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            width: 100%;
+        }
+
+        .date-filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        /* Small devices (landscape phones, 576px and up) */
+        @media (min-width: 576px) {
+            .hide-on-mobile {
+                display: table-cell;
+            }
+
+            .container {
+                padding: 1.5rem;
+                margin: 1rem auto;
+                max-width: 540px;
+            }
+
+            .header-controls {
+                flex-direction: row;
+                gap: 0.75rem;
+                align-items: flex-start;
+            }
+
+            .reload-btn {
+                width: auto;
+                margin-top: 0;
+                min-width: 44px;
+            }
+
+            .summary-cards {
+                flex-direction: row;
+                gap: 0.75rem;
+            }
+
+            .summary-card {
+                flex: 1;
+                text-align: left;
+            }
+
+            .responsive-input-group {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .filter-controls {
+                flex-direction: row;
+                flex-wrap: wrap;
+                align-items: center;
+            }
+
+            .date-filter-group {
+                flex-direction: row;
+                align-items: center;
+            }
+
+            .responsive-th,
+            .responsive-td {
+                padding: 0.75rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Medium devices (tablets, 768px and up) */
+        @media (min-width: 768px) {
+            .hide-on-small {
+                display: table-cell;
+            }
+
+            .container {
+                max-width: 720px;
+                padding: 2rem;
+            }
+
+            .header-section {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: flex-start;
+            }
+
+            .header-title {
+                text-align: left;
+                margin-bottom: 0;
+            }
+
+            .header-controls {
+                flex-direction: row;
+                width: auto;
+                gap: 1rem;
+            }
+
+            .search-filter-container {
+                max-width: 600px;
+            }
+
+            .summary-cards {
+                justify-content: space-around;
+            }
+
+            .responsive-th,
+            .responsive-td {
+                font-size: 1rem;
+            }
+        }
+
+        /* Large devices (desktops, 992px and up) */
+        @media (min-width: 992px) {
+            .container {
+                max-width: 960px;
+            }
+
+            .responsive-table {
+                min-width: 100%;
+            }
+
+            .search-filter-container {
+                max-width: 700px;
+            }
+        }
+
+        /* Extra large devices (large desktops, 1200px and up) */
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 1140px;
+            }
+
+            .search-filter-container {
+                max-width: 800px;
+            }
+        }
+
+        /* Extra extra large devices (1400px and up) */
+        @media (min-width: 1400px) {
+            .container {
+                max-width: 1320px;
+            }
+        }
+
+        /* Touch device optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            .btn {
+                padding: 0.75rem 1rem;
+                font-size: 1rem;
+                min-height: 44px;
+                touch-action: manipulation;
+            }
+
+            .form-control,
+            .form-select {
+                padding: 0.75rem;
+                font-size: 1rem;
+                min-height: 44px;
+                touch-action: manipulation;
+            }
+
+            .table td,
+            .table th {
+                padding: 1rem 0.5rem;
+            }
+        }
+
+        /* Additional responsive utilities */
+        .text-responsive {
+            font-size: 0.875rem;
+        }
+
+        @media (min-width: 768px) {
+            .text-responsive {
+                font-size: 1rem;
+            }
+        }
+
+        /* Responsive button sizes */
+        .btn-responsive {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        @media (min-width: 768px) {
+            .btn-responsive {
+                padding: 0.625rem 1.25rem;
+                font-size: 1rem;
+            }
+        }
+
+        /* Ensure proper spacing on mobile */
+        .gap-responsive {
+            gap: 0.5rem;
+        }
+
+        @media (min-width: 576px) {
+            .gap-responsive {
+                gap: 0.75rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .gap-responsive {
+                gap: 1rem;
+            }
+        }
+
+        /* Responsive card layout for summary */
+        .card-responsive {
+            margin-bottom: 1rem;
+        }
+
+        .card-body-responsive {
+            padding: 1rem;
+        }
+
+        @media (max-width: 575px) {
+            .card-body-responsive {
+                padding: 0.75rem;
+            }
+
+            .card-body-responsive>div {
+                margin-bottom: 0.5rem;
+                padding: 0.5rem;
+                border-radius: 4px;
+                background: rgba(255, 255, 255, 0.1);
+            }
+
+            .card-body-responsive>div:last-child {
+                margin-bottom: 0;
+            }
+        }
     </style>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
@@ -263,57 +597,71 @@
 
     <div class="container mt-4">
         <div class="row mb-2">
-            <div class="col-12 d-flex gap-2 justify-content-between align-items-center">
-                <h2>Transactions</h2>
-                <div class="d-flex gap-2">
-                    <div class="input-group" style="max-width:600px; margin-left: auto;">
-                        <div class="input-group" style="max-width: 600px;">
-                            <input type="text" name="patientName" id="patientName" placeholder="Search by Patient Name"
-                                class="form-control">
-                            <select class="form-select" id="dateFilterSelect" style="max-width:180px;">
-                                <option value="today">Today</option>
-                                <option value="all">All</option>
-                                <option value="prevWeek">Previous Week</option>
-                                <option value="thisMonth">This Month</option>
-                                <option value="prevMonth">Previous Month</option>
-                                <option value="thisYear">This Year</option>
-                                <option value="custom">Custom Range</option>
-                            </select>
-                            <input type="date" class="form-control d-none" id="customStartDate"
-                                style="max-width:140px;">
-                            <span class="input-group-text d-none" id="toLabel">to</span>
-                            <input type="date" class="form-control d-none" id="customEndDate" style="max-width:140px;">
-                            <button type="button" class="btn btn-primary" id="filterDateBtn">Filter</button>
-                            <button id="printTransactionHistoryBtn" class="btn btn-primary">
-                                <i class="fa fa-print me-2"></i> Save to DPF
-                            </button>
+            <div class="col-12">
+                <div class="header-section gap-responsive">
+                    <h2 class="header-title">Transactions</h2>
+                    <div class="header-controls gap-responsive">
+                        <div class="search-filter-container">
+                            <div class="responsive-input-group">
+                                <input type="text" name="patientName" id="patientName"
+                                    placeholder="Search by Patient Name" class="form-control"
+                                    list="patientNamesDatalist">
+                                <div class="filter-controls">
+                                    <select class="form-select" id="dateFilterSelect">
+                                        <option value="today">Today</option>
+                                        <option value="all">All</option>
+                                        <option value="prevWeek">Previous Week</option>
+                                        <option value="thisMonth">This Month</option>
+                                        <option value="prevMonth">Previous Month</option>
+                                        <option value="thisYear">This Year</option>
+                                        <option value="custom">Custom Range</option>
+                                    </select>
+                                    <div class="date-filter-group">
+                                        <input type="date" class="form-control d-none" id="customStartDate">
+                                        <span class="input-group-text d-none" id="toLabel">to</span>
+                                        <input type="date" class="form-control d-none" id="customEndDate">
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-primary btn-responsive"
+                                    id="filterDateBtn">Filter</button>
+                                <button id="printTransactionHistoryBtn" class="btn btn-primary btn-responsive">
+                                    <i class="fa fa-print me-2"></i> Save to PDF
+                                </button>
+                            </div>
                         </div>
-                    </div>
 
-                    <button type="button" class="btn btn-primary py-2 px-3" id="reloadProceduresBtn"
-                        title="Reload Procedures" style="height: 38px;">
-                        <i class="fa fa-rotate-right"></i>
-                    </button>
+                        <button type="button" class="btn btn-primary reload-btn btn-responsive" id="reloadProceduresBtn"
+                            title="Reload Procedures">
+                            <i class="fa fa-rotate-right"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <div class="card"
-                style="display: flex; background: #f8f9fa; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-                <div class="card-body p-3" style="display: flex; justify-content: space-around; align-items: center;">
-                    <div class="d-flex align-items-center ">
-                        <span class="me-2 text-success"><i class="fa fa-coins"></i></span>
-                        <span class="fw-semibold">Total Bill:</span>
-                        <span id="totalBill" class="fw-bold text-primary ms-2">0.00</span>
-                    </div>
-                    <div class="d-flex align-items-center ">
-                        <span class="me-2 text-success"><i class="fa fa-coins"></i></span>
-                        <span class="fw-semibold">Total Amount:</span>
-                        <span id="totalAmount" class="fw-bold text-primary ms-2">0.00</span>
-                    </div>
-                    <div class="d-flex align-items-center" id="totalBalanceContainer" style="display:none;">
-                        <span class="me-2 text-warning"><i class="fa fa-wallet"></i></span>
-                        <span class="fw-semibold">Total Balance:</span>
-                        <span id="totalBalance" class="fw-bold text-primary ms-2">0.00</span>
+            <div class="card card-responsive">
+                <div class="card-body card-body-responsive">
+                    <div class="summary-cards">
+                        <div class="summary-card">
+                            <div class="d-flex align-items-center justify-content-center justify-content-sm-start">
+                                <span class="me-2 text-success"><i class="fa fa-coins"></i></span>
+                                <span class="fw-semibold text-responsive">Total Bill:</span>
+                                <span id="totalBill" class="fw-bold text-primary ms-2 text-responsive">0.00</span>
+                            </div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="d-flex align-items-center justify-content-center justify-content-sm-start">
+                                <span class="me-2 text-success"><i class="fa fa-coins"></i></span>
+                                <span class="fw-semibold text-responsive">Total Amount:</span>
+                                <span id="totalAmount" class="fw-bold text-primary ms-2 text-responsive">0.00</span>
+                            </div>
+                        </div>
+                        <div class="summary-card" id="totalBalanceContainer">
+                            <div class="d-flex align-items-center justify-content-center justify-content-sm-start">
+                                <span class="me-2 text-warning"><i class="fa fa-wallet"></i></span>
+                                <span class="fw-semibold text-responsive">Total Balance:</span>
+                                <span id="totalBalance" class="fw-bold text-primary ms-2 text-responsive">0.00</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -363,23 +711,23 @@
                                     id="pdfTotalBalance"></span></div>
                         </div>
                     </div>
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0">
+                    <div class="responsive-table-container">
+                        <table class="table table-hover align-middle mb-0 responsive-table">
                             <thead>
                                 <tr>
-                                    <th>No.</th>
-                                    <th>Procedure Name</th>
-                                    <th>Doctor Name</th>
-                                    <th>Date</th>
-                                    <th>Total Bill</th>
-                                    <th>Amount Paid</th>
-                                    <th>Balance Amount</th>
+                                    <th class="responsive-th">No.</th>
+                                    <th class="responsive-th">Procedure Name</th>
+                                    <th class="responsive-th hide-on-mobile">Doctor Name</th>
+                                    <th class="responsive-th hide-on-small">Date</th>
+                                    <th class="responsive-th">Total Bill</th>
+                                    <th class="responsive-th hide-on-mobile">Amount Paid</th>
+                                    <th class="responsive-th">Balance Amount</th>
                                     <!-- <th>Action</th> -->
                                 </tr>
                             </thead>
                             <tbody id="transactionsTableBody">
                                 <tr>
-                                    <td colspan="6" style="text-align: center; padding: 20px;">Generated by Blessed
+                                    <td colspan="7" style="text-align: center; padding: 20px;">Generated by Blessed
                                         Smile Dental Clinic
                                     </td>
                                 </tr>
@@ -390,6 +738,11 @@
                         <div id="paginationContainer" class="d-none p-3">
                             <!-- Pagination controls will be rendered here by JS -->
                         </div>
+
+                        <!-- Datalist for patient search suggestions -->
+                        <datalist id="patientNamesDatalist">
+                            <!-- Options will be populated dynamically by JavaScript -->
+                        </datalist>
 
                         <div style="margin-top:30px; display:none; justify-content:flex-end; gap:40px;">
                             <div style="font-weight:bold; color:#2c3e50;">Total Bill: <span id="pdfTotalBill"></span>
@@ -442,13 +795,13 @@
 
                                 let paginationHtml = `
                                     <nav aria-label="Transaction History pagination" class="mt-3">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div class="text-muted">
+                                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
+                                            <div class="text-muted text-responsive text-center text-sm-start">
                                                 Showing ${((currentPage - 1) * itemsPerPage) + 1} to ${Math.min(currentPage * itemsPerPage, totalItems)} of ${totalItems} transactions
                                             </div>
-                                            <ul class="pagination justify-content-center mb-0" style="gap: 8px;">
+                                            <ul class="pagination justify-content-center mb-0 gap-responsive" style="flex-wrap: wrap;">
                                                 <li class="page-item">
-                                                    <button class="btn btn-outline-primary btn-sm" 
+                                                    <button class="btn btn-outline-primary btn-sm btn-responsive" 
                                                             onclick="navigateToTransactionPage(${currentPage - 1})" 
                                                             ${currentPage === 1 ? 'disabled' : ''}>
                                                         <i class="fas fa-chevron-left me-1"></i>Prev
@@ -467,7 +820,7 @@
                                 for (let i = startPage; i <= endPage; i++) {
                                     paginationHtml += `
                                         <li class="page-item">
-                                            <button class="btn ${i === currentPage ? 'btn-primary' : 'btn-outline-secondary'} btn-sm" 
+                                            <button class="btn ${i === currentPage ? 'btn-primary' : 'btn-outline-secondary'} btn-sm btn-responsive" 
                                                     onclick="navigateToTransactionPage(${i})" 
                                                     ${i === currentPage ? 'style="font-weight: bold;"' : ''}>
                                                 ${i}
@@ -477,7 +830,7 @@
 
                                 paginationHtml += `
                                                 <li class="page-item">
-                                                    <button class="btn btn-outline-primary btn-sm" 
+                                                    <button class="btn btn-outline-primary btn-sm btn-responsive" 
                                                             onclick="navigateToTransactionPage(${currentPage + 1})" 
                                                             ${currentPage === totalPages ? 'disabled' : ''}>
                                                         Next<i class="fas fa-chevron-right ms-1"></i>
@@ -531,13 +884,13 @@
                                         : 'Update the procedure';
 
                                     row.innerHTML = `
-                                        <td>${rowNumber}</td>
-                                        <td>${t.procedure || ''}</td>
-                                        <td>${t.doctor || ''}</td>
-                                        <td>${t.date ? (typeof t.date === 'string' ? t.date : t.date.toDate ? t.date.toDate().toLocaleDateString() : '') : ''}</td>
-                                        <td>${totalBill}</td>
-                                        <td>${amount}</td>
-                                        <td>${balance}</td>
+                                        <td class="responsive-td">${rowNumber}</td>
+                                        <td class="responsive-td">${t.procedure || ''}</td>
+                                        <td class="responsive-td hide-on-mobile">${t.doctor || ''}</td>
+                                        <td class="responsive-td hide-on-small">${t.date ? (typeof t.date === 'string' ? t.date : t.date.toDate ? t.date.toDate().toLocaleDateString() : '') : ''}</td>
+                                        <td class="responsive-td">${totalBill}</td>
+                                        <td class="responsive-td hide-on-mobile">${amount}</td>
+                                        <td class="responsive-td">${balance}</td>
                                         
                                     `;
                                     tbody.appendChild(row);
@@ -723,13 +1076,13 @@
                                                     : 'Update the procedure';
 
                                                 row.innerHTML = `
-                                                    <td>${index + 1}</td>
-                                                    <td>${t.procedure || ''}</td>
-                                                    <td>${t.doctor || ''}</td>
-                                                    <td>${t.date ? (typeof t.date === 'string' ? t.date : t.date.toDate ? t.date.toDate().toLocaleDateString() : '') : ''}</td>
-                                                    <td>${totalBill}</td>
-                                                    <td>${amount}</td>
-                                                    <td>${balance}</td>
+                                                    <td class="responsive-td">${index + 1}</td>
+                                                    <td class="responsive-td">${t.procedure || ''}</td>
+                                                    <td class="responsive-td hide-on-mobile">${t.doctor || ''}</td>
+                                                    <td class="responsive-td hide-on-small">${t.date ? (typeof t.date === 'string' ? t.date : t.date.toDate ? t.date.toDate().toLocaleDateString() : '') : ''}</td>
+                                                    <td class="responsive-td">${totalBill}</td>
+                                                    <td class="responsive-td hide-on-mobile">${amount}</td>
+                                                    <td class="responsive-td">${balance}</td>
                                                 `;
                                                 tbody.appendChild(row);
                                             });
@@ -770,6 +1123,31 @@
                                     }, 300);
                                 });
                             }
+                            // Generate patient names datalist
+                            function generatePatientNamesDatalist() {
+                                const datalist = document.getElementById('patientNamesDatalist');
+                                if (!datalist || !window.patientDetailsCollection) return;
+
+                                window.patientDetailsCollection.get().then(snapshot => {
+                                    datalist.innerHTML = '';
+                                    snapshot.forEach(doc => {
+                                        const patient = doc.data();
+                                        const option = document.createElement('option');
+                                        const fullName = `${patient.firstName || ''} ${patient.middleName || ''} ${patient.lastName || ''}`.replace(/\s+/g, ' ').trim();
+                                        option.value = fullName;
+                                        option.dataset.id = doc.id;
+                                        datalist.appendChild(option);
+                                    });
+                                }).catch(error => {
+                                    console.log('Error generating patient datalist:', error);
+                                });
+                            }
+
+                            // Generate datalist on page load
+                            setTimeout(() => {
+                                generatePatientNamesDatalist();
+                            }, 1000);
+
                             // On page load, set default filter to today and trigger filter immediately
                             if (dateFilterSelect) {
                                 dateFilterSelect.value = 'today';

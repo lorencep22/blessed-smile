@@ -261,7 +261,7 @@ async function generateComprehensiveBillingPDF(procedureData, procedureId) {
     // Clinic information
     doc.setFontSize(20);
     doc.setFont(undefined, "bold");
-    doc.text("EASY SMILE DENTAL CLINIC", 50, 20);
+    doc.text("BLESSED SMILE DENTAL CLINIC", 50, 20);
 
     doc.setFontSize(12);
     doc.setFont(undefined, "normal");
@@ -647,7 +647,7 @@ async function generateComprehensiveBillingPDF(procedureData, procedureId) {
       doc.text(`Page ${i} of ${pageCount}`, margin, footerY);
 
       // Center the thank you message
-      const thankYouText = "Thank you for choosing Easy Smile Dental Clinic";
+      const thankYouText = "Thank you for choosing Blessed Smile Dental Clinic";
       const thankYouWidth = doc.getTextWidth(thankYouText);
       const centerX = (pageWidth - thankYouWidth) / 2;
       doc.text(thankYouText, centerX, footerY);
@@ -699,9 +699,9 @@ async function loadLogo() {
 
     // Try multiple logo paths
     const logoPaths = [
-      "/images/favicon.png",
-      "../../../images/favicon.png",
-      "/public/images/favicon.png",
+      "/site-logo.png",
+      "../../../site-logo.png",
+      "/public/site-logo.png",
     ];
 
     function tryNextPath(index = 0) {

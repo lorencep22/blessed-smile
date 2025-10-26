@@ -91,7 +91,7 @@ class ThemeManager {
 
   async init() {
     // Try to load theme from localStorage first for immediate application
-    const savedTheme = localStorage.getItem("easysmile-theme");
+    const savedTheme = localStorage.getItem("blessedsmile-theme");
     if (savedTheme) {
       this.currentTheme = savedTheme;
       // Only apply if not already applied by immediate script
@@ -189,7 +189,7 @@ class ThemeManager {
 
   async saveUserTheme(themeId) {
     // Always save to localStorage for immediate persistence
-    localStorage.setItem("easysmile-theme", themeId);
+    localStorage.setItem("blessedsmile-theme", themeId);
 
     if (!this.currentUserId) return;
 
@@ -219,7 +219,7 @@ class ThemeManager {
       this.applyBodyClasses(theme);
       this.updateThemeSelector();
       // Store in localStorage if not already there
-      localStorage.setItem("easysmile-theme", themeId);
+      localStorage.setItem("blessedsmile-theme", themeId);
 
       // Remove loading overlay since theme is already applied
       if (window._removeThemeLoading) {
@@ -284,7 +284,7 @@ class ThemeManager {
     this.updateThemeSelector();
 
     // Store in localStorage
-    localStorage.setItem("easysmile-theme", themeId);
+    localStorage.setItem("blessedsmile-theme", themeId);
 
     // Remove loading overlay and show content after theme is applied
     if (window._removeThemeLoading) {
@@ -534,7 +534,7 @@ if (!window.themeManager) {
 
 // Also apply theme immediately if we have one saved
 (function () {
-  const savedTheme = localStorage.getItem("easysmile-theme");
+  const savedTheme = localStorage.getItem("blessedsmile-theme");
   if (savedTheme && window.themeManager && window.themeManager.applyTheme) {
     try {
       window.themeManager.applyTheme(savedTheme);

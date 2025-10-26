@@ -408,7 +408,7 @@
 
         // Listen for theme changes from localStorage (from other tabs or pages)
         window.addEventListener('storage', function (e) {
-            if (e.key === 'easysmile-theme' && e.newValue) {
+            if (e.key === 'blessedsmile-theme' && e.newValue) {
                 const newTheme = e.newValue;
                 highlightSelectedTheme(newTheme);
                 updateCurrentThemeDisplay();

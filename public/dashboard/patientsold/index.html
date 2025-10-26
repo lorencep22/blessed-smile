@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Users List</title>
+    <title>Patients List</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="../theme/theme-variables.css" rel="stylesheet">
@@ -36,6 +36,7 @@
 
     <script src="../theme/theme-immediate.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../../toast.js" defer></script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -226,10 +227,9 @@
             max-width: none;
         }
 
-        .add-user-btn {
+        .add-patient-btn {
             width: 100%;
             padding: 0.75rem;
-            margin-top: 0.5rem;
         }
 
         /* Table Responsive Styles */
@@ -297,19 +297,6 @@
             font-size: 0.875rem;
         }
 
-        /* Action buttons responsive layout */
-        .action-buttons {
-            display: flex;
-            gap: 0.25rem;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .action-buttons .btn {
-            flex: 1;
-            min-width: 70px;
-        }
-
         /* Small devices (landscape phones, 576px and up) */
         @media (min-width: 576px) {
             .hide-on-mobile {
@@ -325,13 +312,11 @@
             .header-controls {
                 flex-direction: row;
                 align-items: center;
-                gap: 0.75rem;
             }
 
-            .add-user-btn {
+            .add-patient-btn {
                 width: auto;
-                min-width: 120px;
-                margin-top: 0;
+                min-width: 140px;
             }
 
             .search-container {
@@ -342,16 +327,6 @@
             .responsive-th,
             .responsive-td {
                 padding: 0.75rem;
-            }
-
-            .action-buttons {
-                justify-content: flex-start;
-                gap: 0.5rem;
-            }
-
-            .action-buttons .btn {
-                flex: none;
-                min-width: 80px;
             }
         }
 
@@ -397,7 +372,7 @@
                 flex-direction: row;
             }
 
-            .responsive-form-row .col-12 {
+            .responsive-form-row .col-md-6 {
                 flex: 1;
             }
         }
@@ -500,62 +475,40 @@
                 gap: 1rem;
             }
         }
-
-        /* Responsive table text sizing */
-        .responsive-table td,
-        .responsive-table th {
-            font-size: 0.8rem;
-        }
-
-        @media (min-width: 576px) {
-
-            .responsive-table td,
-            .responsive-table th {
-                font-size: 0.9rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-
-            .responsive-table td,
-            .responsive-table th {
-                font-size: 1rem;
-            }
-        }
     </style>
 </head>
 
-<body style="height: 100%;" id="users-page" class="theme-loading">
+<body style="height: 100%;" id="patients-page" class="theme-loading">
 
     <div class="container mt-4">
         <div class="header-section gap-responsive">
-            <h2 class="header-title">Users</h2>
+            <h2 class="header-title">Patients</h2>
             <div class="header-controls gap-responsive">
                 <div class="input-group search-container">
-                    <input type="text" class="form-control" id="searchUserInput" placeholder="Search by user name..."
-                        list="userNamesDatalist">
-                    <button type="button" class="btn btn-primary btn-responsive" id="searchUserBtn">Search</button>
+                    <input type="text" class="form-control" id="searchPatientInput"
+                        placeholder="Search by patient name..." list="patientNamesDatalist">
+                    <button type="button" class="btn btn-primary btn-responsive" id="searchPatientBtn">Search</button>
                 </div>
-                <button type="button" class="btn btn-primary add-user-btn btn-responsive" data-bs-toggle="modal"
-                    data-bs-target="#userModal">
-                    Add User
+                <button type="button" class="btn btn-primary add-patient-btn btn-responsive" data-bs-toggle="modal"
+                    data-bs-target="#patientModal">
+                    Add Patient
                 </button>
             </div>
         </div>
 
-        <div id="usersList"></div>
+        <div id="patientsList"></div>
 
         <!-- Datalist for search suggestions -->
-        <datalist id="userNamesDatalist">
+        <datalist id="patientNamesDatalist">
             <!-- Options will be populated dynamically by JavaScript -->
         </datalist>
 
         <!-- Modal -->
-        <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+        <div class="modal fade" id="patientModal" tabindex="-1" aria-labelledby="patientModalLabel" aria-hidden="true">
             <div class="modal-dialog responsive-modal">
                 <div class="modal-content responsive-modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="userModalLabel">User Details</h5>
+                        <h5 class="modal-title" id="patientModalLabel">Patient Details</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body" id="modalBody">
@@ -569,72 +522,118 @@
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../../toast.js" defer></script>
     <script src="../../app.js" defer></script>
     <script>
-
-        const usersPage = document.getElementById("users-page");
+        const patientsPage = document.getElementById("patients-page");
         document.addEventListener('DOMContentLoaded', function () {
-            // Generate user form inside modal
+            // Generate patient form inside modal
             const modalBody = document.getElementById('modalBody');
 
             modalBody.innerHTML = `
-                            <form id="addUserForm">
+                            <form id="addPatientForm">
                                 <div class="responsive-form-row">
-                                    <div class="col-12">
+                                    <div class="col-md-6">
                                         <div class="mb-3">
-                                            <label for="fullName" class="form-label">Full Name</label>
-                                            <input type="text" class="form-control" id="fullName" required placeholder="Enter full name">
+                                            <label for="firstName" class="form-label">First Name</label>
+                                            <input type="text" class="form-control" id="firstName" required>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="googleEmail" class="form-label">Google Email</label>
-                                            <input type="email" class="form-control" id="googleEmail" required placeholder="Enter Google email address">
+                                            <label for="middleName" class="form-label">Middle Name</label>
+                                            <input type="text" class="form-control" id="middleName">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="lastName" class="form-label">Last Name</label>
+                                            <input type="text" class="form-control" id="lastName" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="sex" class="form-label">Gender</label>
+                                            <select class="form-select" id="sex" required>
+                                                <option value="">Select</option>
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="contactNo" class="form-label">Contact No.</label>
+                                            <input type="text" class="form-control" id="contactNo" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="email" class="form-label">Email</label>
+                                            <input type="email" class="form-control" id="email" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="address" class="form-label">Address</label>
+                                            <input type="text" class="form-control" id="address">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="birthday" class="form-label">Birthday</label>
+                                            <input type="date" class="form-control" id="birthday">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="occupation" class="form-label">Occupation</label>
+                                            <input type="text" class="form-control" id="occupation">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="civilStatus" class="form-label">Civil Status</label>
+                                            <select class="form-select" id="civilStatus">
+                                                <option value="">Select</option>
+                                                <option value="Single">Single</option>
+                                                <option value="Married">Married</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
-                                <button type="submit" class="btn btn-primary w-100">Add User</button>
+                                <button type="submit" class="btn btn-primary w-100">Submit</button>
                             </form>
                         `;
 
             // Confirmation and submit logic
-            const addUserForm = document.getElementById('addUserForm');
-            addUserForm.onsubmit = function (e) {
+            const addPatientForm = document.getElementById('addPatientForm');
+            addPatientForm.onsubmit = function (e) {
                 e.preventDefault();
-                if (confirm('Are you sure you want to add this new user?')) {
-                    const fullName = document.getElementById('fullName').value.trim();
-                    const googleEmail = document.getElementById('googleEmail').value.trim().toLowerCase();
-
-                    // Validate email format
-                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                    if (!emailRegex.test(googleEmail)) {
-                        showError('Please enter a valid email address.');
-                        return;
+                if (confirm('Are you sure you want to submit this new patient?')) {
+                    function toPascalCase(str) {
+                        return str.replace(/\w+/g, function (word) {
+                            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+                        });
                     }
-
-                    // Check for duplicate user by email (only among users with role 'user')
-                    window.usersCollection
-                        .where('googleEmail', '==', googleEmail)
-                        .where('role', '==', 'user')
+                    const firstNameRaw = document.getElementById('firstName').value.trim();
+                    const middleNameRaw = document.getElementById('middleName').value.trim();
+                    const lastNameRaw = document.getElementById('lastName').value.trim();
+                    const firstName = toPascalCase(firstNameRaw);
+                    const middleName = toPascalCase(middleNameRaw);
+                    const lastName = toPascalCase(lastNameRaw);
+                    // Check for duplicate patient
+                    window.patientDetailsCollection
+                        .where('firstName', '==', firstName)
+                        .where('middleName', '==', middleName)
+                        .where('lastName', '==', lastName)
                         .get()
                         .then(snapshot => {
                             if (!snapshot.empty) {
-                                showError('A user with this email already exists!');
+                                showError('A patient with the same name already exists!');
                                 return;
                             }
-
-                            const user = {
-                                fullName: fullName,
-                                googleEmail: googleEmail,
-                                createdAt: new Date().toISOString(),
-                                role: 'user'
+                            const patient = {
+                                firstName,
+                                middleName,
+                                lastName,
+                                sex: document.getElementById('sex').value,
+                                contactNo: document.getElementById('contactNo').value,
+                                email: document.getElementById('email').value,
+                                address: document.getElementById('address').value,
+                                birthday: document.getElementById('birthday').value,
+                                occupation: document.getElementById('occupation').value,
+                                civilStatus: document.getElementById('civilStatus').value
                             };
-
-                            window.usersCollection.add(user)
+                            window.patientDetailsCollection.add(patient)
                                 .then(() => {
-                                    showSuccess('User added successfully!');
-                                    document.getElementById('addUserForm').reset();
+                                    showSuccess('Patient added successfully!');
+                                    document.getElementById('addPatientForm').reset();
                                     // Hide modal
-                                    const modalEl = document.getElementById('userModal');
+                                    const modalEl = document.getElementById('patientModal');
                                     const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
                                     modal.hide();
                                     // Remove modal backdrop if still present
@@ -643,216 +642,181 @@
                                         document.body.classList.remove('modal-open');
                                         document.body.style.overflow = '';
                                     }, 300);
+                                    // Optionally, reload the page or refresh the patient list
+                                    generatePatientNamesDatalist();
                                     // Dispatch event to update cached data and table
-                                    window.dispatchEvent(new Event('newUserAdded'));
+                                    window.dispatchEvent(new Event('newPatientAdded'));
                                 })
                                 .catch((error) => {
-                                    showError('Error adding user: ' + error);
+                                    showError('Error adding patient: ' + error);
                                 });
-                        })
-                        .catch((error) => {
-                            showError('Error checking for duplicate user: ' + error);
                         });
                 }
             };
 
-            // Render users table after global collections are set
+            // Render patients table after global collections are set
             setTimeout(function () {
-                if (usersPage && window.usersCollection) {
-                    // Try to load cached users from localStorage
-                    let users = [];
-                    const cached = localStorage.getItem('cachedUsers');
+                if (patientsPage && window.patientDetailsCollection) {
+                    // Try to load cached patients from localStorage
+                    let patients = [];
+                    const cached = localStorage.getItem('cachedPatients');
                     if (cached) {
                         try {
-                            users = JSON.parse(cached);
+                            patients = JSON.parse(cached);
                         } catch (e) {
-                            users = [];
+                            patients = [];
                         }
                     }
                     // Pagination variables
                     let currentPage = 1;
                     const pageSize = 10;
-                    const totalPages = Math.ceil(users.length / pageSize);
+                    const totalPages = Math.ceil(patients.length / pageSize);
 
-                    function generateUserNamesDatalist() {
-                        const datalist = document.getElementById('userNamesDatalist');
+                    function generatePatientNamesDatalist() {
+                        const datalist = document.getElementById('patientNamesDatalist');
                         if (!datalist) return;
 
                         datalist.innerHTML = '';
-                        users.forEach(user => {
+                        patients.forEach(patient => {
                             const option = document.createElement('option');
-                            option.value = user.fullName;
+                            option.value = `${patient.firstName} ${patient.middleName} ${patient.lastName}`;
                             datalist.appendChild(option);
                         });
                     }
 
-                    function fetchAndCacheUsers() {
-                        window.usersCollection.where('role', '==', 'user').get().then((snapshot) => {
-                            users = [];
+                    function fetchAndCachePatients() {
+                        window.patientDetailsCollection.get().then((snapshot) => {
+                            patients = [];
                             snapshot.forEach((doc) => {
-                                const user = doc.data();
-                                user.id = doc.id;
-                                users.push(user);
+                                const patient = doc.data();
+                                patient.id = doc.id;
+                                patients.push(patient);
                             });
-                            // Sort users alphabetically by full name
-                            users.sort((a, b) => {
-                                const nameA = a.fullName.toLowerCase();
-                                const nameB = b.fullName.toLowerCase();
+                            // Sort patients alphabetically by full name
+                            patients.sort((a, b) => {
+                                const nameA = `${a.firstName} ${a.middleName} ${a.lastName}`.toLowerCase();
+                                const nameB = `${b.firstName} ${b.middleName} ${b.lastName}`.toLowerCase();
                                 if (nameA < nameB) return -1;
                                 if (nameA > nameB) return 1;
                                 return 0;
                             });
-                            localStorage.setItem('cachedUsers', JSON.stringify(users));
-                            generateUserNamesDatalist();
+                            localStorage.setItem('cachedPatients', JSON.stringify(patients));
+                            generatePatientNamesDatalist();
                             renderTable(currentPage);
                         });
                     }
 
                     // If no cached data, fetch from Firestore and cache
-                    if (!users || users.length === 0) {
-                        fetchAndCacheUsers();
+                    if (!patients || patients.length === 0) {
+                        fetchAndCachePatients();
                     } else {
-                        // Sort cached users alphabetically
-                        users.sort((a, b) => {
-                            const nameA = a.fullName.toLowerCase();
-                            const nameB = b.fullName.toLowerCase();
+                        // Sort cached patients alphabetically
+                        patients.sort((a, b) => {
+                            const nameA = `${a.firstName} ${a.middleName} ${a.lastName}`.toLowerCase();
+                            const nameB = `${b.firstName} ${b.middleName} ${b.lastName}`.toLowerCase();
                             if (nameA < nameB) return -1;
                             if (nameA > nameB) return 1;
                             return 0;
                         });
-                        generateUserNamesDatalist();
+                        generatePatientNamesDatalist();
                         renderTable(currentPage);
                     }
 
-                    function renderTable(page, filteredUsers = null) {
-                        const usersList = document.getElementById("usersList");
-                        usersList.innerHTML = "";
+                    function renderTable(page, filteredPatients = null) {
+                        const patientsList = document.getElementById("patientsList");
+                        patientsList.innerHTML = "";
                         let html = `<div class="responsive-table-container">
                             <table class="table table-bordered table-hover responsive-table">
                   <thead>
                     <tr>
                       <th class="responsive-th">Full Name</th>
-                      <th class="responsive-th hide-on-mobile">Google Email</th>
-                      <th class="responsive-th hide-on-small">Created Date</th>
+                      <th class="responsive-th hide-on-small">Gender</th>
+                      <th class="responsive-th hide-on-mobile">Contact No.</th>
+                      <th class="responsive-th hide-on-small">Email</th>
                       <th class="responsive-th">Actions</th>
                     </tr>
                   </thead>
                   <tbody>`;
-                        const data = filteredUsers || users;
+                        const data = filteredPatients || patients;
                         const start = (page - 1) * pageSize;
                         const end = Math.min(start + pageSize, data.length);
                         for (let i = start; i < end; i++) {
-                            const u = data[i];
-                            const createdDate = u.createdAt ? new Date(u.createdAt).toLocaleDateString() : 'N/A';
+                            const p = data[i];
                             html += `<tr>
-                    <td class="responsive-td">${u.fullName}</td>
-                    <td class="responsive-td hide-on-mobile">${u.googleEmail}</td>
-                    <td class="responsive-td hide-on-small">${createdDate}</td>
-                    <td class="responsive-td">
-                        <div class="action-buttons">
-                            <button class="btn btn-outline-danger btn-sm btn-responsive" onclick="deleteUser('${u.id}', '${u.fullName}')">Delete</button>
-                        </div>
-                    </td>
+                    <td class="responsive-td">${p.firstName} ${p.middleName} ${p.lastName}</td>
+                    <td class="responsive-td hide-on-small">${p.sex}</td>
+                    <td class="responsive-td hide-on-mobile">${p.contactNo}</td>
+                    <td class="responsive-td hide-on-small">${p.email}</td>
+                    <td class="responsive-td"><a class="btn btn-outline-primary btn-sm" target="_blank" href="/dashboard/patients/profile.html?id=${p.id}">View</a></td>
                   </tr>`;
                         }
                         html += `</tbody></table></div>`;
 
                         // Pagination controls (pill-style)
                         const totalFilteredPages = Math.ceil(data.length / pageSize);
-                        html += `<nav aria-label="Users pagination" class="mt-3">
-                                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
-                                        <div class="text-muted text-responsive text-center text-sm-start">
-                                            Showing ${start + 1} to ${end} of ${data.length} users
-                                        </div>
-                                        <ul class="pagination justify-content-center mb-0 gap-responsive" style="flex-wrap: wrap;">`;
+                        html += `<nav aria-label="Patients pagination" class="mt-3">
+                                                            <ul class="pagination justify-content-center" style="gap: 8px;">`;
                         html += `<li class="page-item">
-                                                            <button class="page-link rounded-pill px-3 px-sm-4 btn-responsive" id="prevPageBtn">Prev</button>
+                                                            <button class="page-link rounded-pill px-4" id="prevPageBtn">Prev</button>
                                                         </li>`;
                         html += `<li class="page-item disabled">
-                                                            <span class="page-link rounded-pill bg-primary text-white px-3 px-sm-4 text-responsive" id="pageInfo">Page ${page} of ${totalFilteredPages || 1}</span>
+                                                            <span class="page-link rounded-pill bg-primary text-white px-4" id="pageInfo">Page ${page} of ${totalFilteredPages || 1}</span>
                                                         </li>`;
                         html += `<li class="page-item">
-                                                            <button class="page-link rounded-pill px-3 px-sm-4 btn-responsive" id="nextPageBtn">Next</button>
+                                                            <button class="page-link rounded-pill px-4" id="nextPageBtn">Next</button>
                                                         </li>`;
-                        html += `</ul></div></nav>`;
+                        html += `</ul></nav>`;
 
-                        usersList.innerHTML = html;
+                        patientsList.innerHTML = html;
 
                         // Add click event for pagination pill buttons
-                        const prevBtn = usersList.querySelector("#prevPageBtn");
-                        const nextBtn = usersList.querySelector("#nextPageBtn");
+                        const prevBtn = patientsList.querySelector("#prevPageBtn");
+                        const nextBtn = patientsList.querySelector("#nextPageBtn");
                         prevBtn.disabled = page === 1;
                         nextBtn.disabled = page === totalFilteredPages || totalFilteredPages === 0;
                         prevBtn.onclick = (e) => {
                             e.preventDefault();
-                            if (page > 1) renderTable(page - 1, filteredUsers);
+                            if (page > 1) renderTable(page - 1, filteredPatients);
                         };
                         nextBtn.onclick = (e) => {
                             e.preventDefault();
-                            if (page < totalFilteredPages) renderTable(page + 1, filteredUsers);
+                            if (page < totalFilteredPages) renderTable(page + 1, filteredPatients);
                         };
                     }
 
                     // Search logic
-                    const searchBtn = document.getElementById('searchUserBtn');
-                    const searchInput = document.getElementById('searchUserInput');
+                    const searchBtn = document.getElementById('searchPatientBtn');
+                    const searchInput = document.getElementById('searchPatientInput');
                     if (searchBtn && searchInput) {
-                        function performSearch() {
-                            const searchTerm = searchInput.value.trim().toLowerCase();
-                            if (!searchTerm) {
-                                renderTable(1); // Show all users
+                        searchBtn.addEventListener('click', function () {
+                            const name = searchInput.value.trim();
+                            if (!name) {
+                                showWarning('Please enter or select a patient name.');
+                                searchInput.focus();
                                 return;
                             }
-                            // Filter users by name or email
-                            const filteredUsers = users.filter(u =>
-                                u.fullName.toLowerCase().includes(searchTerm) ||
-                                u.googleEmail.toLowerCase().includes(searchTerm)
-                            );
-                            if (filteredUsers.length === 0) {
-                                showWarning('No users found matching your search.');
+                            // Validate against datalist
+                            const datalist = document.getElementById('patientNamesDatalist');
+                            const matches = datalist ? Array.from(datalist.options).filter(opt => opt.value === name) : [];
+                            if (matches.length === 0) {
+                                showWarning('Please select a valid patient name from the list.');
+                                searchInput.focus();
                                 return;
                             }
-                            renderTable(1, filteredUsers);
-                        }
-
-                        searchBtn.addEventListener('click', performSearch);
-
-                        // Allow search on Enter key
-                        searchInput.addEventListener('keypress', function (e) {
-                            if (e.key === 'Enter') {
-                                performSearch();
+                            // Filter patients by full name
+                            const filteredPatients = patients.filter(p => `${p.firstName} ${p.middleName} ${p.lastName}` === name);
+                            if (filteredPatients.length === 0) {
+                                showError('No patient found with that name.');
+                                return;
                             }
-                        });
-
-                        // Real-time search as user types (debounced)
-                        let searchTimeout;
-                        searchInput.addEventListener('input', function () {
-                            clearTimeout(searchTimeout);
-                            searchTimeout = setTimeout(performSearch, 300);
+                            renderTable(1, filteredPatients);
                         });
                     }
 
-                    // Listen for new user addition to refresh cache
-                    window.addEventListener('newUserAdded', function () {
-                        fetchAndCacheUsers();
+                    // Listen for new patient addition to refresh cache
+                    window.addEventListener('newPatientAdded', function () {
+                        fetchAndCachePatients();
                     });
-
-                    // Delete user function
-                    window.deleteUser = function (userId, userName) {
-                        if (confirm(`Are you sure you want to delete user "${userName}"? This action cannot be undone.`)) {
-                            window.usersCollection.doc(userId).delete()
-                                .then(() => {
-                                    showSuccess('User deleted successfully!');
-                                    // Remove from cache and refresh table
-                                    users = users.filter(u => u.id !== userId);
-                                    localStorage.setItem('cachedUsers', JSON.stringify(users));
-                                    renderTable(currentPage);
-                                })
-                                .catch((error) => {
-                                    showError('Error deleting user: ' + error);
-                                });
-                        }
-                    };
                 }
             }, 200);
         });

@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Patient Profile - Easy Smile Dental Clinic</title>
-    <link rel="icon" href="/images/favicon.png" type="image/x-icon">
+    <title>Patient Profile - Blessed Smile Dental Clinic</title>
+    <link rel="icon" href="/site-logo.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
@@ -16,7 +16,7 @@
     <!-- Critical CSS - Apply theme immediately before any rendering -->
     <script>
         (function () {
-            const savedTheme = localStorage.getItem('easysmile-theme');
+            const savedTheme = localStorage.getItem('blessedsmile-theme');
             if (savedTheme) {
                 const themes = {
                     gold: { bg: 'linear-gradient(135deg, #fff 0%, #ffd700 50%, #fff 100%)', text: '#000', isDark: false },
@@ -82,27 +82,33 @@
                             <h2 class="section-title responsive-subtitle mb-0">Patient Information & Medical History
                             </h2>
                         </div>
-
+                        <div class="btn-group-responsive">
+                            <button class="btn btn-secondary-modern" id="editMedicalRecordBtn" style="display: none;">
+                                <i class="fas fa-edit me-2"></i><span class="hide-on-mobile">Edit Medical
+                                    Record</span><span class="show-on-mobile">Edit</span>
+                            </button>
+                            <button id="saveMedicalRecordBtn"
+                                class="btn btn-modern btn-sm view-procedure-btn btn-gold-gradient"
+                                style="display: none;">
+                                <i class="fas fa-save me-2"></i><span class="hide-on-mobile">Save Changes</span><span
+                                    class="show-on-mobile">Save</span>
+                            </button>
+                            <button class="btn btn-modern" id="addMedicalRecordBtn" style="display: none;">
+                                <i class="fas fa-plus me-2"></i><span class="hide-on-mobile">Add Medical
+                                    Record</span><span class="show-on-mobile">Add</span>
+                            </button>
+                        </div>
                     </div>
                     <div class="section-body">
                         <div class="row g-3 g-md-4">
                             <!-- Patient Information Column -->
                             <div class="col-12 col-lg-5 mb-4 mb-lg-0">
                                 <div class="patient-info-section card-responsive">
-                                    <div class="d-flex align-items-center justify-content-between mb-3"
-                                        style="gap: 1rem;">
-                                        <h4 class="responsive-subtitle mb-0"
-                                            style="color: var(--theme-accent, #ffd700); font-weight: 700;">
-                                            <i class="fas fa-user me-2"></i><span class="section-subtitle">Patient
-                                                Information</span>
-                                        </h4>
-                                        <button class="btn btn-modern btn-gold-gradient"
-                                            style="border-radius: 12px; box-shadow: 0 2px 8px #ffd70044; font-weight: 600; color: #1e293b; padding: 0.5rem 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
-                                            <i class="fas fa-edit"></i>
-                                            <span class="hide-on-mobile">Edit</span>
-                                            <span class="show-on-mobile">Edit</span>
-                                        </button>
-                                    </div>
+                                    <h4 class="mb-3 responsive-subtitle"
+                                        style="color: var(--theme-accent, #ffd700); font-weight: 700;">
+                                        <i class="fas fa-user me-2"></i><span class="section-subtitle">Patient
+                                            Information</span>
+                                    </h4>
                                     <div id="patientDetails" class="responsive-padding">
                                         <!-- Patient details will be rendered here by JS -->
                                     </div>
@@ -112,576 +118,576 @@
                             <!-- Medical Record Column -->
                             <div class="col-12 col-lg-7">
                                 <div class="medical-record-section card-responsive">
-                                    <div class="d-flex align-items-center justify-content-between mb-3"
-                                        style="gap: 1rem;">
-                                        <h4 class="responsive-subtitle mb-0"
-                                            style="color: var(--theme-accent, #ffd700); font-weight: 700;">
-                                            <i class="fas fa-file-medical me-2"></i><span
-                                                class="section-subtitle">Medical-Dental History</span>
-                                        </h4>
-                                        <div class="d-flex flex-row gap-2">
-                                            <button class="btn  btn-modern btn-sm view-procedure-btn btn-gold-gradient"
-                                                id="editMedicalRecordBtn"
-                                                style="width: 100px; font-size: 16px; border-radius: 12px; box-shadow: 0 2px 8px #ffd70044; font-weight: 600; color: #1e293b; padding: 0.5rem 1.5rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
-                                                <i class="fas fa-edit me-1"></i>
-                                                <span class="hide-on-mobile">Edit</span>
-                                                <span class="show-on-mobile">Edit</span>
-                                            </button>
-                                            <button id="saveMedicalRecordBtn"
-                                                class="btn btn-modern btn-sm view-procedure-btn btn-gold-gradient"
-                                                style="width: 100px; font-size: 16px; border-radius: 12px; box-shadow: 0 2px 8px #ffd70044; font-weight: 600; color: #1e293b; padding: 0.5rem 1.5rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
-                                                <i class="fas fa-save me-1"></i><span
-                                                    class="hide-on-mobile">Save</span><span
-                                                    class="show-on-mobile">Save</span>
-                                            </button>
+                                    <h4 class="mb-3 responsive-subtitle"
+                                        style="color: var(--theme-accent, #ffd700); font-weight: 700;">
+                                        <i class="fas fa-file-medical me-2"></i><span
+                                            class="section-subtitle">Medical-Dental History</span>
+                                    </h4>
+                                    <div id="medicalRecordStatus" class="mb-3"></div>
+                                    <form id="medicalRecordForm" class="medical-record-form responsive-form">
+                                        <div class="row g-3 g-md-4">
+                                            <div class="col-12 col-md-6">
+                                                <div class="form-group responsive-form-group">
+                                                    <label class="form-label responsive-label">1. Are you presently
+                                                        under physician's
+                                                        care?</label>
+                                                    <div class="radio-group responsive-radio-group">
+                                                        <label class="form-check responsive-check">
+                                                            <input class="form-check-input" type="radio"
+                                                                name="physicianCare" id="physicianYes" value="Yes">
+                                                            <span class="form-check-label">YES</span>
+                                                        </label>
+                                                        <label class="form-check responsive-check">
+                                                            <input class="form-check-input" type="radio"
+                                                                name="physicianCare" id="physicianNo" value="No">
+                                                            <span class="form-check-label">NO</span>
+                                                        </label>
+                                                    </div>
 
-                                            <button class="btn btn-modern btn-sm" id="addMedicalRecordBtn"
-                                                style="width: 100px; font-size: 16px; border-radius: 12px; box-shadow: 0 2px 8px #ffd70044; font-weight: 600; color: #1e293b; padding: 0.5rem 1.5rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
-                                                <i class="fas fa-plus me-1"></i><span
-                                                    class="hide-on-mobile">Add</span><span
-                                                    class="show-on-mobile">Add</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div id="medicalRecordStatus" class="mb-3"></div>
-                                <form id="medicalRecordForm" class="medical-record-form responsive-form">
-                                    <div class="row g-3 g-md-4">
-                                        <div class="col-12 col-md-6">
-                                            <div class="form-group responsive-form-group">
-                                                <label class="form-label responsive-label">1. Are you presently
-                                                    under physician's
-                                                    care?</label>
-                                                <div class="radio-group responsive-radio-group">
-                                                    <label class="form-check responsive-check">
-                                                        <input class="form-check-input" type="radio"
-                                                            name="physicianCare" id="physicianYes" value="Yes">
-                                                        <span class="form-check-label">YES</span>
-                                                    </label>
-                                                    <label class="form-check responsive-check">
-                                                        <input class="form-check-input" type="radio"
-                                                            name="physicianCare" id="physicianNo" value="No">
-                                                        <span class="form-check-label">NO</span>
-                                                    </label>
-                                                </div>
-
-                                                <div id="physicianWhoField" class="mt-3 responsive-input-field"
-                                                    style="display:none;">
-                                                    <label for="physicianWho"
-                                                        class="form-label responsive-label">Who?</label>
-                                                    <input type="text" class="form-control responsive-input"
-                                                        id="physicianWho" name="physicianWho"
-                                                        placeholder="Who is your physician?">
+                                                    <div id="physicianWhoField" class="mt-3 responsive-input-field"
+                                                        style="display:none;">
+                                                        <label for="physicianWho"
+                                                            class="form-label responsive-label">Who?</label>
+                                                        <input type="text" class="form-control responsive-input"
+                                                            id="physicianWho" name="physicianWho"
+                                                            placeholder="Who is your physician?">
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="col-12 col-md-6">
-                                            <div class="form-group responsive-form-group">
-                                                <label class="form-label responsive-label">2. Are you
-                                                    pregnant?</label>
-                                                <div class="radio-group responsive-radio-group">
-                                                    <label class="form-check responsive-check">
-                                                        <input class="form-check-input" type="radio" name="pregnant"
-                                                            id="pregnantYes" value="Yes">
-                                                        <span class="form-check-label">YES</span>
-                                                    </label>
-                                                    <label class="form-check responsive-check">
-                                                        <input class="form-check-input" type="radio" name="pregnant"
-                                                            id="pregnantNo" value="No">
-                                                        <span class="form-check-label">NO</span>
-                                                    </label>
+                                            <div class="col-12 col-md-6">
+                                                <div class="form-group responsive-form-group">
+                                                    <label class="form-label responsive-label">2. Are you
+                                                        pregnant?</label>
+                                                    <div class="radio-group responsive-radio-group">
+                                                        <label class="form-check responsive-check">
+                                                            <input class="form-check-input" type="radio" name="pregnant"
+                                                                id="pregnantYes" value="Yes">
+                                                            <span class="form-check-label">YES</span>
+                                                        </label>
+                                                        <label class="form-check responsive-check">
+                                                            <input class="form-check-input" type="radio" name="pregnant"
+                                                                id="pregnantNo" value="No">
+                                                            <span class="form-check-label">NO</span>
+                                                        </label>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="col-12 col-md-6">
-                                            <div class="form-group responsive-form-group">
-                                                <label class="form-label responsive-label">3. Are you taking any
-                                                    medicine at
-                                                    present?</label>
-                                                <div class="radio-group responsive-radio-group">
-                                                    <label class="form-check responsive-check">
-                                                        <input class="form-check-input" type="radio" name="medicine"
-                                                            id="medicineYes" value="Yes">
-                                                        <span class="form-check-label">YES</span>
-                                                    </label>
-                                                    <label class="form-check responsive-check">
-                                                        <input class="form-check-input" type="radio" name="medicine"
-                                                            id="medicineNo" value="No">
-                                                        <span class="form-check-label">NO</span>
-                                                    </label>
+                                            <div class="col-12 col-md-6">
+                                                <div class="form-group responsive-form-group">
+                                                    <label class="form-label responsive-label">3. Are you taking any
+                                                        medicine at
+                                                        present?</label>
+                                                    <div class="radio-group responsive-radio-group">
+                                                        <label class="form-check responsive-check">
+                                                            <input class="form-check-input" type="radio" name="medicine"
+                                                                id="medicineYes" value="Yes">
+                                                            <span class="form-check-label">YES</span>
+                                                        </label>
+                                                        <label class="form-check responsive-check">
+                                                            <input class="form-check-input" type="radio" name="medicine"
+                                                                id="medicineNo" value="No">
+                                                            <span class="form-check-label">NO</span>
+                                                        </label>
+                                                    </div>
+                                                    <div id="medicineDetailsField" class="mt-3 responsive-input-field"
+                                                        style="display:none;">
+                                                        <label for="medicineDetails"
+                                                            class="form-label responsive-label">Please specify
+                                                            the medicine:</label>
+                                                        <input type="text" class="form-control responsive-input"
+                                                            id="medicineDetails" name="medicineDetails"
+                                                            placeholder="Enter medicine name(s)">
+                                                    </div>
                                                 </div>
-                                                <div id="medicineDetailsField" class="mt-3 responsive-input-field"
-                                                    style="display:none;">
-                                                    <label for="medicineDetails"
-                                                        class="form-label responsive-label">Please specify
-                                                        the medicine:</label>
-                                                    <input type="text" class="form-control responsive-input"
-                                                        id="medicineDetails" name="medicineDetails"
-                                                        placeholder="Enter medicine name(s)">
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">4. Have you ever had?</label>
+                                                    <div class="checkbox-grid">
+                                                        <label class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="history[]" id="highBP"
+                                                                value="High Blood Pressure">
+                                                            <span class="form-check-label">High Blood Pressure</span>
+                                                        </label>
+                                                        <label class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="history[]" id="lowBP" value="Low Blood Pressure">
+                                                            <span class="form-check-label">Low Blood Pressure</span>
+                                                        </label>
+                                                        <label class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="history[]" id="asthma" value="Asthma">
+                                                            <span class="form-check-label">Asthma</span>
+                                                        </label>
+                                                        <label class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="history[]" id="lungDisease" value="Lung Disease">
+                                                            <span class="form-check-label">Lung Disease</span>
+                                                        </label>
+                                                        <label class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="history[]" id="tuberculosis" value="Tuberculosis">
+                                                            <span class="form-check-label">Tuberculosis</span>
+                                                        </label>
+                                                        <label class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="history[]" id="thyroid" value="Thyroid Problem">
+                                                            <span class="form-check-label">Thyroid Problem</span>
+                                                        </label>
+                                                        <label class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="history[]" id="heartDisease"
+                                                                value="Heart Disease">
+                                                            <span class="form-check-label">Heart Disease</span>
+                                                        </label>
+                                                        <label class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="history[]" id="diabetes" value="Diabetes">
+                                                            <span class="form-check-label">Diabetes</span>
+                                                        </label>
+                                                        <label class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="history[]" id="bleeding"
+                                                                value="Bleeding Problems">
+                                                            <span class="form-check-label">Bleeding Problems</span>
+                                                        </label>
+                                                        <label class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="history[]" id="aids"
+                                                                value="AIDS or HIV Infection">
+                                                            <span class="form-check-label" for="aids">AIDS or HIV
+                                                                Infection</span>
+                                                        </label>
+                                                        <label class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="history[]" id="hepatitis" value="Hepatitis">
+                                                            <span class="form-check-label"
+                                                                for="hepatitis">Hepatitis</span>
+                                                        </label>
+                                                        <label class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="history[]" id="others" value="Others">
+                                                            <span class="form-check-label" for="others">Others:</span>
+                                                            <input type="text" class="form-control mt-2"
+                                                                name="otherHistory" id="otherHistoryInput"
+                                                                placeholder="Specify" disabled>
+                                                        </label>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-12">
                                             <div class="form-group">
-                                                <label class="form-label">4. Have you ever had?</label>
-                                                <div class="checkbox-grid">
-                                                    <label class="form-check">
-                                                        <input class="form-check-input" type="checkbox" name="history[]"
-                                                            id="highBP" value="High Blood Pressure">
-                                                        <span class="form-check-label">High Blood Pressure</span>
-                                                    </label>
-                                                    <label class="form-check">
-                                                        <input class="form-check-input" type="checkbox" name="history[]"
-                                                            id="lowBP" value="Low Blood Pressure">
-                                                        <span class="form-check-label">Low Blood Pressure</span>
-                                                    </label>
-                                                    <label class="form-check">
-                                                        <input class="form-check-input" type="checkbox" name="history[]"
-                                                            id="asthma" value="Asthma">
-                                                        <span class="form-check-label">Asthma</span>
-                                                    </label>
-                                                    <label class="form-check">
-                                                        <input class="form-check-input" type="checkbox" name="history[]"
-                                                            id="lungDisease" value="Lung Disease">
-                                                        <span class="form-check-label">Lung Disease</span>
-                                                    </label>
-                                                    <label class="form-check">
-                                                        <input class="form-check-input" type="checkbox" name="history[]"
-                                                            id="tuberculosis" value="Tuberculosis">
-                                                        <span class="form-check-label">Tuberculosis</span>
-                                                    </label>
-                                                    <label class="form-check">
-                                                        <input class="form-check-input" type="checkbox" name="history[]"
-                                                            id="thyroid" value="Thyroid Problem">
-                                                        <span class="form-check-label">Thyroid Problem</span>
-                                                    </label>
-                                                    <label class="form-check">
-                                                        <input class="form-check-input" type="checkbox" name="history[]"
-                                                            id="heartDisease" value="Heart Disease">
-                                                        <span class="form-check-label">Heart Disease</span>
-                                                    </label>
-                                                    <label class="form-check">
-                                                        <input class="form-check-input" type="checkbox" name="history[]"
-                                                            id="diabetes" value="Diabetes">
-                                                        <span class="form-check-label">Diabetes</span>
-                                                    </label>
-                                                    <label class="form-check">
-                                                        <input class="form-check-input" type="checkbox" name="history[]"
-                                                            id="bleeding" value="Bleeding Problems">
-                                                        <span class="form-check-label">Bleeding Problems</span>
-                                                    </label>
-                                                    <label class="form-check">
-                                                        <input class="form-check-input" type="checkbox" name="history[]"
-                                                            id="aids" value="AIDS or HIV Infection">
-                                                        <span class="form-check-label" for="aids">AIDS or HIV
-                                                            Infection</span>
-                                                    </label>
-                                                    <label class="form-check">
-                                                        <input class="form-check-input" type="checkbox" name="history[]"
-                                                            id="hepatitis" value="Hepatitis">
-                                                        <span class="form-check-label" for="hepatitis">Hepatitis</span>
-                                                    </label>
-                                                    <label class="form-check">
-                                                        <input class="form-check-input" type="checkbox" name="history[]"
-                                                            id="others" value="Others">
-                                                        <span class="form-check-label" for="others">Others:</span>
-                                                        <input type="text" class="form-control mt-2" name="otherHistory"
-                                                            id="otherHistoryInput" placeholder="Specify" disabled>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-12">
-                                        <div class="form-group">
-                                            <label class="form-label">5. Have you ever had allergic reaction
-                                                to?</label>
-                                            <div class="row g-4">
-                                                <div class="col-md-6">
-                                                    <label class="form-label">a. Local Anesthesia</label>
-                                                    <div class="radio-group">
-                                                        <label class="form-check">
-                                                            <input class="form-check-input" type="radio"
-                                                                name="allergyAnesthesia" id="anesthesiaYes" value="Yes">
-                                                            <span class="form-check-label"
-                                                                for="anesthesiaYes">YES</span>
-                                                        </label>
-                                                        <label class="form-check">
-                                                            <input class="form-check-input" type="radio"
-                                                                name="allergyAnesthesia" id="anesthesiaNo" value="No">
-                                                            <span class="form-check-label" for="anesthesiaNo">NO</span>
-                                                        </label>
+                                                <label class="form-label">5. Have you ever had allergic reaction
+                                                    to?</label>
+                                                <div class="row g-4">
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">a. Local Anesthesia</label>
+                                                        <div class="radio-group">
+                                                            <label class="form-check">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="allergyAnesthesia" id="anesthesiaYes"
+                                                                    value="Yes">
+                                                                <span class="form-check-label"
+                                                                    for="anesthesiaYes">YES</span>
+                                                            </label>
+                                                            <label class="form-check">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="allergyAnesthesia" id="anesthesiaNo"
+                                                                    value="No">
+                                                                <span class="form-check-label"
+                                                                    for="anesthesiaNo">NO</span>
+                                                            </label>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <label class="form-label">b. Antibiotics</label>
-                                                    <div class="radio-group">
-                                                        <label class="form-check">
-                                                            <input class="form-check-input" type="radio"
-                                                                name="allergyAntibiotics" id="antibioticsYes"
-                                                                value="Yes">
-                                                            <span class="form-check-label"
-                                                                for="antibioticsYes">YES</span>
-                                                        </label>
-                                                        <label class="form-check">
-                                                            <input class="form-check-input" type="radio"
-                                                                name="allergyAntibiotics" id="antibioticsNo" value="No">
-                                                            <span class="form-check-label" for="antibioticsNo">NO</span>
-                                                        </label>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">b. Antibiotics</label>
+                                                        <div class="radio-group">
+                                                            <label class="form-check">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="allergyAntibiotics" id="antibioticsYes"
+                                                                    value="Yes">
+                                                                <span class="form-check-label"
+                                                                    for="antibioticsYes">YES</span>
+                                                            </label>
+                                                            <label class="form-check">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="allergyAntibiotics" id="antibioticsNo"
+                                                                    value="No">
+                                                                <span class="form-check-label"
+                                                                    for="antibioticsNo">NO</span>
+                                                            </label>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <label class="form-label">c. Pain Killer</label>
-                                                    <div class="radio-group">
-                                                        <label class="form-check">
-                                                            <input class="form-check-input" type="radio"
-                                                                name="allergyPainKiller" id="painKillerYes" value="Yes">
-                                                            <span class="form-check-label"
-                                                                for="painKillerYes">YES</span>
-                                                        </label>
-                                                        <label class="form-check">
-                                                            <input class="form-check-input" type="radio"
-                                                                name="allergyPainKiller" id="painKillerNo" value="No">
-                                                            <span class="form-check-label" for="painKillerNo">NO</span>
-                                                        </label>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">c. Pain Killer</label>
+                                                        <div class="radio-group">
+                                                            <label class="form-check">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="allergyPainKiller" id="painKillerYes"
+                                                                    value="Yes">
+                                                                <span class="form-check-label"
+                                                                    for="painKillerYes">YES</span>
+                                                            </label>
+                                                            <label class="form-check">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="allergyPainKiller" id="painKillerNo"
+                                                                    value="No">
+                                                                <span class="form-check-label"
+                                                                    for="painKillerNo">NO</span>
+                                                            </label>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <label class="form-label">d. Others</label>
-                                                    <div class="radio-group">
-                                                        <label class="form-check">
-                                                            <input class="form-check-input" type="radio"
-                                                                name="allergyOthers" id="allergyOthersYes" value="Yes">
-                                                            <span class="form-check-label"
-                                                                for="allergyOthersYes">YES</span>
-                                                        </label>
-                                                        <label class="form-check">
-                                                            <input class="form-check-input" type="radio"
-                                                                name="allergyOthers" id="allergyOthersNo" value="No">
-                                                            <span class="form-check-label"
-                                                                for="allergyOthersNo">NO</span>
-                                                        </label>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">d. Others</label>
+                                                        <div class="radio-group">
+                                                            <label class="form-check">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="allergyOthers" id="allergyOthersYes"
+                                                                    value="Yes">
+                                                                <span class="form-check-label"
+                                                                    for="allergyOthersYes">YES</span>
+                                                            </label>
+                                                            <label class="form-check">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="allergyOthers" id="allergyOthersNo"
+                                                                    value="No">
+                                                                <span class="form-check-label"
+                                                                    for="allergyOthersNo">NO</span>
+                                                            </label>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="row g-4">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="form-label">6. Have you been hospitalized?</label>
-                                                <div class="radio-group">
-                                                    <label class="form-check">
-                                                        <input class="form-check-input" type="radio" name="hospitalized"
-                                                            id="hospitalizedYes" value="Yes">
-                                                        <span class="form-check-label" for="hospitalizedYes">YES</span>
-                                                    </label>
-                                                    <label class="form-check">
-                                                        <input class="form-check-input" type="radio" name="hospitalized"
-                                                            id="hospitalizedNo" value="No">
-                                                        <span class="form-check-label" for="hospitalizedNo">NO</span>
-                                                    </label>
-                                                </div>
-                                                <div id="hospitalizedFields" class="mt-3 responsive-input-field"
-                                                    style="display:none;">
-                                                    <label for="hospitalizedWhen"
-                                                        class="form-label responsive-label">When?</label>
-                                                    <input type="date" class="form-control responsive-input"
-                                                        id="hospitalizedWhen" name="hospitalizedWhen"
-                                                        placeholder="Date of hospitalization">
-                                                    <label for="hospitalizedWhy"
-                                                        class="form-label responsive-label mt-2">Why?</label>
-                                                    <input type="text" class="form-control responsive-input"
-                                                        id="hospitalizedWhy" name="hospitalizedWhy"
-                                                        placeholder="Reason for hospitalization">
+                                        <div class="row g-4">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="form-label">6. Have you been hospitalized?</label>
+                                                    <div class="radio-group">
+                                                        <label class="form-check">
+                                                            <input class="form-check-input" type="radio"
+                                                                name="hospitalized" id="hospitalizedYes" value="Yes">
+                                                            <span class="form-check-label"
+                                                                for="hospitalizedYes">YES</span>
+                                                        </label>
+                                                        <label class="form-check">
+                                                            <input class="form-check-input" type="radio"
+                                                                name="hospitalized" id="hospitalizedNo" value="No">
+                                                            <span class="form-check-label"
+                                                                for="hospitalizedNo">NO</span>
+                                                        </label>
+                                                    </div>
+                                                    <div id="hospitalizedFields" class="mt-3 responsive-input-field"
+                                                        style="display:none;">
+                                                        <label for="hospitalizedWhen"
+                                                            class="form-label responsive-label">When?</label>
+                                                        <input type="date" class="form-control responsive-input"
+                                                            id="hospitalizedWhen" name="hospitalizedWhen"
+                                                            placeholder="Date of hospitalization">
+                                                        <label for="hospitalizedWhy"
+                                                            class="form-label responsive-label mt-2">Why?</label>
+                                                        <input type="text" class="form-control responsive-input"
+                                                            id="hospitalizedWhy" name="hospitalizedWhy"
+                                                            placeholder="Reason for hospitalization">
+                                                    </div>
                                                 </div>
                                             </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="form-label">7. Have you worn any type of
+                                                        denture?</label>
+                                                    <div class="radio-group">
+                                                        <label class="form-check">
+                                                            <input class="form-check-input" type="radio" name="denture"
+                                                                id="dentureYes" value="Yes">
+                                                            <span class="form-check-label" for="dentureYes">YES</span>
+                                                        </label>
+                                                        <label class="form-check">
+                                                            <input class="form-check-input" type="radio" name="denture"
+                                                                id="dentureNo" value="No">
+                                                            <span class="form-check-label" for="dentureNo">NO</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label class="form-label">7. Have you worn any type of
-                                                    denture?</label>
-                                                <div class="radio-group">
-                                                    <label class="form-check">
-                                                        <input class="form-check-input" type="radio" name="denture"
-                                                            id="dentureYes" value="Yes">
-                                                        <span class="form-check-label" for="dentureYes">YES</span>
-                                                    </label>
-                                                    <label class="form-check">
-                                                        <input class="form-check-input" type="radio" name="denture"
-                                                            id="dentureNo" value="No">
-                                                        <span class="form-check-label" for="dentureNo">NO</span>
-                                                    </label>
+                                                <label class="form-label">8. When was your last dental check-up?</label>
+                                                <div class="mb-2">
+                                                    <label for="lastCheckupDate" class="form-label">Date</label>
+                                                    <input class="form-control" type="date" name="lastCheckupDate"
+                                                        id="lastCheckupDate">
+                                                </div>
+                                                <div>
+                                                    <label for="lastCheckupReason" class="form-label">why?</label>
+                                                    <textarea class="form-control" name="lastCheckupReason"
+                                                        id="lastCheckupReason" rows="2"
+                                                        placeholder="Reason for delay or missed check-up"></textarea>
                                                 </div>
                                             </div>
                                         </div>
-
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label class="form-label">8. When was your last dental check-up?</label>
-                                            <div class="mb-2">
-                                                <label for="lastCheckupDate" class="form-label">Date</label>
-                                                <input class="form-control" type="date" name="lastCheckupDate"
-                                                    id="lastCheckupDate">
-                                            </div>
-                                            <div>
-                                                <label for="lastCheckupReason" class="form-label">why?</label>
-                                                <textarea class="form-control" name="lastCheckupReason"
-                                                    id="lastCheckupReason" rows="2"
-                                                    placeholder="Reason for delay or missed check-up"></textarea>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                            </div>
-
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- New Procedures Section -->
-        <div class="section-card">
-            <div class="section-header flex-wrap">
-                <div class="d-flex align-items-center flex-grow-1 mb-2 mb-lg-0">
-                    <div class="section-icon me-3">
-                        <i class="fas fa-notes-medical"></i>
-                    </div>
-                    <h2 class="section-title responsive-subtitle mb-0">New Procedures</h2>
-                </div>
-                <div class="responsive-button-group">
-                    <button class="btn btn-modern btn-sm view-procedure-btn btn-gold-gradient" id="addProcedureBtn">
-                        <i class="fas fa-plus me-2"></i><span class="hide-on-mobile ">Add
-                            Procedure</span><span class="show-on-mobile">Add Procedure</span>
-                    </button>
-                    <button class="btn btn-modern btn-sm view-procedure-btn btn-gold-gradient" id="editProcedureBtn"
-                        style="display: none;">
-                        <i class="fas fa-edit me-2"></i><span class="hide-on-mobile">Edit</span>
-                    </button>
-                    <button class="btn btn-modern btn-sm view-procedure-btn btn-gold-gradient" id="updateProcedureBtn"
-                        style="display: none;">
-                        <i class="fas fa-save me-2"></i><span class="hide-on-mobile">Update & Print</span><span
-                            class="show-on-mobile">Update</span>
-                    </button>
-                    <button class="btn btn-modern btn-sm btn-secondary" id="closeProcedureBtn" style="display: none;">
-                        <i class="fas fa-times me-2"></i><span class="hide-on-mobile">Close</span>
-                    </button>
-                </div>
-            </div>
-            <div id="procedureBody" class="section-body" style="display: none;">
-                <div class="procedure-main-container">
-                    <div class="procedure-flex-layout">
-                        <div class="procedure-form-wrapper">
-                            <div id="procedureFormContainer" class="card-responsive">
-                                <h1 class="mb-4 responsive-title">Patient Procedure</h1>
-                                <form id="addProcedureForm" class="responsive-form">
-                                    <div class="procedure-form-layout">
-                                        <div class="procedure-form-column">
-                                            <div class="mb-3 responsive-form-group">
-                                                <label for="procedure"
-                                                    class="form-label responsive-label">Procedure</label>
-                                                <input type="text" class="form-control responsive-input" id="procedure"
-                                                    name="procedure" required list="procedureDatalist"
-                                                    placeholder="Type or select a procedure">
-                                                <datalist id="procedureDatalist">
-                                                    <!-- Surgical Procedures -->
-                                                    <option value="Frenectomy (lip or tongue tie release)"></option>
-                                                    <option value="Biopsy of oral lesions"></option>
-                                                    <option value="Cyst or tumor removal"></option>
-                                                    <option value="Corrective jaw surgery (orthognathic surgery)">
-                                                    </option>
-
-                                                    <!-- Orthodontic Procedures -->
-                                                    <option value="Braces (metal, ceramic, lingual)"></option>
-                                                    <option value="Clear aligners (e.g., Invisalign)"></option>
-                                                    <option value="Space maintainers (for children)"></option>
-                                                    <option value="Retainers (post-braces)"></option>
-                                                    <option value="Interceptive orthodontics (for early correction)">
-                                                    </option>
-
-                                                    <!-- Cosmetic Dentistry -->
-                                                    <option value="Teeth whitening (in-office or take-home)">
-                                                    </option>
-                                                    <option value="Veneers (porcelain or composite)"></option>
-                                                    <option value="Smile makeovers"></option>
-                                                    <option value="Gum contouring (reshaping gum line)"></option>
-                                                    <option value="Composite bonding for aesthetic improvement">
-                                                    </option>
-
-                                                    <!-- Prosthodontics / Full Mouth Rehabilitation -->
-                                                    <option value="Full-mouth reconstructions"></option>
-                                                    <option value="Implant-supported dentures or bridges"></option>
-                                                    <option value="Occlusal adjustments and bite rehabilitation">
-                                                    </option>
-
-                                                    <!-- Emergency Dental Care -->
-                                                    <option
-                                                        value="Treatment for dental trauma (fractured or knocked-out teeth)">
-                                                    </option>
-                                                    <option value="Pain management (infections, abscesses)">
-                                                    </option>
-                                                    <option value="Temporary restorations"></option>
-                                                    <option value="Draining oral infections or abscesses"></option>
-                                                </datalist>
-                                            </div>
-                                            <div class="mb-2">
-                                                <label for="doctor" class="form-label">Doctor</label>
-                                                <input itemid="doctorList" type="text" class="form-control" id="doctor"
-                                                    name="doctor" required list="doctorNamesDatalist">
-                                            </div>
-                                            <div class="mb-2">
-                                                <label for="date" class="form-label">Date</label>
-                                                <input type="date" class="form-control" id="date" name="date" required
-                                                    max="">
-
-                                            </div>
-                                            <div class="mb-2">
-                                                <label for="remarks" class="form-label">Remarks</label>
-                                                <textarea class="form-control" id="remarks" name="remarks" rows="3"
-                                                    required></textarea>
-                                            </div>
-                                            <div class="mb-2">
-
-
-                                                <div class="col-12">
-                                                    <div class="form-group">
-                                                        <label for="totalBill">Total Bill</label>
-                                                        <div class="input-group">
-                                                            <span class="input-group-text" id="peso-addon"><i
-                                                                    class="fa fa-peso-sign"></i></span>
-                                                            <input type="text" class="form-control" id="totalBill"
-                                                                required placeholder="Enter total bill" min="1"
-                                                                aria-describedby="peso-addon">
-                                                        </div>
-                                                        <label for="procedureAmount">Amount Paid</label>
-                                                        <div class="input-group">
-                                                            <span class="input-group-text" id="peso-addon"><i
-                                                                    class="fa fa-peso-sign"></i></span>
-                                                            <input type="text" class="form-control" id="procedureAmount"
-                                                                required placeholder="Enter amount" min="1"
-                                                                aria-describedby="peso-addon">
-                                                        </div>
-                                                        <label for="procedureBalance">Balance Amount</label>
-                                                        <div class="input-group">
-                                                            <span class="input-group-text" id="peso-addon"><i
-                                                                    class="fa fa-peso-sign"></i></span>
-                                                            <input type="text" class="form-control"
-                                                                id="procedureBalance" placeholder="Enter balance"
-                                                                min="0" aria-describedby="peso-addon" disabled>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-12">
-                                                    <button type="submit" id="addProcedureSubmitBtn"
-                                                        class="btn btn-modern btn-sm view-procedure-btn btn-gold-gradient">Save
-                                                        & Print</button>
-                                                </div>
-
-                                                <!-- Teeth Summary Section -->
-                                                <div class="col-12 mt-3">
-                                                    <div id="teethSummary" class="alert alert-light"
-                                                        style="display: none;">
-                                                        <strong>Affected Teeth:</strong>
-                                                        <div id="teethSummaryContent" class="mt-2"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                </div>
+                                <div class="text-end mt-4" id="saveMedicalRecordContainer" style="display: none;">
+                                    <button type="submit" id="saveMedicalRecordBtn"
+                                        class="btn btn-modern btn-sm view-procedure-btn btn-gold-gradient">
+                                        <i class="fas fa-save me-2"></i>Save Medical Record
+                                    </button>
+                                </div>
                                 </form>
                             </div>
-
-                        </div>
-
-                        <div class="teeth-chart-wrapper">
-                            <div id="teethChartContainer" class="teeth-chart-responsive">
-                                <div class="chart-wrapper">
-                                    <div class="chart-header responsive-flex-center mb-4">
-                                        <h2 class="responsive-subtitle mb-0">INTRAORAL EXAMINATION</h2>
-                                        <button type="button" class="btn btn-outline-info btn-sm responsive-help-btn"
-                                            data-bs-toggle="modal" data-bs-target="#instructionsModal">
-                                            <i class="fas fa-question"></i>
-                                        </button>
-                                    </div>
-
-                                    <!-- Top Primary -->
-                                    <div class="chart-row">
-                                        <div class="left-label">TEMPORARY<br>TEETH</div>
-                                        <div class="left-label">STATUS<br>RIGHT</div>
-                                        <div id="row-topPrimary"></div>
-                                        <div class="left-label">STATUS<br>LEFT</div>
-                                    </div>
-
-                                    <!-- Top Permanent -->
-                                    <div class="chart-row">
-                                        <div class="left-label">PERMANENT<br>TEETH</div>
-                                        <div class="left-label">STATUS<br>RIGHT</div>
-                                        <div id="row-topPermanent"></div>
-                                        <div class="left-label">STATUS<br>LEFT</div>
-                                    </div>
-
-                                    <!-- Bottom Permanent -->
-                                    <div class="chart-row">
-                                        <div class="left-label">PERMANENT<br>TEETH</div>
-                                        <div class="left-label">STATUS<br>RIGHT</div>
-                                        <div id="row-bottomPermanent"></div>
-                                        <div class="left-label">STATUS<br>LEFT</div>
-                                    </div>
-
-                                    <!-- Bottom Primary -->
-                                    <div class="chart-row">
-                                        <div class="left-label">TEMPORARY<br>TEETH</div>
-                                        <div class="left-label">STATUS<br>RIGHT</div>
-                                        <div id="row-bottomPrimary"></div>
-                                        <div class="left-label">STATUS<br>LEFT</div>
-                                    </div>
-                                </div>
-
-                                <!-- Legend Here -->
-                                <div class="legend-container hide-on-tablet-mobile"
-                                    style="width: 100%; display: flex; justify-content: center;">
-
-                                    <div
-                                        style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-                                        <div class="legend-title"
-                                            style="font-size: 15px; font-weight: bold; margin-top: 18px; margin-bottom: 2px; letter-spacing: 1px; color: var(--theme-text, #222);">
-                                            LEGEND:</div>
-                                        <div class="legend-content"
-                                            style="display: flex; flex-direction: row; justify-content: center; gap: 40px; font-size: 13px; color: var(--theme-text, #222); margin-bottom: 10px;">
-                                            <div style="min-width: 210px; line-height: 1.7;">
-                                                C – Caries<br>
-                                                Am – Amalgam Filling<br>
-                                                G – Gold filling<br>
-                                                Im – Impacted Tooth<br>
-                                                PFS – Pit &amp; Fissure Sealant
-                                            </div>
-                                            <div style="min-width: 270px; line-height: 1.7;">
-                                                JC – Jacket Crown (P-Porcelain, M-Metal, G-Gold, A-Acrylic,
-                                                C-Ceramic)<br>
-                                                Co – Composite<br>
-                                                In – Inlay/On-Inlay (G: Gold; M: Metal; C: Ceramic)<br>
-                                                Frac – Fractured (Co, AM, Tooth)<br>
-                                                TF – Temporary Filling
-                                            </div>
-                                            <div style="min-width: 170px; line-height: 1.7;">
-                                                X – Extraction due to Caries<br>
-                                                Sp – Supernumerary
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Billing Section -->
-            <!-- <div class="billing-section">
+            <!-- New Procedures Section -->
+            <div class="section-card">
+                <div class="section-header flex-wrap">
+                    <div class="d-flex align-items-center flex-grow-1 mb-2 mb-lg-0">
+                        <div class="section-icon me-3">
+                            <i class="fas fa-notes-medical"></i>
+                        </div>
+                        <h2 class="section-title responsive-subtitle mb-0">New Procedures</h2>
+                    </div>
+                    <div class="responsive-button-group">
+                        <button class="btn btn-modern btn-sm view-procedure-btn btn-gold-gradient" id="addProcedureBtn">
+                            <i class="fas fa-plus me-2"></i><span class="hide-on-mobile ">Add
+                                Procedure</span><span class="show-on-mobile">Add Procedure</span>
+                        </button>
+                        <button class="btn btn-modern btn-sm view-procedure-btn btn-gold-gradient" id="editProcedureBtn"
+                            style="display: none;">
+                            <i class="fas fa-edit me-2"></i><span class="hide-on-mobile">Edit</span>
+                        </button>
+                        <button class="btn btn-modern btn-sm view-procedure-btn btn-gold-gradient"
+                            id="updateProcedureBtn" style="display: none;">
+                            <i class="fas fa-save me-2"></i><span class="hide-on-mobile">Update & Print</span><span
+                                class="show-on-mobile">Update</span>
+                        </button>
+                        <button class="btn btn-modern btn-sm btn-secondary" id="closeProcedureBtn"
+                            style="display: none;">
+                            <i class="fas fa-times me-2"></i><span class="hide-on-mobile">Close</span>
+                        </button>
+                    </div>
+                </div>
+                <div id="procedureBody" class="section-body" style="display: none;">
+                    <div class="procedure-main-container">
+                        <div class="procedure-flex-layout">
+                            <div class="procedure-form-wrapper">
+                                <div id="procedureFormContainer" class="card-responsive">
+                                    <h1 class="mb-4 responsive-title">Patient Procedure</h1>
+                                    <form id="addProcedureForm" class="responsive-form">
+                                        <div class="procedure-form-layout">
+                                            <div class="procedure-form-column">
+                                                <div class="mb-3 responsive-form-group">
+                                                    <label for="procedure"
+                                                        class="form-label responsive-label">Procedure</label>
+                                                    <input type="text" class="form-control responsive-input"
+                                                        id="procedure" name="procedure" required
+                                                        list="procedureDatalist"
+                                                        placeholder="Type or select a procedure">
+                                                    <datalist id="procedureDatalist">
+                                                        <!-- Surgical Procedures -->
+                                                        <option value="Frenectomy (lip or tongue tie release)"></option>
+                                                        <option value="Biopsy of oral lesions"></option>
+                                                        <option value="Cyst or tumor removal"></option>
+                                                        <option value="Corrective jaw surgery (orthognathic surgery)">
+                                                        </option>
+
+                                                        <!-- Orthodontic Procedures -->
+                                                        <option value="Braces (metal, ceramic, lingual)"></option>
+                                                        <option value="Clear aligners (e.g., Invisalign)"></option>
+                                                        <option value="Space maintainers (for children)"></option>
+                                                        <option value="Retainers (post-braces)"></option>
+                                                        <option
+                                                            value="Interceptive orthodontics (for early correction)">
+                                                        </option>
+
+                                                        <!-- Cosmetic Dentistry -->
+                                                        <option value="Teeth whitening (in-office or take-home)">
+                                                        </option>
+                                                        <option value="Veneers (porcelain or composite)"></option>
+                                                        <option value="Smile makeovers"></option>
+                                                        <option value="Gum contouring (reshaping gum line)"></option>
+                                                        <option value="Composite bonding for aesthetic improvement">
+                                                        </option>
+
+                                                        <!-- Prosthodontics / Full Mouth Rehabilitation -->
+                                                        <option value="Full-mouth reconstructions"></option>
+                                                        <option value="Implant-supported dentures or bridges"></option>
+                                                        <option value="Occlusal adjustments and bite rehabilitation">
+                                                        </option>
+
+                                                        <!-- Emergency Dental Care -->
+                                                        <option
+                                                            value="Treatment for dental trauma (fractured or knocked-out teeth)">
+                                                        </option>
+                                                        <option value="Pain management (infections, abscesses)">
+                                                        </option>
+                                                        <option value="Temporary restorations"></option>
+                                                        <option value="Draining oral infections or abscesses"></option>
+                                                    </datalist>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label for="doctor" class="form-label">Doctor</label>
+                                                    <input itemid="doctorList" type="text" class="form-control"
+                                                        id="doctor" name="doctor" required list="doctorNamesDatalist">
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label for="date" class="form-label">Date</label>
+                                                    <input type="date" class="form-control" id="date" name="date"
+                                                        required max="">
+
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label for="remarks" class="form-label">Remarks</label>
+                                                    <textarea class="form-control" id="remarks" name="remarks" rows="3"
+                                                        required></textarea>
+                                                </div>
+                                                <div class="mb-2">
+
+
+                                                    <div class="col-12">
+                                                        <div class="form-group">
+                                                            <label for="totalBill">Total Bill</label>
+                                                            <div class="input-group">
+                                                                <span class="input-group-text" id="peso-addon"><i
+                                                                        class="fa fa-peso-sign"></i></span>
+                                                                <input type="text" class="form-control" id="totalBill"
+                                                                    required placeholder="Enter total bill" min="1"
+                                                                    aria-describedby="peso-addon">
+                                                            </div>
+                                                            <label for="procedureAmount">Amount Paid</label>
+                                                            <div class="input-group">
+                                                                <span class="input-group-text" id="peso-addon"><i
+                                                                        class="fa fa-peso-sign"></i></span>
+                                                                <input type="text" class="form-control"
+                                                                    id="procedureAmount" required
+                                                                    placeholder="Enter amount" min="1"
+                                                                    aria-describedby="peso-addon">
+                                                            </div>
+                                                            <label for="procedureBalance">Balance Amount</label>
+                                                            <div class="input-group">
+                                                                <span class="input-group-text" id="peso-addon"><i
+                                                                        class="fa fa-peso-sign"></i></span>
+                                                                <input type="text" class="form-control"
+                                                                    id="procedureBalance" placeholder="Enter balance"
+                                                                    min="0" aria-describedby="peso-addon" disabled>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <button type="submit" id="addProcedureSubmitBtn"
+                                                            class="btn btn-modern btn-sm view-procedure-btn btn-gold-gradient">Save
+                                                            & Print</button>
+                                                    </div>
+
+                                                    <!-- Teeth Summary Section -->
+                                                    <div class="col-12 mt-3">
+                                                        <div id="teethSummary" class="alert alert-light"
+                                                            style="display: none;">
+                                                            <strong>Affected Teeth:</strong>
+                                                            <div id="teethSummaryContent" class="mt-2"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                            </div>
+
+                            <div class="teeth-chart-wrapper">
+                                <div id="teethChartContainer" class="teeth-chart-responsive">
+                                    <div class="chart-wrapper">
+                                        <div class="chart-header responsive-flex-center mb-4">
+                                            <h2 class="responsive-subtitle mb-0">INTRAORAL EXAMINATION</h2>
+                                            <button type="button"
+                                                class="btn btn-outline-info btn-sm responsive-help-btn"
+                                                data-bs-toggle="modal" data-bs-target="#instructionsModal">
+                                                <i class="fas fa-question"></i>
+                                            </button>
+                                        </div>
+
+                                        <!-- Top Primary -->
+                                        <div class="chart-row">
+                                            <div class="left-label">TEMPORARY<br>TEETH</div>
+                                            <div class="left-label">STATUS<br>RIGHT</div>
+                                            <div id="row-topPrimary"></div>
+                                            <div class="left-label">STATUS<br>LEFT</div>
+                                        </div>
+
+                                        <!-- Top Permanent -->
+                                        <div class="chart-row">
+                                            <div class="left-label">PERMANENT<br>TEETH</div>
+                                            <div class="left-label">STATUS<br>RIGHT</div>
+                                            <div id="row-topPermanent"></div>
+                                            <div class="left-label">STATUS<br>LEFT</div>
+                                        </div>
+
+                                        <!-- Bottom Permanent -->
+                                        <div class="chart-row">
+                                            <div class="left-label">PERMANENT<br>TEETH</div>
+                                            <div class="left-label">STATUS<br>RIGHT</div>
+                                            <div id="row-bottomPermanent"></div>
+                                            <div class="left-label">STATUS<br>LEFT</div>
+                                        </div>
+
+                                        <!-- Bottom Primary -->
+                                        <div class="chart-row">
+                                            <div class="left-label">TEMPORARY<br>TEETH</div>
+                                            <div class="left-label">STATUS<br>RIGHT</div>
+                                            <div id="row-bottomPrimary"></div>
+                                            <div class="left-label">STATUS<br>LEFT</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Legend Here -->
+                                    <div class="legend-container hide-on-tablet-mobile"
+                                        style="width: 100%; display: flex; justify-content: center;">
+
+                                        <div
+                                            style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+                                            <div class="legend-title"
+                                                style="font-size: 15px; font-weight: bold; margin-top: 18px; margin-bottom: 2px; letter-spacing: 1px; color: var(--theme-text, #222);">
+                                                LEGEND:</div>
+                                            <div class="legend-content"
+                                                style="display: flex; flex-direction: row; justify-content: center; gap: 40px; font-size: 13px; color: var(--theme-text, #222); margin-bottom: 10px;">
+                                                <div style="min-width: 210px; line-height: 1.7;">
+                                                    C – Caries<br>
+                                                    Am – Amalgam Filling<br>
+                                                    G – Gold filling<br>
+                                                    Im – Impacted Tooth<br>
+                                                    PFS – Pit &amp; Fissure Sealant
+                                                </div>
+                                                <div style="min-width: 270px; line-height: 1.7;">
+                                                    JC – Jacket Crown (P-Porcelain, M-Metal, G-Gold, A-Acrylic,
+                                                    C-Ceramic)<br>
+                                                    Co – Composite<br>
+                                                    In – Inlay/On-Inlay (G: Gold; M: Metal; C: Ceramic)<br>
+                                                    Frac – Fractured (Co, AM, Tooth)<br>
+                                                    TF – Temporary Filling
+                                                </div>
+                                                <div style="min-width: 170px; line-height: 1.7;">
+                                                    X – Extraction due to Caries<br>
+                                                    Sp – Supernumerary
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Billing Section -->
+                <!-- <div class="billing-section">
                 <div class="section-header">
                     <div class="section-icon">
                         <i class="fas fa-file-invoice-dollar"></i>
@@ -733,10 +739,10 @@
                                 </thead>
                                 <tbody id="billingHistory" class="responsive-tbody">
                                      Billing rows will be rendered here by JS -->
-            </tbody>
-            </table>
+                </tbody>
+                </table>
+            </div>
         </div>
-    </div>
     </div>
     </div>
     </div>
@@ -1494,7 +1500,7 @@
             function updateSaveButtonVisibility() {
                 var isEditMode = window.isEditMode;
                 if (saveMedicalRecordContainer) {
-                    saveMedicalRecordContainer.style.display = isEditMode ? 'flex' : 'none';
+                    saveMedicalRecordContainer.style.display = isEditMode ? 'block' : 'none';
                 }
             }
             // Try to hook into the global edit/add/save button logic if possible
@@ -1651,13 +1657,13 @@
                 function generatePDF(patientInfo, fullName, tableData, medRecord) {
                     const pdf = new jspdf.jsPDF({ orientation: 'vertical', unit: 'pt', format: 'a4' });
                     const logoImg = new Image();
-                    logoImg.src = '/images/favicon.png';
+                    logoImg.src = '/site-logo.png';
                     logoImg.onload = function () {
                         const logoHeight = 32;
                         const logoWidth = logoImg.width * (logoHeight / logoImg.height);
                         pdf.addImage(logoImg, 'PNG', 40, 20, logoWidth, logoHeight);
                         pdf.setFontSize(18);
-                        pdf.text('Easy Smile Dental Clinic', 40 + logoWidth + 10, 40);
+                        pdf.text('Blessed Smile Dental Clinic', 40 + logoWidth + 10, 40);
                         // Two-column layout for profile and medical record
                         pdf.setFontSize(12);
                         let y = 65;
@@ -1843,7 +1849,7 @@
                     };
                     logoImg.onerror = function () {
                         pdf.setFontSize(18);
-                        pdf.text('Easy Smile Dental Clinic', 40, 40);
+                        pdf.text('Blessed Smile Dental Clinic', 40, 40);
                         pdf.setFontSize(12);
                         let y = 65;
                         pdf.text('Patient Profile', 40, y);
@@ -2040,21 +2046,21 @@
                 // Edit Medical Record Button - Show when record exists and not in edit mode
                 if (editMedicalRecordBtn) {
                     const showEdit = !disabled && currentRecordDocId && !isEditMode;
-                    editMedicalRecordBtn.style.display = showEdit ? "flex" : "none";
+                    editMedicalRecordBtn.style.display = showEdit ? "inline-block" : "none";
                     console.log('Edit button visible:', showEdit);
                 }
 
                 // Save Changes Button - Show when in edit mode and record exists
                 if (saveMedicalRecordBtn) {
                     const showSave = !disabled && isEditMode && currentRecordDocId;
-                    saveMedicalRecordBtn.style.display = showSave ? "flex" : "none";
+                    saveMedicalRecordBtn.style.display = showSave ? "inline-block" : "none";
                     console.log('Save button visible:', showSave);
                 }
 
                 // Add Medical Record Button - Show when no record exists and not in edit mode
                 if (addMedicalRecordBtn) {
                     const showAdd = !currentRecordDocId && !isEditMode;
-                    addMedicalRecordBtn.style.display = showAdd ? "flex" : "none";
+                    addMedicalRecordBtn.style.display = showAdd ? "inline-block" : "none";
                     console.log('Add button visible:', showAdd);
                 }
 
@@ -2062,7 +2068,7 @@
                 const submitBtn = medicalRecordForm.querySelector('button[type="submit"]');
                 if (submitBtn) {
                     const showSubmit = !currentRecordDocId && !isEditMode;
-                    submitBtn.style.display = showSubmit ? "flex" : "none";
+                    submitBtn.style.display = showSubmit ? "inline-block" : "none";
                     console.log('Submit button visible:', showSubmit);
                 }
             }
@@ -2101,13 +2107,13 @@
                 // Also manually set button visibility to ensure they show
                 if (addMedicalRecordBtn) {
                     const showAdd = !currentRecordDocId && !isEditMode;
-                    addMedicalRecordBtn.style.display = showAdd ? "flex" : "none";
+                    addMedicalRecordBtn.style.display = showAdd ? "inline-block" : "none";
                     console.log('Manually setting Add button visible:', showAdd);
                 }
 
                 if (editMedicalRecordBtn) {
                     const showEdit = currentRecordDocId && !isEditMode;
-                    editMedicalRecordBtn.style.display = showEdit ? "flex" : "none";
+                    editMedicalRecordBtn.style.display = showEdit ? "inline-block" : "none";
                     console.log('Manually setting Edit button visible:', showEdit);
                 }
             }
@@ -2237,85 +2243,50 @@
                     .then((doc) => {
                         if (doc.exists) {
                             const patient = doc.data();
-                            function renderPatientDetailsView() {
-                                patientDetails.innerHTML = `
-                                                <div class="patient-info-grid">
-                                                    <div class="info-item"><div class="info-label">First Name</div><div class="info-value">${patient.firstName || ''}</div></div>
-                                                    <div class="info-item"><div class="info-label">Middle Name</div><div class="info-value">${patient.middleName || ''}</div></div>
-                                                    <div class="info-item"><div class="info-label">Last Name</div><div class="info-value">${patient.lastName || ''}</div></div>
-                                                    <div class="info-item"><div class="info-label">Gender</div><div class="info-value">${patient.sex || ''}</div></div>
-                                                    <div class="info-item"><div class="info-label">Contact No.</div><div class="info-value">${patient.contactNo || ''}</div></div>
-                                                    <div class="info-item"><div class="info-label">Email</div><div class="info-value">${patient.email || ''}</div></div>
-                                                    <div class="info-item"><div class="info-label">Address</div><div class="info-value">${patient.address || ''}</div></div>
-                                                    <div class="info-item"><div class="info-label">Birthday</div><div class="info-value">${patient.birthday || ''}</div></div>
-                                                    <div class="info-item"><div class="info-label">Occupation</div><div class="info-value">${patient.occupation || ''}</div></div>
-                                                    <div class="info-item"><div class="info-label">Civil Status</div><div class="info-value">${patient.civilStatus || ''}</div></div>
-                                                </div>
-                                            `;
-                            }
-                            function renderPatientDetailsEdit() {
-                                patientDetails.innerHTML = `
-                                                <form id="editPatientDetailsForm" class="patient-info-grid">
-                                                    <div class="info-item"><div class="info-label">First Name</div><input class="form-control info-value" name="firstName" value="${patient.firstName || ''}" required></div>
-                                                    <div class="info-item"><div class="info-label">Middle Name</div><input class="form-control info-value" name="middleName" value="${patient.middleName || ''}"></div>
-                                                    <div class="info-item"><div class="info-label">Last Name</div><input class="form-control info-value" name="lastName" value="${patient.lastName || ''}" required></div>
-                                                    <div class="info-item"><div class="info-label">Gender</div><select class="form-control info-value" name="sex"><option value="Male" ${patient.sex === 'Male' ? 'selected' : ''}>Male</option><option value="Female" ${patient.sex === 'Female' ? 'selected' : ''}>Female</option></select></div>
-                                                    <div class="info-item"><div class="info-label">Contact No.</div><input class="form-control info-value" name="contactNo" value="${patient.contactNo || ''}"></div>
-                                                    <div class="info-item"><div class="info-label">Email</div><input class="form-control info-value" name="email" value="${patient.email || ''}"></div>
-                                                    <div class="info-item"><div class="info-label">Address</div><input class="form-control info-value" name="address" value="${patient.address || ''}"></div>
-                                                    <div class="info-item"><div class="info-label">Birthday</div><input class="form-control info-value" name="birthday" type="date" value="${patient.birthday || ''}"></div>
-                                                    <div class="info-item"><div class="info-label">Occupation</div><input class="form-control info-value" name="occupation" value="${patient.occupation || ''}"></div>
-                                                    <div class="info-item"><div class="info-label">Civil Status</div><input class="form-control info-value" name="civilStatus" value="${patient.civilStatus || ''}"></div>
-                                                    <div class="info-item" style="grid-column: 1 / -1; display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1rem;">
-                                                        <button type="submit" class="btn btn-modern btn-gold-gradient">Update</button>
-                                                        <button type="button" id="cancelEditPatientBtn" class="btn btn-modern btn-secondary">Cancel</button>
-                                                    </div>
-                                                </form>
-                                            `;
-                                // Add event listeners for update and cancel
-                                const form = document.getElementById('editPatientDetailsForm');
-                                const cancelBtn = document.getElementById('cancelEditPatientBtn');
-                                if (form) {
-                                    form.addEventListener('submit', function (e) {
-                                        e.preventDefault();
-                                        const formData = new FormData(form);
-                                        const updatedData = {
-                                            firstName: formData.get('firstName'),
-                                            middleName: formData.get('middleName'),
-                                            lastName: formData.get('lastName'),
-                                            sex: formData.get('sex'),
-                                            contactNo: formData.get('contactNo'),
-                                            email: formData.get('email'),
-                                            address: formData.get('address'),
-                                            birthday: formData.get('birthday'),
-                                            occupation: formData.get('occupation'),
-                                            civilStatus: formData.get('civilStatus')
-                                        };
-                                        window.patientDetailsCollection.doc(patientId).update(updatedData)
-                                            .then(() => {
-                                                Object.assign(patient, updatedData);
-                                                renderPatientDetailsView();
-                                                showSuccess('Patient details updated successfully!');
-                                            })
-                                            .catch((error) => {
-                                                showError('Error updating patient details: ' + error.message);
-                                            });
-                                    });
-                                }
-                                if (cancelBtn) {
-                                    cancelBtn.addEventListener('click', function () {
-                                        renderPatientDetailsView();
-                                    });
-                                }
-                            }
-                            renderPatientDetailsView();
-                            // Attach edit button event
-                            const patientEditBtn = document.querySelector('.patient-info-section .btn.btn-modern.btn-gold-gradient');
-                            if (patientEditBtn) {
-                                patientEditBtn.addEventListener('click', function () {
-                                    renderPatientDetailsEdit();
-                                });
-                            }
+                            patientDetails.innerHTML = `
+                                    <div class="patient-info-grid">
+                                        <div class="info-item">
+                                            <div class="info-label">First Name</div>
+                                            <div class="info-value">${patient.firstName || ''}</div>
+                                        </div>
+                                        <div class="info-item">
+                                            <div class="info-label">Middle Name</div>
+                                            <div class="info-value">${patient.middleName || ''}</div>
+                                        </div>
+                                        <div class="info-item">
+                                            <div class="info-label">Last Name</div>
+                                            <div class="info-value">${patient.lastName || ''}</div>
+                                        </div>
+                                        <div class="info-item">
+                                            <div class="info-label">Gender</div>
+                                            <div class="info-value">${patient.sex || ''}</div>
+                                        </div>
+                                        <div class="info-item">
+                                            <div class="info-label">Contact No.</div>
+                                            <div class="info-value">${patient.contactNo || ''}</div>
+                                        </div>
+                                        <div class="info-item">
+                                            <div class="info-label">Email</div>
+                                            <div class="info-value">${patient.email || ''}</div>
+                                        </div>
+                                        <div class="info-item">
+                                            <div class="info-label">Address</div>
+                                            <div class="info-value">${patient.address || ''}</div>
+                                        </div>
+                                        <div class="info-item">
+                                            <div class="info-label">Birthday</div>
+                                            <div class="info-value">${patient.birthday || ''}</div>
+                                        </div>
+                                        <div class="info-item">
+                                            <div class="info-label">Occupation</div>
+                                            <div class="info-value">${patient.occupation || ''}</div>
+                                        </div>
+                                        <div class="info-item">
+                                            <div class="info-label">Civil Status</div>
+                                            <div class="info-value">${patient.civilStatus || ''}</div>
+                                        </div>
+                                    </div>
+                                `;
                         } else {
                             patientDetails.innerHTML = "<div class='alert alert-warning alert-modern'>Patient not found.</div>";
                         }

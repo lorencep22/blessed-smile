@@ -199,29 +199,314 @@
             border-radius: 8px;
             border: 1px solid var(--theme-accent);
         }
+
+        /* Responsive Design Breakpoints */
+
+        /* Mobile First Approach - Base styles for mobile */
+        .header-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: stretch;
+            margin-bottom: 1rem;
+        }
+
+        .header-title {
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-controls {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .search-container {
+            width: 100%;
+            max-width: none;
+        }
+
+        .add-patient-btn {
+            width: 100%;
+            padding: 0.75rem;
+        }
+
+        /* Table Responsive Styles */
+        .responsive-table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px var(--theme-shadow);
+        }
+
+        .responsive-table {
+            min-width: 600px;
+        }
+
+        .responsive-th,
+        .responsive-td {
+            white-space: nowrap;
+            padding: 0.75rem 0.5rem;
+        }
+
+        /* Hide columns on smaller screens */
+        .hide-on-mobile {
+            display: none;
+        }
+
+        .hide-on-small {
+            display: none;
+        }
+
+        .hide-on-tablet {
+            display: table-cell;
+        }
+
+        /* Modal Responsive */
+        .responsive-modal {
+            margin: 0.5rem;
+            max-width: calc(100% - 1rem);
+        }
+
+        .responsive-modal-content {
+            border-radius: 12px;
+        }
+
+        .responsive-form-row {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        /* Container padding adjustments */
+        .container {
+            padding: 1rem;
+            margin: 0.5rem;
+            max-width: calc(100% - 1rem);
+        }
+
+        /* Pagination responsive */
+        .pagination {
+            flex-wrap: wrap;
+            gap: 0.25rem;
+        }
+
+        .page-link {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+        }
+
+        /* Small devices (landscape phones, 576px and up) */
+        @media (min-width: 576px) {
+            .hide-on-mobile {
+                display: table-cell;
+            }
+
+            .container {
+                padding: 1.5rem;
+                margin: 1rem auto;
+                max-width: 540px;
+            }
+
+            .header-controls {
+                flex-direction: row;
+                align-items: center;
+            }
+
+            .add-patient-btn {
+                width: auto;
+                min-width: 140px;
+            }
+
+            .search-container {
+                flex: 1;
+                max-width: 350px;
+            }
+
+            .responsive-th,
+            .responsive-td {
+                padding: 0.75rem;
+            }
+        }
+
+        /* Medium devices (tablets, 768px and up) */
+        @media (min-width: 768px) {
+            .hide-on-small {
+                display: table-cell;
+            }
+
+            .container {
+                max-width: 720px;
+                padding: 2rem;
+            }
+
+            .header-section {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .header-title {
+                text-align: left;
+                margin-bottom: 0;
+            }
+
+            .header-controls {
+                flex-direction: row;
+                width: auto;
+                justify-content: flex-end;
+            }
+
+            .search-container {
+                max-width: 400px;
+                margin-right: 1rem;
+            }
+
+            .responsive-modal {
+                margin: 1.75rem auto;
+                max-width: 500px;
+            }
+
+            .responsive-form-row {
+                flex-direction: row;
+            }
+
+            .responsive-form-row .col-md-6 {
+                flex: 1;
+            }
+        }
+
+        /* Large devices (desktops, 992px and up) */
+        @media (min-width: 992px) {
+            .container {
+                max-width: 960px;
+            }
+
+            .responsive-table {
+                min-width: 100%;
+            }
+
+            .responsive-modal {
+                max-width: 600px;
+            }
+        }
+
+        /* Extra large devices (large desktops, 1200px and up) */
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 1140px;
+            }
+        }
+
+        /* Extra extra large devices (1400px and up) */
+        @media (min-width: 1400px) {
+            .container {
+                max-width: 1320px;
+            }
+        }
+
+        /* Touch device optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            .btn {
+                padding: 0.75rem 1rem;
+                font-size: 1rem;
+                min-height: 44px;
+                touch-action: manipulation;
+            }
+
+            .page-link {
+                padding: 0.75rem 1rem;
+                min-height: 44px;
+                touch-action: manipulation;
+            }
+
+            .form-control,
+            .form-select {
+                padding: 0.75rem;
+                font-size: 1rem;
+                min-height: 44px;
+                touch-action: manipulation;
+            }
+
+            .table td,
+            .table th {
+                padding: 1rem 0.5rem;
+            }
+        }
+
+        /* Additional responsive utilities */
+        .text-responsive {
+            font-size: 0.875rem;
+        }
+
+        @media (min-width: 768px) {
+            .text-responsive {
+                font-size: 1rem;
+            }
+        }
+
+        /* Responsive button sizes */
+        .btn-responsive {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        @media (min-width: 768px) {
+            .btn-responsive {
+                padding: 0.625rem 1.25rem;
+                font-size: 1rem;
+            }
+        }
+
+        /* Ensure proper spacing on mobile */
+        .gap-responsive {
+            gap: 0.5rem;
+        }
+
+        @media (min-width: 576px) {
+            .gap-responsive {
+                gap: 0.75rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .gap-responsive {
+                gap: 1rem;
+            }
+        }
     </style>
 </head>
 
 <body style="height: 100%;" id="patients-page" class="theme-loading">
 
     <div class="container mt-4">
-        <div class="d-flex justify-content-between gap-3 align-items-center mb-2">
-            <h2>Patients</h2>
-            <div class="input-group" style="max-width: 400px; margin-left: auto;">
-                <input type="text" class="form-control" id="searchPatientInput" placeholder="Search by patient name..."
-                    list="patientNamesDatalist">
-                <button type="button" class="btn btn-primary" id="searchPatientBtn">Search</button>
+        <div class="header-section gap-responsive">
+            <h2 class="header-title">Patients</h2>
+            <div class="header-controls gap-responsive">
+                <div class="input-group search-container">
+                    <input type="text" class="form-control" id="searchPatientInput"
+                        placeholder="Search by patient name..." list="patientNamesDatalist">
+                    <button type="button" class="btn btn-primary btn-responsive" id="searchPatientBtn">Search</button>
+                </div>
+                <button type="button" class="btn btn-primary add-patient-btn btn-responsive" data-bs-toggle="modal"
+                    data-bs-target="#patientModal">
+                    Add Patient
+                </button>
             </div>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#patientModal">
-                Add Patient
-            </button>
         </div>
 
         <div id="patientsList"></div>
+
+        <!-- Datalist for search suggestions -->
+        <datalist id="patientNamesDatalist">
+            <!-- Options will be populated dynamically by JavaScript -->
+        </datalist>
+
         <!-- Modal -->
         <div class="modal fade" id="patientModal" tabindex="-1" aria-labelledby="patientModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
+            <div class="modal-dialog responsive-modal">
+                <div class="modal-content responsive-modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="patientModalLabel">Patient Details</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -237,7 +522,7 @@
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="  /app.js" defer></script>
+    <script src="../../app.js" defer></script>
     <script>
         const patientsPage = document.getElementById("patients-page");
         document.addEventListener('DOMContentLoaded', function () {
@@ -246,7 +531,7 @@
 
             modalBody.innerHTML = `
                             <form id="addPatientForm">
-                                <div class="row">
+                                <div class="responsive-form-row">
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label for="firstName" class="form-label">First Name</label>
@@ -387,6 +672,18 @@
                     const pageSize = 10;
                     const totalPages = Math.ceil(patients.length / pageSize);
 
+                    function generatePatientNamesDatalist() {
+                        const datalist = document.getElementById('patientNamesDatalist');
+                        if (!datalist) return;
+
+                        datalist.innerHTML = '';
+                        patients.forEach(patient => {
+                            const option = document.createElement('option');
+                            option.value = `${patient.firstName} ${patient.middleName} ${patient.lastName}`;
+                            datalist.appendChild(option);
+                        });
+                    }
+
                     function fetchAndCachePatients() {
                         window.patientDetailsCollection.get().then((snapshot) => {
                             patients = [];
@@ -404,6 +701,7 @@
                                 return 0;
                             });
                             localStorage.setItem('cachedPatients', JSON.stringify(patients));
+                            generatePatientNamesDatalist();
                             renderTable(currentPage);
                         });
                     }
@@ -420,20 +718,22 @@
                             if (nameA > nameB) return 1;
                             return 0;
                         });
+                        generatePatientNamesDatalist();
                         renderTable(currentPage);
                     }
 
                     function renderTable(page, filteredPatients = null) {
                         const patientsList = document.getElementById("patientsList");
                         patientsList.innerHTML = "";
-                        let html = `<table class="table table-bordered table-hover">
+                        let html = `<div class="responsive-table-container">
+                            <table class="table table-bordered table-hover responsive-table">
                   <thead>
                     <tr>
-                      <th>Full Name</th>
-                      <th>Gender</th>
-                      <th>Contact No.</th>
-                      <th>Email</th>
-                      <th>Accounts</th>
+                      <th class="responsive-th">Full Name</th>
+                      <th class="responsive-th hide-on-small">Gender</th>
+                      <th class="responsive-th hide-on-mobile">Contact No.</th>
+                      <th class="responsive-th hide-on-small">Email</th>
+                      <th class="responsive-th">Actions</th>
                     </tr>
                   </thead>
                   <tbody>`;
@@ -443,14 +743,14 @@
                         for (let i = start; i < end; i++) {
                             const p = data[i];
                             html += `<tr>
-                    <td>${p.firstName} ${p.middleName} ${p.lastName}</td>
-                    <td>${p.sex}</td>
-                    <td>${p.contactNo}</td>
-                    <td>${p.email}</td>
-                    <td ><a class="btn btn-outline-primary btn-sm" target="_blank" href="/dashboard/patients/profile.html?id=${p.id}">View</a></td>
+                    <td class="responsive-td">${p.firstName} ${p.middleName} ${p.lastName}</td>
+                    <td class="responsive-td hide-on-small">${p.sex}</td>
+                    <td class="responsive-td hide-on-mobile">${p.contactNo}</td>
+                    <td class="responsive-td hide-on-small">${p.email}</td>
+                    <td class="responsive-td"><a class="btn btn-outline-primary btn-sm" target="_blank" href="/dashboard/patients/profile.html?id=${p.id}">View</a></td>
                   </tr>`;
                         }
-                        html += `</tbody></table>`;
+                        html += `</tbody></table></div>`;
 
                         // Pagination controls (pill-style)
                         const totalFilteredPages = Math.ceil(data.length / pageSize);
